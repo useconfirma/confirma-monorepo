@@ -1,3 +1,7 @@
+import { AppError } from '../../../../shared/domain/errors/app-error.js';
+import type { AccountSummary } from '../../domain/models/account.model.js';
+import type { AccountRepository } from '../../domain/repositories/account.repository.js';
+
 export type GetAccountUseCaseInput = {
   userId: string;
 };
@@ -17,8 +21,3 @@ export class GetAccountUseCase {
     return account;
   }
 }
-import { AppError } from '../../../../shared/domain/errors/app-error.js';
-import type {
-  AccountSummary,
-  AccountRepository,
-} from '../../domain/repositories/account.repository.js';

@@ -7,19 +7,17 @@ import {
   getAccountResponseSchema,
 } from '../../schemas/zod/get-account.schema.js';
 
-type AccountConfigurationDto = {
-  configured: boolean;
-  start: string | null;
-  end: string | null;
-  timeZone: string | null;
-  updatedAt: string | null;
-};
-
 type GetAccountResponseDto = {
   account: {
     id: string;
     name: string;
-    sendWindow: AccountConfigurationDto;
+    sendWindow: {
+      configured: boolean;
+      start: string | null;
+      end: string | null;
+      timeZone: string | null;
+      updatedAt: string | null;
+    };
     apiKey: { configured: boolean; createdAt: string | null };
     webhook: { configured: boolean; url: string | null; updatedAt: string | null };
     zApi: { configured: boolean; instanceId: string | null; updatedAt: string | null };
@@ -29,7 +27,7 @@ type GetAccountResponseDto = {
 openApiRegistry.registerPath({
   method: 'get',
   path: '/account',
-  tags: ['Auth'],
+  tags: ['Accounts'],
   summary: 'Consultar account',
   responses: {
     200: {
@@ -45,8 +43,7 @@ openApiRegistry.registerPath({
 
 export const getAccountController = async (req: Request, res: Response) => {
   const cookies = validateData(req.cookies, getAccountRequestSchema);
-
-  // const useCase = new GetAccountUseCase();
+  // const useCase = new GetAccountUseCase(/* dependências injetadas */);
   // const result = await useCase.execute({ userId: cookies.confirma_session });
   void cookies;
 
@@ -66,5 +63,6 @@ export const getAccountController = async (req: Request, res: Response) => {
       zApi: { configured: false, instanceId: null, updatedAt: null },
     },
   };
+
   return res.status(200).json(response);
 };

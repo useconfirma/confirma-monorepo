@@ -1,9 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GetAccountUseCase } from './get-account.usecase.js';
-import type {
-  AccountRepository,
-  AccountSummary,
-} from '../../domain/repositories/account.repository.js';
+import type { AccountSummary } from '../../domain/models/account.model.js';
+import type { AccountRepository } from '../../domain/repositories/account.repository.js';
 
 describe('GetAccountUseCase unit tests', () => {
   const account: AccountSummary = {
@@ -16,6 +14,10 @@ describe('GetAccountUseCase unit tests', () => {
   };
   const accountRepository = {
     findSummaryByUserId: vi.fn(),
+    updateSendWindow: vi.fn(),
+    replaceApiKey: vi.fn(),
+    updateWebhook: vi.fn(),
+    updateZApi: vi.fn(),
   } satisfies AccountRepository;
   let sut: GetAccountUseCase;
 
@@ -24,16 +26,14 @@ describe('GetAccountUseCase unit tests', () => {
     sut = new GetAccountUseCase(accountRepository);
   });
 
-  it('should return the account summary for the authenticated user', async () => {
+  it('should return the authenticated user account summary', async () => {
     vi.mocked(accountRepository.findSummaryByUserId).mockResolvedValue(account);
 
-    const result = await sut.execute({ userId: 'user-1' });
-
-    expect(result).toEqual(account);
+    await expect(sut.execute({ userId: 'user-1' })).resolves.toEqual(account);
     expect(accountRepository.findSummaryByUserId).toHaveBeenCalledWith('user-1');
   });
 
-  it('should reject an unknown authenticated user', async () => {
+  it('should reject an unavailable account', async () => {
     vi.mocked(accountRepository.findSummaryByUserId).mockResolvedValue(null);
 
     await expect(sut.execute({ userId: 'missing-user' })).rejects.toMatchObject({
