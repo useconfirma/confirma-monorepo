@@ -9,6 +9,8 @@
     "start": "node dist/shared/infrastructure/http/server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint:fix": "eslint src --fix"
   },
   "dependencies": {
@@ -25,6 +27,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^24.19.2",
     "@types/swagger-ui-express": "^4.1.8",
-    "tsx": "^4.23.15"
+    "tsx": "^4.23.15",
+    "vitest": "^5.1.0"
   }
 }

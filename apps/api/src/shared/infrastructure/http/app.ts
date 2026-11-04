@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import { OpenApiGeneratorV31 } from '@asteasolutions/zod-to-openapi';
 import { openApiRegistry } from './docs/openapi.js';
-import { errorMiddleware } from './middleware/errors.middleware.js';
+import { errorMiddleware } from './middlewares/errors.middleware.js';
 import { routes } from './routes.js';
 
 export const app = express();
