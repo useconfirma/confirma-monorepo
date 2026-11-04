@@ -13,7 +13,7 @@ type RequestInvitationResponseDto = {
 
 openApiRegistry.registerPath({
   method: 'post',
-  path: '/v1/invitations',
+  path: '/invitations',
   tags: ['Auth'],
   summary: 'Solicitar convite',
   request: {

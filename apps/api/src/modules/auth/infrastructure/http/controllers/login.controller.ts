@@ -8,7 +8,7 @@ type LoginResponseDto = Record<string, never>;
 
 openApiRegistry.registerPath({
   method: 'post',
-  path: '/v1/sessions',
+  path: '/sessions',
   tags: ['Auth'],
   summary: 'Entrar',
   request: { body: { content: { 'application/json': { schema: loginRequestSchema } } } },

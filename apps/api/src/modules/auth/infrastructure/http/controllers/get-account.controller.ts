@@ -28,7 +28,7 @@ type GetAccountResponseDto = {
 
 openApiRegistry.registerPath({
   method: 'get',
-  path: '/v1/account',
+  path: '/account',
   tags: ['Auth'],
   summary: 'Consultar account',
   responses: {

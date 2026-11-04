@@ -8,6 +8,7 @@ export type CreateInvitationInput = {
 
 export interface InvitationRepository {
   create(input: CreateInvitationInput): Promise<Invitation>;
+  findActiveByEmail(email: string, now: Date): Promise<Invitation | null>;
   findByTokenHash(tokenHash: string): Promise<Invitation | null>;
   markAsUsed(id: string, usedAt: Date): Promise<void>;
 }

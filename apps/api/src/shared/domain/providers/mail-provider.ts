@@ -1,8 +1,7 @@
 export type SendMailInput = {
   to: string;
   subject: string;
-  html: string;
-  text?: string;
+  text: string;
 };
 
 export interface MailProvider {

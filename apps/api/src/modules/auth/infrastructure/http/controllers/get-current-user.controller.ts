@@ -13,7 +13,7 @@ type GetCurrentUserResponseDto = {
 
 openApiRegistry.registerPath({
   method: 'get',
-  path: '/v1/users/me',
+  path: '/users/me',
   tags: ['Auth'],
   summary: 'Consultar usuário atual',
   responses: {

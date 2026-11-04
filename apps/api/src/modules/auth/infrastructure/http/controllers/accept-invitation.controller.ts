@@ -14,7 +14,7 @@ type AcceptInvitationResponseDto = {
 
 openApiRegistry.registerPath({
   method: 'post',
-  path: '/v1/accounts',
+  path: '/accounts',
   tags: ['Auth'],
   summary: 'Aceitar convite e criar account',
   request: {

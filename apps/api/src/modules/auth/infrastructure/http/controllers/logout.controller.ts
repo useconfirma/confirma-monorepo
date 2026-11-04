@@ -8,7 +8,7 @@ type LogoutResponseDto = Record<string, never>;
 
 openApiRegistry.registerPath({
   method: 'delete',
-  path: '/v1/sessions/current',
+  path: '/sessions/current',
   tags: ['Auth'],
   summary: 'Sair',
   responses: {

@@ -22,7 +22,7 @@ app.get('/openapi.json', (_req, res) => {
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
-app.use('/v1', routes);
+app.use(routes);
 
 app.use((_req, res) => {
   res.status(404).json({ error: { code: 'not_found', message: 'Recurso não encontrado.' } });

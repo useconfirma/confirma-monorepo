@@ -1,44 +1,24 @@
-type SendWindow = {
-  configured: boolean;
-  start: string | null;
-  end: string | null;
-  timeZone: string | null;
-  updatedAt: Date | null;
-};
-
-type ApiKey = {
-  configured: boolean;
-  createdAt: Date | null;
-};
-
-type Webhook = {
-  configured: boolean;
-  url: string | null;
-  updatedAt: Date | null;
-};
-
-type ZApi = {
-  configured: boolean;
-  instanceId: string | null;
-  updatedAt: Date | null;
-};
-
 export type GetAccountUseCaseInput = {
   userId: string;
 };
 
-export type GetAccountUseCaseOutput = {
-  id: string;
-  name: string;
-  sendWindow: SendWindow;
-  apiKey: ApiKey;
-  webhook: Webhook;
-  zApi: ZApi;
-};
+export type GetAccountUseCaseOutput = AccountSummary;
 
 export class GetAccountUseCase {
+  constructor(private readonly accountRepository: AccountRepository) {}
+
   async execute(input: GetAccountUseCaseInput): Promise<GetAccountUseCaseOutput> {
-    void input;
-    throw new Error('Not implemented');
+    const account = await this.accountRepository.findSummaryByUserId(input.userId);
+
+    if (!account) {
+      throw new AppError('UNAUTHENTICATED', 'Sessão ausente ou inválida.', 401);
+    }
+
+    return account;
   }
 }
+import { AppError } from '../../../../shared/domain/errors/app-error.js';
+import type {
+  AccountSummary,
+  AccountRepository,
+} from '../../domain/repositories/account.repository.js';

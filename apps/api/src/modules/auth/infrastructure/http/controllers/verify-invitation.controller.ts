@@ -13,7 +13,7 @@ type VerifyInvitationResponseDto = {
 
 openApiRegistry.registerPath({
   method: 'get',
-  path: '/v1/invitations/{invitationToken}',
+  path: '/invitations/{invitationToken}',
   tags: ['Auth'],
   summary: 'Verificar convite',
   request: { params: verifyInvitationRequestSchema },
