@@ -10,7 +10,7 @@ import {
 openApiRegistry.registerPath({
   method: 'put',
   path: '/integration/webhook',
-  tags: ['Accounts'],
+  tags: ['Integrations'],
   summary: 'Configurar webhook',
   request: { body: { content: { 'application/json': { schema: configureWebhookBodySchema } } } },
   responses: {

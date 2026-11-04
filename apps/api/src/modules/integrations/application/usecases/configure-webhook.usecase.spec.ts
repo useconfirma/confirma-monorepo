@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigureWebhookUseCase } from './configure-webhook.usecase.js';
-import type { WebhookConfiguration } from '../../domain/models/account.model.js';
+import type { WebhookConfiguration } from '../../../accounts/domain/models/account.model.js';
 import type { SecretProtector } from '../../domain/providers/secret-protector.js';
-import type { AccountRepository } from '../../domain/repositories/account.repository.js';
+import type { IntegrationRepository } from '../../domain/repositories/integration.repository.js';
 
 describe('ConfigureWebhookUseCase unit tests', () => {
   const webhook: WebhookConfiguration = {
@@ -11,12 +11,11 @@ describe('ConfigureWebhookUseCase unit tests', () => {
     updatedAt: new Date('2026-11-04T12:00:00.000Z'),
   };
   const accountRepository = {
-    findSummaryByUserId: vi.fn(),
     updateSendWindow: vi.fn(),
     replaceApiKey: vi.fn(),
     updateWebhook: vi.fn(),
     updateZApi: vi.fn(),
-  } satisfies AccountRepository;
+  } satisfies IntegrationRepository;
   const secretProtector = { protect: vi.fn() } satisfies SecretProtector;
   let sut: ConfigureWebhookUseCase;
 

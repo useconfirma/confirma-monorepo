@@ -1,10 +1,10 @@
 import { AppError } from '../../../../shared/domain/errors/app-error.js';
-import type { WebhookConfiguration } from '../../domain/models/account.model.js';
+import type { WebhookConfiguration } from '../../../accounts/domain/models/account.model.js';
 import type { SecretProtector } from '../../domain/providers/secret-protector.js';
 import type {
-  AccountRepository,
+  IntegrationRepository,
   UpdateWebhookInput,
-} from '../../domain/repositories/account.repository.js';
+} from '../../domain/repositories/integration.repository.js';
 
 export type ConfigureWebhookUseCaseInput = Omit<
   UpdateWebhookInput,
@@ -18,14 +18,14 @@ export type ConfigureWebhookUseCaseOutput = WebhookConfiguration;
 
 export class ConfigureWebhookUseCase {
   constructor(
-    private readonly accountRepository: AccountRepository,
+    private readonly integrationRepository: IntegrationRepository,
     private readonly secretProtector: SecretProtector,
   ) {}
 
   async execute(input: ConfigureWebhookUseCaseInput): Promise<ConfigureWebhookUseCaseOutput> {
     this.validate(input.url, input.secret);
 
-    return this.accountRepository.updateWebhook({
+    return this.integrationRepository.updateWebhook({
       userId: input.userId,
       url: input.url,
       secretHash: this.secretProtector.protect(input.secret),

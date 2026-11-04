@@ -10,7 +10,7 @@ import {
 openApiRegistry.registerPath({
   method: 'put',
   path: '/integration/z-api',
-  tags: ['Accounts'],
+  tags: ['Integrations'],
   summary: 'Configurar Z-API',
   request: { body: { content: { 'application/json': { schema: configureZApiBodySchema } } } },
   responses: {

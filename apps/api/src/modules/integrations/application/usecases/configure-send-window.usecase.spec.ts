@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigureSendWindowUseCase } from './configure-send-window.usecase.js';
-import type { SendWindow } from '../../domain/models/account.model.js';
-import type { AccountRepository } from '../../domain/repositories/account.repository.js';
+import type { SendWindow } from '../../../accounts/domain/models/account.model.js';
+import type { IntegrationRepository } from '../../domain/repositories/integration.repository.js';
 
 describe('ConfigureSendWindowUseCase unit tests', () => {
   const configuredWindow: SendWindow = {
@@ -12,12 +12,11 @@ describe('ConfigureSendWindowUseCase unit tests', () => {
     updatedAt: new Date('2026-11-04T12:00:00.000Z'),
   };
   const accountRepository = {
-    findSummaryByUserId: vi.fn(),
     updateSendWindow: vi.fn(),
     replaceApiKey: vi.fn(),
     updateWebhook: vi.fn(),
     updateZApi: vi.fn(),
-  } satisfies AccountRepository;
+  } satisfies IntegrationRepository;
   let sut: ConfigureSendWindowUseCase;
 
   beforeEach(() => {

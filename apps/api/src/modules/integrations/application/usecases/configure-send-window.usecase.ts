@@ -1,9 +1,9 @@
 import { AppError } from '../../../../shared/domain/errors/app-error.js';
-import type { SendWindow } from '../../domain/models/account.model.js';
+import type { SendWindow } from '../../../accounts/domain/models/account.model.js';
 import type {
-  AccountRepository,
+  IntegrationRepository,
   UpdateSendWindowInput,
-} from '../../domain/repositories/account.repository.js';
+} from '../../domain/repositories/integration.repository.js';
 
 export type ConfigureSendWindowUseCaseInput = Omit<UpdateSendWindowInput, 'userId'> & {
   userId: string;
@@ -12,13 +12,13 @@ export type ConfigureSendWindowUseCaseInput = Omit<UpdateSendWindowInput, 'userI
 export type ConfigureSendWindowUseCaseOutput = SendWindow;
 
 export class ConfigureSendWindowUseCase {
-  constructor(private readonly accountRepository: AccountRepository) {}
+  constructor(private readonly integrationRepository: IntegrationRepository) {}
 
   async execute(input: ConfigureSendWindowUseCaseInput): Promise<ConfigureSendWindowUseCaseOutput> {
     this.validateTime(input.start, input.end);
     this.validateTimeZone(input.timeZone);
 
-    return this.accountRepository.updateSendWindow(input);
+    return this.integrationRepository.updateSendWindow(input);
   }
 
   private validateTime(start: string, end: string): void {

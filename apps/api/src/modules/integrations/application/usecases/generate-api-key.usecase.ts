@@ -1,6 +1,6 @@
-import type { ApiKeyProvider } from '../../domain/providers/api-key.provider.js';
+import type { ApiKeyProvider } from '../../../../shared/domain/providers/api-key.provider.js';
 import type { SecretProtector } from '../../domain/providers/secret-protector.js';
-import type { AccountRepository } from '../../domain/repositories/account.repository.js';
+import type { IntegrationRepository } from '../../domain/repositories/integration.repository.js';
 
 export type GenerateApiKeyUseCaseInput = {
   userId: string;
@@ -13,7 +13,7 @@ export type GenerateApiKeyUseCaseOutput = {
 
 export class GenerateApiKeyUseCase {
   constructor(
-    private readonly accountRepository: AccountRepository,
+    private readonly integrationRepository: IntegrationRepository,
     private readonly apiKeyProvider: ApiKeyProvider,
     private readonly secretProtector: SecretProtector,
   ) {}
@@ -22,7 +22,7 @@ export class GenerateApiKeyUseCase {
     const apiKey = this.apiKeyProvider.generate();
     const createdAt = new Date();
 
-    const result = await this.accountRepository.replaceApiKey({
+    const result = await this.integrationRepository.replaceApiKey({
       userId: input.userId,
       apiKeyHash: this.secretProtector.protect(apiKey),
       createdAt,

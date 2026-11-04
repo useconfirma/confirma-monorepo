@@ -14,10 +14,6 @@ describe('GetAccountUseCase unit tests', () => {
   };
   const accountRepository = {
     findSummaryByUserId: vi.fn(),
-    updateSendWindow: vi.fn(),
-    replaceApiKey: vi.fn(),
-    updateWebhook: vi.fn(),
-    updateZApi: vi.fn(),
   } satisfies AccountRepository;
   let sut: GetAccountUseCase;
 

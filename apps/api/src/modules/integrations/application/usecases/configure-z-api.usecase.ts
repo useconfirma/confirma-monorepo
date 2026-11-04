@@ -1,11 +1,11 @@
 import { AppError } from '../../../../shared/domain/errors/app-error.js';
-import type { ZApiConfiguration } from '../../domain/models/account.model.js';
+import type { ZApiConfiguration } from '../../../accounts/domain/models/account.model.js';
 import type { SecretProtector } from '../../domain/providers/secret-protector.js';
 import type { ZApiProvider } from '../../domain/providers/z-api.provider.js';
 import type {
-  AccountRepository,
+  IntegrationRepository,
   UpdateZApiInput,
-} from '../../domain/repositories/account.repository.js';
+} from '../../domain/repositories/integration.repository.js';
 
 export type ConfigureZApiUseCaseInput = Omit<
   UpdateZApiInput,
@@ -18,7 +18,7 @@ export type ConfigureZApiUseCaseOutput = ZApiConfiguration;
 
 export class ConfigureZApiUseCase {
   constructor(
-    private readonly accountRepository: AccountRepository,
+    private readonly integrationRepository: IntegrationRepository,
     private readonly secretProtector: SecretProtector,
     private readonly zApiProvider: ZApiProvider,
     private readonly publicApiUrl: string,
@@ -38,7 +38,7 @@ export class ConfigureZApiUseCase {
 
     await this.zApiProvider.registerCallback({ ...credentials, callbackUrl });
 
-    return this.accountRepository.updateZApi({
+    return this.integrationRepository.updateZApi({
       ...credentials,
       userId,
       instanceToken: this.secretProtector.protect(input.instanceToken),

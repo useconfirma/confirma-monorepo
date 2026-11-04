@@ -10,7 +10,7 @@ import {
 openApiRegistry.registerPath({
   method: 'put',
   path: '/integration/send-window',
-  tags: ['Accounts'],
+  tags: ['Integrations'],
   summary: 'Configurar janela de envio',
   request: { body: { content: { 'application/json': { schema: configureSendWindowBodySchema } } } },
   responses: {

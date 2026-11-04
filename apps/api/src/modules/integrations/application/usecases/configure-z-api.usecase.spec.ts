@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigureZApiUseCase } from './configure-z-api.usecase.js';
-import type { ZApiConfiguration } from '../../domain/models/account.model.js';
+import type { ZApiConfiguration } from '../../../accounts/domain/models/account.model.js';
 import type { SecretProtector } from '../../domain/providers/secret-protector.js';
 import type { ZApiProvider } from '../../domain/providers/z-api.provider.js';
-import type { AccountRepository } from '../../domain/repositories/account.repository.js';
+import type { IntegrationRepository } from '../../domain/repositories/integration.repository.js';
 
 describe('ConfigureZApiUseCase unit tests', () => {
   const configuration: ZApiConfiguration = {
@@ -12,12 +12,11 @@ describe('ConfigureZApiUseCase unit tests', () => {
     updatedAt: new Date('2026-11-04T12:00:00.000Z'),
   };
   const accountRepository = {
-    findSummaryByUserId: vi.fn(),
     updateSendWindow: vi.fn(),
     replaceApiKey: vi.fn(),
     updateWebhook: vi.fn(),
     updateZApi: vi.fn(),
-  } satisfies AccountRepository;
+  } satisfies IntegrationRepository;
   const secretProtector = { protect: vi.fn() } satisfies SecretProtector;
   const zApiProvider = { registerCallback: vi.fn() } satisfies ZApiProvider;
   let sut: ConfigureZApiUseCase;

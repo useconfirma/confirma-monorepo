@@ -6,7 +6,7 @@ import { generateApiKeyResponseSchema } from '../../schemas/zod/generate-api-key
 openApiRegistry.registerPath({
   method: 'post',
   path: '/integration/api-key',
-  tags: ['Accounts'],
+  tags: ['Integrations'],
   summary: 'Gerar API Key',
   responses: {
     201: {

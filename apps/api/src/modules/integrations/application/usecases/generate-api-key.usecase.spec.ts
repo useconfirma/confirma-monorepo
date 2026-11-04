@@ -1,17 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GenerateApiKeyUseCase } from './generate-api-key.usecase.js';
-import type { ApiKeyProvider } from '../../domain/providers/api-key.provider.js';
+import type { ApiKeyProvider } from '../../../../shared/domain/providers/api-key.provider.js';
 import type { SecretProtector } from '../../domain/providers/secret-protector.js';
-import type { AccountRepository } from '../../domain/repositories/account.repository.js';
+import type { IntegrationRepository } from '../../domain/repositories/integration.repository.js';
 
 describe('GenerateApiKeyUseCase unit tests', () => {
   const accountRepository = {
-    findSummaryByUserId: vi.fn(),
     updateSendWindow: vi.fn(),
     replaceApiKey: vi.fn(),
     updateWebhook: vi.fn(),
     updateZApi: vi.fn(),
-  } satisfies AccountRepository;
+  } satisfies IntegrationRepository;
   const apiKeyProvider = { generate: vi.fn() } satisfies ApiKeyProvider;
   const secretProtector = { protect: vi.fn() } satisfies SecretProtector;
   let sut: GenerateApiKeyUseCase;
