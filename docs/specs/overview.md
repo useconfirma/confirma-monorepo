@@ -12,7 +12,7 @@ mvp:
     objective: 'Validar, com dados fictícios, a integração ponta a ponta entre um sistema de origem, o Confirma e a Z-API.'
     primary-actor: 'ACT-01'
     main-flow:
-        - 'O desenvolvedor convidado cria sua conta e configura a integração.'
+        - 'O desenvolvedor convidado cria seu usuário e sua account e configura a integração.'
         - 'O sistema integrado cria um agendamento de teste autenticado e idempotente.'
         - 'O Confirma envia a mensagem, interpreta a resposta e notifica o sistema integrado.'
     capabilities:
@@ -88,8 +88,8 @@ Os mesmos IDs são detalhados em `domain.md`.
 
 ## Capacidades do Beta
 
-- **RF-01 — Acesso:** solicitar convite, criar conta com convite válido e de uso único, entrar, sair e consultar o usuário. Casos: UC-01 a UC-05.
-- **RF-02 — Configuração:** consultar configuração e definir janela diária, fuso IANA, webhook e instância Z-API. Casos: UC-06, UC-07, UC-09 e UC-10.
+- **RF-01 — Acesso:** solicitar convite, verificar o convite, criar usuário e account (com nome) por convite válido e de uso único, entrar, sair e consultar o usuário. Casos: UC-01 a UC-04, UC-06 e UC-16.
+- **RF-02 — Configuração:** consultar a account com toda a configuração em uma única requisição e definir janela diária, fuso IANA, webhook e instância Z-API. Casos: UC-05, UC-07, UC-09 e UC-10.
 - **RF-03 — API Key:** gerar a credencial apresentada uma única vez. Caso: UC-08.
 - **RF-04 — Criação:** aceitar ou rejeitar sincronamente uma criação autenticada e idempotente. Caso: UC-11.
 - **RF-05 — Processamento:** encaminhar o agendamento aceito para o próximo instante permitido. Caso: UC-12.

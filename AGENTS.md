@@ -9,11 +9,6 @@ Este arquivo orienta agentes que analisam, implementam ou modificam o projeto Co
    - `docs/specs/overview.md`: objetivo, escopo e requisitos do produto.
    - `docs/specs/domain.md`: atores, entidades, regras de negócio e casos de uso.
    - `docs/specs/api.md`: contratos HTTP, autenticação e integrações.
-   - `docs/specs/design.md`: identidade visual, tokens e componentes.
-   - `docs/design/apps/web/ui.md`: telas e fluxos do painel.
-   - `docs/design/apps/landing/ui.md`: estrutura e interações da landing.
-   - `docs/design/apps/documentation/ui.md`: estrutura do portal de documentação.
-   - `docs/design/assets/tokens.json`: tokens visuais compartilhados.
 3. Inspecione os arquivos de código, testes e configurações diretamente envolvidos na tarefa. Siga os padrões já adotados pelo projeto.
 4. Se um arquivo citado ainda não existir, não presuma seu conteúdo: consulte os documentos disponíveis e informe a lacuna quando relevante.
 
@@ -24,8 +19,7 @@ Este arquivo orienta agentes que analisam, implementam ou modificam o projeto Co
 - **Produto e escopo:** `overview.md`.
 - **Regras e estados de negócio:** `domain.md`.
 - **Contratos externos:** `api.md`.
-- **Comportamento de uma interface:** o `ui.md` da aplicação correspondente.
-- **Apresentação visual:** `design.md` e `tokens.json`.
+- **Interface e apresentação visual:** não há especificação de design ou de UI na documentação atual; não presuma uma e consulte o usuário quando a decisão afetar o resultado.
 - **Detalhes técnicos já implementados:** código, testes e configurações atuais, desde que não contrariem as especificações aprovadas.
 
 Não use protótipos visuais como fonte de novas regras de negócio. Não deduza contratos HTTP a partir da interface. Se duas fontes entrarem em conflito, **não escolha silenciosamente uma versão**: exponha a divergência e peça orientação quando ela afetar o resultado.
@@ -35,7 +29,7 @@ Não use protótipos visuais como fonte de novas regras de negócio. Não deduza
 A pasta `docs/` é **somente leitura por padrão**.
 
 - **Não crie, edite, mova, renomeie nem exclua** arquivos em `docs/` sem uma solicitação explícita do usuário.
-- Isso inclui especificações, `README.md`, tokens, assets e protótipos em `docs/design/apps/`.
+- Isso inclui especificações e `README.md`.
 - Não atualize a documentação automaticamente para acompanhar mudanças no código.
 - Se encontrar documentação ausente, desatualizada ou inconsistente, relate o problema e proponha a correção; aguarde autorização para alterá-la.
 - Uma solicitação para implementar código **não autoriza**, por si só, modificar `docs/`.
@@ -58,7 +52,7 @@ Se uma regra essencial não estiver definida, **pergunte antes de inventá-la**.
 - Implemente o menor conjunto coerente de alterações que resolva a tarefa.
 - Respeite a arquitetura, as convenções de nomes e as ferramentas já presentes no repositório; não introduza novos padrões sem justificativa.
 - Mantenha regras de negócio fora de componentes de apresentação e de adaptadores de infraestrutura, conforme os limites existentes do projeto.
-- Para endpoints, respeite os contratos de `api.md`; para interfaces, respeite o `ui.md` da aplicação e o Design System compartilhado.
+- Para endpoints, respeite os contratos de `api.md`; para interfaces, siga o código existente, pois não há especificação de UI ou Design System na documentação atual.
 - Trate credenciais, API Keys, tokens, segredos e dados de pacientes com cuidado. Não exponha valores sensíveis em logs, exemplos ou respostas indevidas.
 - Não altere arquivos não relacionados nem reformate grandes áreas sem necessidade.
 - Não execute comandos destrutivos, migrações irreversíveis ou operações em produção sem autorização explícita.

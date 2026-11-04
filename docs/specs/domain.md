@@ -27,16 +27,20 @@ entities:
     - {
           id: ENT-01,
           name: 'Convite',
-          purpose: 'Autorizar uma criação de conta.',
+          purpose: 'Autorizar a criação de um Usuário e de sua Conta.',
           attributes: ['e-mail', 'token', 'expiração', 'situação'],
-          relationships: ['Autoriza uma Conta.'],
+          relationships: ['Autoriza um Usuário e sua Conta.'],
       }
     - {
           id: ENT-02,
           name: 'Conta',
           purpose: 'Delimitar o participante e seus dados.',
-          attributes: ['identificador', 'e-mail', 'credencial'],
-          relationships: ['Possui Configuração, API Key e Agendamentos.'],
+          attributes: ['identificador', 'nome'],
+          relationships:
+              [
+                  'Pertence a um Usuário.',
+                  'Possui Configuração, API Key e Agendamentos.',
+              ],
       }
     - {
           id: ENT-03,
@@ -99,6 +103,16 @@ entities:
                   'situação da entrega',
               ],
           relationships: ['Referencia um Agendamento.'],
+      }
+    - {
+          id: ENT-08,
+          name: 'Usuário',
+          purpose: 'Identificar quem acessa o painel.',
+          attributes: ['identificador', 'e-mail', 'credencial'],
+          relationships:
+              [
+                  'Possui Contas; no Beta, exatamente uma, criada junto com o Usuário.',
+              ],
       }
 business-rules:
     - { id: BR-01, description: 'Convite expira em 72 horas e tem uso único.' }
@@ -220,10 +234,10 @@ use-cases:
           preconditions: ['Convite válido.'],
           main-flow:
               [
-                  'Informar token, e-mail e senha.',
-                  'Criar conta e consumir convite.',
+                  'Informar token, senha e nome da conta; o e-mail vem do convite.',
+                  'Criar usuário e conta e consumir convite.',
               ],
-          outcome: 'Conta criada.',
+          outcome: 'Usuário e conta criados.',
       }
     - {
           id: UC-03,
@@ -244,19 +258,22 @@ use-cases:
     - {
           id: UC-05,
           actor: ACT-01,
-          goal: 'Consultar usuário.',
+          goal: 'Consultar account.',
           preconditions: ['Sessão válida.'],
-          main-flow: ['Solicitar usuário.', 'Retornar identidade.'],
-          outcome: 'Usuário identificado.',
+          main-flow:
+              [
+                  'Solicitar account.',
+                  'Retornar nome e configuração sem segredos.',
+              ],
+          outcome: 'Account consultada em uma única requisição.',
       }
     - {
           id: UC-06,
           actor: ACT-01,
-          goal: 'Consultar configuração.',
+          goal: 'Consultar usuário.',
           preconditions: ['Sessão válida.'],
-          main-flow:
-              ['Solicitar configuração.', 'Retornar dados não secretos.'],
-          outcome: 'Configuração consultada.',
+          main-flow: ['Solicitar usuário.', 'Retornar identidade.'],
+          outcome: 'Usuário identificado.',
       }
     - {
           id: UC-07,
@@ -342,6 +359,15 @@ use-cases:
           main-flow: ['Assinar e enviar.', 'Retentar falha transitória.'],
           outcome: 'Entrega concluída ou encerrada.',
       }
+    - {
+          id: UC-16,
+          actor: ACT-01,
+          goal: 'Verificar convite.',
+          preconditions: ['Token do convite.'],
+          main-flow:
+              ['Informar token.', 'Validar convite.', 'Retornar o e-mail.'],
+          outcome: 'Convite verificado sem ser consumido.',
+      }
 states:
     - entity: ENT-05
       transitions:
@@ -368,8 +394,9 @@ states:
 
 ## Entidades e relacionamentos
 
-- **ENT-01 — Convite:** autorização temporária, vinculada ao e-mail, para criar uma ENT-02 uma vez.
-- **ENT-02 — Conta:** limite de isolamento que possui ENT-03, uma ENT-04 ativa, ENT-05 e ENT-06.
+- **ENT-01 — Convite:** autorização temporária, vinculada ao e-mail, para criar uma ENT-08 e sua ENT-02 uma vez.
+- **ENT-02 — Conta:** limite de isolamento, com nome definido no cadastro, pertencente a uma ENT-08. Possui ENT-03, uma ENT-04 ativa, ENT-05 e ENT-06.
+- **ENT-08 — Usuário:** identidade de acesso ao painel (e-mail e credencial). Pode possuir várias ENT-02 no futuro; no Beta possui exatamente uma, criada com o usuário.
 - **ENT-03 — Configuração de integração:** janela, fuso, webhook, Z-API e identificador secreto pertencentes à conta.
 - **ENT-04 — API Key:** segredo que autentica ACT-02 em nome da conta.
 - **ENT-05 — Agendamento:** solicitação de confirmação com identificadores, dados do paciente, horário, estado e correlação externa.
@@ -382,20 +409,30 @@ As regras normativas BR-01 a BR-28 estão no frontmatter. Elas regem acesso, con
 
 ## Casos de uso
 
-### UC-01 a UC-05 — Acesso ao Beta
+### UC-01 a UC-06 — Acesso ao Beta
 
 - **Ator:** ACT-01
-- **Objetivo:** solicitar convite, criar conta, entrar, sair e consultar o usuário.
+- **Objetivo:** solicitar convite, criar usuário e conta, entrar, sair e consultar o usuário e a account.
 - **Pré-condições:** credencial correspondente válida.
 - **Fluxo principal:** validar convite, credenciais ou sessão e executar a operação sobre a conta.
 - **Fluxos alternativos essenciais:** convite expirado/usado, e-mail já cadastrado e credenciais inválidas são rejeitados sem alterar a conta.
 - **Pós-condições:** convite enviado/consumido ou sessão criada/removida/consultada.
 - **Regras relacionadas:** BR-01, BR-02.
 
-### UC-06 a UC-10 — Configuração
+### UC-16 — Verificar convite
 
 - **Ator:** ACT-01
-- **Objetivo:** consultar e configurar janela, API Key, webhook e Z-API.
+- **Objetivo:** confirmar que o convite é utilizável e obter o e-mail autorizado antes do cadastro.
+- **Pré-condições:** token do convite.
+- **Fluxo principal:** validar token, expiração e situação; retornar o e-mail.
+- **Fluxo alternativo essencial:** convite inexistente, usado ou expirado é rejeitado.
+- **Pós-condições:** nenhuma alteração; o convite não é consumido.
+- **Regras relacionadas:** BR-01.
+
+### UC-07 a UC-10 — Configuração
+
+- **Ator:** ACT-01
+- **Objetivo:** configurar janela, API Key, webhook e Z-API; a consulta é feita por UC-05.
 - **Pré-condições:** sessão válida e dados exigidos.
 - **Fluxo principal:** validar e substituir a configuração correspondente.
 - **Fluxos alternativos essenciais:** janela, fuso, HTTPS ou credenciais inválidas impedem a alteração.

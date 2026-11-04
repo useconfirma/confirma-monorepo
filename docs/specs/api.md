@@ -3,33 +3,43 @@ version: beta
 name: 'confirma-api'
 description: 'Contratos HTTP do painel, da API pública e dos webhooks do Confirma Beta'
 api:
-    base-path: '/api/v1'
+    base-path: '/v1'
     authentication: 'Cookie de sessão no painel; Bearer API Key na API pública; token secreto no caminho do callback Z-API.'
-    error-format: 'JSON { error: { code, message, details? } }'
+    error-format: 'JSON { error: { code, message } }'
 endpoints:
     - {
           id: API-01,
           use-case: UC-01,
           method: POST,
-          path: '/api/v1/invitations',
+          path: '/v1/invitations',
           authorization: 'Público',
           request: { params: [], query: [], body: ['email'] },
           response: { status: 202, body: ['accepted'] },
           errors: ['400: corpo inválido'],
       }
     - {
+          id: API-14,
+          use-case: UC-16,
+          method: GET,
+          path: '/v1/invitations/{invitationToken}',
+          authorization: 'Público; token secreto no caminho',
+          request: { params: ['invitationToken'], query: [], body: [] },
+          response: { status: 200, body: ['email'] },
+          errors: ['410: convite inválido, usado ou expirado'],
+      }
+    - {
           id: API-02,
           use-case: UC-02,
           method: POST,
-          path: '/api/v1/accounts',
+          path: '/v1/accounts',
           authorization: 'Convite válido',
           request:
               {
                   params: [],
                   query: [],
-                  body: ['invitationToken', 'email', 'password'],
+                  body: ['invitationToken', 'password', 'accountName'],
               },
-          response: { status: 201, body: ['user'] },
+          response: { status: 201, body: ['user', 'account'] },
           errors:
               [
                   '409: e-mail existente',
@@ -41,7 +51,7 @@ endpoints:
           id: API-03,
           use-case: UC-03,
           method: POST,
-          path: '/api/v1/sessions',
+          path: '/v1/sessions',
           authorization: 'Público',
           request: { params: [], query: [], body: ['email', 'password'] },
           response: { status: 204, body: [] },
@@ -51,7 +61,7 @@ endpoints:
           id: API-04,
           use-case: UC-04,
           method: DELETE,
-          path: '/api/v1/sessions/current',
+          path: '/v1/sessions/current',
           authorization: 'Cookie de sessão válido',
           request: { params: [], query: [], body: [] },
           response: { status: 204, body: [] },
@@ -61,27 +71,27 @@ endpoints:
           id: API-05,
           use-case: UC-05,
           method: GET,
-          path: '/api/v1/users/me',
+          path: '/v1/account',
           authorization: 'Cookie de sessão',
           request: { params: [], query: [], body: [] },
-          response: { status: 200, body: ['user'] },
+          response: { status: 200, body: ['account'] },
           errors: ['401: sessão ausente ou inválida'],
       }
     - {
           id: API-06,
           use-case: UC-06,
           method: GET,
-          path: '/api/v1/integration',
+          path: '/v1/users/me',
           authorization: 'Cookie de sessão',
           request: { params: [], query: [], body: [] },
-          response: { status: 200, body: ['integration'] },
-          errors: ['401: sessão inválida'],
+          response: { status: 200, body: ['user'] },
+          errors: ['401: sessão ausente ou inválida'],
       }
     - {
           id: API-07,
           use-case: UC-07,
           method: PUT,
-          path: '/api/v1/integration/send-window',
+          path: '/v1/integration/send-window',
           authorization: 'Cookie de sessão válido',
           request:
               { params: [], query: [], body: ['start', 'end', 'timeZone'] },
@@ -92,7 +102,7 @@ endpoints:
           id: API-08,
           use-case: UC-08,
           method: POST,
-          path: '/api/v1/integration/api-key',
+          path: '/v1/integration/api-key',
           authorization: 'Cookie de sessão válido',
           request: { params: [], query: [], body: [] },
           response: { status: 201, body: ['apiKey', 'createdAt'] },
@@ -102,17 +112,17 @@ endpoints:
           id: API-09,
           use-case: UC-09,
           method: PUT,
-          path: '/api/v1/integration/webhook',
+          path: '/v1/integration/webhook',
           authorization: 'Cookie de sessão válido',
           request: { params: [], query: [], body: ['url', 'secret'] },
-          response: { status: 200, body: ['url', 'secretConfigured'] },
+          response: { status: 200, body: ['url'] },
           errors: ['422: URL ou segredo inválido'],
       }
     - {
           id: API-10,
           use-case: UC-10,
           method: PUT,
-          path: '/api/v1/integration/z-api',
+          path: '/v1/integration/z-api',
           authorization: 'Cookie de sessão válido',
           request:
               {
@@ -120,23 +130,14 @@ endpoints:
                   query: [],
                   body: ['instanceId', 'instanceToken', 'clientToken'],
               },
-          response:
-              {
-                  status: 200,
-                  body:
-                      [
-                          'instanceId',
-                          'credentialsConfigured',
-                          'callbackConfigured',
-                      ],
-              },
+          response: { status: 200, body: ['instanceId'] },
           errors: ['422: credenciais rejeitadas ou callback não configurado'],
       }
     - {
           id: API-11,
           use-case: UC-11,
           method: POST,
-          path: '/api/v1/appointments',
+          path: '/v1/appointments',
           authorization: 'Bearer API Key e Idempotency-Key',
           request:
               {
@@ -165,7 +166,7 @@ endpoints:
           id: API-12,
           use-case: UC-13,
           method: POST,
-          path: '/api/v1/providers/z-api/callbacks/{callbackToken}',
+          path: '/v1/providers/z-api/callbacks/{callbackToken}',
           authorization: 'Identificador secreto associado à integração',
           request:
               { params: ['callbackToken'], query: [], body: ['payload Z-API'] },
@@ -211,19 +212,19 @@ endpoints:
 
 ## Convenções
 
-- **Prefixo:** `/api/v1` para endpoints do Confirma. A entrega de webhook usa a URL HTTPS configurada.
+- **Prefixo:** `/v1` para endpoints do Confirma. A entrega de webhook usa a URL HTTPS configurada.
 - **Mídia:** requisições e respostas com corpo usam `application/json; charset=utf-8`.
 - **Datas:** ISO 8601; instantes incluem deslocamento UTC. Eventos emitidos pelo Confirma usam UTC.
 - **Autenticação do painel:** JWT com duração de 8 horas no cookie HttpOnly `confirma_session`, `SameSite=Lax` e `Secure` em produção. O navegador envia o cookie nas operações do painel. Não existe refresh token.
 - **API pública:** `Authorization: Bearer <api-key>`. A API Key identifica a conta e nunca é aceita por query string.
-- **Erro:** `{ "error": { "code": "machine_readable_code", "message": "mensagem objetiva", "details": [{ "field": "campo", "reason": "motivo" }] } }`. `details` é opcional.
+- **Erro:** `{ "error": { "code": "machine_readable_code", "message": "mensagem objetiva" } }`. Não há outros campos.
 - **Segredos:** API Key é exibida somente ao gerar; senha, segredo de webhook e tokens Z-API nunca são retornados.
 
 ## Endpoints
 
 ### API-01 — Solicitar convite
 
-`POST /api/v1/invitations`
+`POST /v1/invitations`
 
 - **Caso de uso:** UC-01; requisito RF-01.
 - **Acesso:** público.
@@ -231,19 +232,29 @@ endpoints:
 - **Resposta:** `202` com `{ "accepted": true }`; não revela se o e-mail já possui convite ou conta.
 - **Comportamento:** envia automaticamente convite válido por 72 horas.
 
+### API-14 — Verificar convite
+
+`GET /v1/invitations/{invitationToken}`
+
+- **Caso de uso:** UC-16; requisito RF-01.
+- **Acesso:** público; o token secreto no caminho é a credencial.
+- **Resposta:** `200` com `{ "email": "dev@example.com" }`, o e-mail autorizado pelo convite.
+- **Erro:** `410 invitation_unavailable` para convite inexistente, usado ou expirado.
+- **Comportamento:** somente leitura; não consome o convite. O token não deve ser registrado em logs.
+
 ### API-02 — Aceitar convite e criar conta
 
-`POST /api/v1/accounts`
+`POST /v1/accounts`
 
 - **Caso de uso:** UC-02; requisito RF-01.
-- **Entrada:** `invitationToken`, `email` e `password`, todos strings obrigatórios.
-- **Resposta:** `201` com `{ "user": { "id": "...", "email": "..." } }`.
+- **Entrada:** `invitationToken`, `password` e `accountName`, todos strings obrigatórios. O e-mail é o do convite.
+- **Resposta:** `201` com `{ "user": { "id": "...", "email": "..." }, "account": { "id": "...", "name": "..." } }`.
 - **Erros:** `409 email_already_registered`; `410 invitation_unavailable`; `422 validation_failed`.
-- **Comportamento:** token e e-mail devem corresponder; sucesso consome o convite atomicamente.
+- **Comportamento:** o e-mail do usuário é o do convite; sucesso cria o usuário e sua account e consome o convite atomicamente. No Beta, cada usuário possui uma única account, definida neste momento.
 
 ### API-03 — Login
 
-`POST /api/v1/sessions`
+`POST /v1/sessions`
 
 - **Caso de uso:** UC-03; requisito RF-01.
 - **Entrada:** `email` e `password`.
@@ -252,53 +263,70 @@ endpoints:
 
 ### API-04 — Logout
 
-`DELETE /api/v1/sessions/current`
+`DELETE /v1/sessions/current`
 
 - **Caso de uso:** UC-04; requisito RF-01.
 - **Acesso:** cookie de sessão válido.
 - **Resposta:** `204` e expiração do cookie.
 - **Comportamento:** o JWT apresentado deixa de ser enviado pelo navegador; tokens copiados permanecem válidos até vencerem.
 
-### API-05 — Consultar usuário atual
+### API-05 — Consultar account
 
-`GET /api/v1/users/me`
+`GET /v1/account`
 
-- **Caso de uso:** UC-05; requisito RF-01.
-- **Resposta:** `200` com `{ "user": { "id": "...", "email": "..." } }`.
-- **Erro:** `401 unauthenticated`.
-
-### API-06 — Consultar integração
-
-`GET /api/v1/integration`
-
-- **Caso de uso:** UC-06; requisito RF-02.
-- **Resposta:** `200` com:
+- **Caso de uso:** UC-05; requisitos RF-01 e RF-02.
+- **Resposta:** `200` com a account completa, em uma única requisição:
 
 ```json
 {
-    "sendWindow": {
-        "start": "08:00",
-        "end": "18:00",
-        "timeZone": "America/Sao_Paulo"
-    },
-    "apiKeyConfigured": true,
-    "webhook": {
-        "url": "https://example.com/confirma",
-        "secretConfigured": true
-    },
-    "zApi": {
-        "instanceId": "instance-id",
-        "credentialsConfigured": true,
-        "callbackConfigured": true
+    "account": {
+        "id": "acc_123",
+        "name": "Clínica Teste",
+        "sendWindow": {
+            "configured": true,
+            "start": "08:00",
+            "end": "18:00",
+            "timeZone": "America/Sao_Paulo",
+            "updatedAt": "2026-11-04T12:00:00Z"
+        },
+        "apiKey": {
+            "configured": true,
+            "createdAt": "2026-11-04T12:05:00Z"
+        },
+        "webhook": {
+            "configured": true,
+            "url": "https://example.com/confirma",
+            "updatedAt": "2026-11-04T12:10:00Z"
+        },
+        "zApi": {
+            "configured": true,
+            "instanceId": "instance-id",
+            "updatedAt": "2026-11-04T12:15:00Z"
+        }
     }
 }
 ```
 
-- **Comportamento:** propriedades ainda não configuradas são `null` ou `false`; segredos são omitidos.
+Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` e os demais campos `null`:
+
+```json
+"webhook": { "configured": false, "url": null, "updatedAt": null }
+```
+
+- **Erro:** `401 unauthenticated`.
+- **Comportamento:** `sendWindow`, `apiKey`, `webhook` e `zApi` estão sempre presentes e cada um traz `configured`, para que o cliente não precise testar `null`. `updatedAt` (`createdAt` na API Key) é o instante da última gravação. Segredos nunca são retornados. É a única leitura da configuração: não há consultas individuais por recurso.
+
+### API-06 — Consultar usuário atual
+
+`GET /v1/users/me`
+
+- **Caso de uso:** UC-06; requisito RF-01.
+- **Resposta:** `200` com `{ "user": { "id": "...", "email": "..." } }`.
+- **Erro:** `401 unauthenticated`.
 
 ### API-07 — Configurar janela de envio
 
-`PUT /api/v1/integration/send-window`
+`PUT /v1/integration/send-window`
 
 - **Caso de uso:** UC-07; requisito RF-02.
 - **Entrada:** `{ "start": "08:00", "end": "18:00", "timeZone": "America/Sao_Paulo" }`.
@@ -308,7 +336,7 @@ endpoints:
 
 ### API-08 — Gerar API Key
 
-`POST /api/v1/integration/api-key`
+`POST /v1/integration/api-key`
 
 - **Caso de uso:** UC-08; requisito RF-03.
 - **Resposta:** `201` com `{ "apiKey": "<secret>", "createdAt": "..." }`.
@@ -316,26 +344,26 @@ endpoints:
 
 ### API-09 — Configurar webhook de saída
 
-`PUT /api/v1/integration/webhook`
+`PUT /v1/integration/webhook`
 
 - **Caso de uso:** UC-09; requisitos RF-02 e RF-09.
 - **Entrada:** `{ "url": "https://example.com/confirma", "secret": "<secret>" }`.
-- **Resposta:** `200` com `{ "url": "...", "secretConfigured": true }`.
+- **Resposta:** `200` com `{ "url": "..." }`; o segredo não é retornado.
 - **Erro:** `422 invalid_webhook` para URL não HTTPS ou segredo ausente.
 
 ### API-10 — Configurar Z-API
 
-`PUT /api/v1/integration/z-api`
+`PUT /v1/integration/z-api`
 
 - **Caso de uso:** UC-10; requisitos RF-02 e RF-07.
 - **Entrada:** `instanceId`, `instanceToken` e `clientToken`, strings obrigatórias.
-- **Resposta:** `200` com identificador não secreto e indicadores de configuração.
+- **Resposta:** `200` com `{ "instanceId": "..." }`; credenciais não são retornadas.
 - **Erro:** `422 zapi_configuration_failed` quando as credenciais não forem aceitas ou não for possível registrar o callback.
 - **Comportamento:** o Confirma registra na instância uma URL HTTPS no formato de API-12. Conforme a documentação oficial vigente, a Z-API usa `PUT /instances/{id}/token/{token}/update-every-webhooks`, corpo `value` e cabeçalho `Client-Token`; as credenciais permanecem somente no backend.
 
 ### API-11 — Criar agendamento
 
-`POST /api/v1/appointments`
+`POST /v1/appointments`
 
 - **Caso de uso:** UC-11; requisitos RF-04 e RF-05.
 - **Cabeçalhos:** `Authorization`, `Idempotency-Key` obrigatório e `Content-Type`.
@@ -361,7 +389,7 @@ endpoints:
 
 ### API-12 — Receber callback da Z-API
 
-`POST /api/v1/providers/z-api/callbacks/{callbackToken}`
+`POST /v1/providers/z-api/callbacks/{callbackToken}`
 
 - **Caso de uso:** UC-13; requisito RF-07.
 - **Acesso:** `callbackToken` aleatório e exclusivo; o Confirma também exige que `instanceId` e dados da mensagem pertençam à integração. Não há presunção de assinatura criptográfica da Z-API.
