@@ -59,7 +59,8 @@ Se uma regra essencial não estiver definida, **pergunte antes de inventá-la**.
 
 ## 6. Verificação e entrega
 
-- Execute testes, lint, typecheck ou build **pertinentes à alteração**, quando viável.
+- Após implementar cada feature, execute `pnpm check` na raiz do monorepo. Esse comando reúne lint, typecheck, testes e verificação de formatação; não o substitua apenas por verificações parciais.
+- Se a verificação falhar, investigue e corrija os erros relacionados à alteração e execute `pnpm check` novamente. Não conclua enquanto essas falhas persistirem; se houver falhas preexistentes ou fora do escopo que não possam ser corrigidas com segurança, informe-as claramente.
 - Não afirme que uma verificação passou se ela não foi executada.
 - Ao concluir, informe brevemente: o que mudou, arquivos afetados, verificações realizadas e eventuais pendências.
 - Sugira uma mensagem de commit em **Conventional Commits** para alterações de implementação.
