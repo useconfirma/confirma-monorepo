@@ -1,11 +1,7 @@
 import type { Request, Response } from 'express';
 import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/openapi.js';
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
-import { validateData } from '../../../../../shared/infrastructure/validation/zod/data-validation.js';
-import {
-  getAccountRequestSchema,
-  getAccountResponseSchema,
-} from '../../schemas/zod/get-account.schema.js';
+import { getAccountResponseSchema } from '../../schemas/zod/get-account.schema.js';
 
 type GetAccountResponseDto = {
   account: {
@@ -42,10 +38,10 @@ openApiRegistry.registerPath({
 });
 
 export const getAccountController = async (req: Request, res: Response) => {
-  const cookies = validateData(req.cookies, getAccountRequestSchema);
+  void req.userId;
+  void req.accountId;
   // const useCase = new GetAccountUseCase(/* dependências injetadas */);
-  // const result = await useCase.execute({ userId: cookies.confirma_session });
-  void cookies;
+  // const result = await useCase.execute({ userId: req.userId! });
 
   const response: GetAccountResponseDto = {
     account: {

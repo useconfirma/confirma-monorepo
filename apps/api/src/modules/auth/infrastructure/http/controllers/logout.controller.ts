@@ -1,8 +1,6 @@
 import type { Request, Response } from 'express';
 import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/openapi.js';
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
-import { validateData } from '../../../../../shared/infrastructure/validation/zod/data-validation.js';
-import { logoutRequestSchema } from '../../schemas/zod/logout.schema.js';
 
 type LogoutResponseDto = Record<string, never>;
 
@@ -21,11 +19,9 @@ openApiRegistry.registerPath({
 });
 
 export const logoutController = async (req: Request, res: Response) => {
-  const cookies = validateData(req.cookies, logoutRequestSchema);
-
+  void req.userId;
   // const useCase = new LogoutUseCase();
-  // await useCase.execute({ sessionToken: cookies.confirma_session });
-  void cookies;
+  // await useCase.execute(/* sessão já validada pelo middleware */);
 
   const response: LogoutResponseDto = {};
   return res.status(204).json(response);

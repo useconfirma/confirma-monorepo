@@ -1,11 +1,7 @@
 import type { Request, Response } from 'express';
 import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/openapi.js';
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
-import { validateData } from '../../../../../shared/infrastructure/validation/zod/data-validation.js';
-import {
-  generateApiKeyRequestSchema,
-  generateApiKeyResponseSchema,
-} from '../../schemas/zod/generate-api-key.schema.js';
+import { generateApiKeyResponseSchema } from '../../schemas/zod/generate-api-key.schema.js';
 
 openApiRegistry.registerPath({
   method: 'post',
@@ -25,10 +21,10 @@ openApiRegistry.registerPath({
 });
 
 export const generateApiKeyController = async (req: Request, res: Response) => {
-  const cookies = validateData(req.cookies, generateApiKeyRequestSchema);
+  void req.userId;
+  void req.accountId;
   // const useCase = new GenerateApiKeyUseCase(/* dependências injetadas */);
-  // const result = await useCase.execute({ userId: cookies.confirma_session });
-  void cookies;
+  // const result = await useCase.execute({ userId: req.userId! });
 
   return res.status(201).json({
     apiKey: 'api_key_mock',

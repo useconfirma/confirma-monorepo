@@ -2,8 +2,6 @@ import { z } from 'zod';
 
 const isoDateSchema = z.iso.datetime();
 
-export const getAccountRequestSchema = z.object({ confirma_session: z.string().min(1) });
-
 export const getAccountResponseSchema = z.object({
   account: z.object({
     id: z.string(),

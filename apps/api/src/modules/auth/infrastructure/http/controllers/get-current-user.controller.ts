@@ -1,11 +1,7 @@
 import type { Request, Response } from 'express';
 import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/openapi.js';
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
-import { validateData } from '../../../../../shared/infrastructure/validation/zod/data-validation.js';
-import {
-  getCurrentUserRequestSchema,
-  getCurrentUserResponseSchema,
-} from '../../schemas/zod/get-current-user.schema.js';
+import { getCurrentUserResponseSchema } from '../../schemas/zod/get-current-user.schema.js';
 
 type GetCurrentUserResponseDto = {
   user: { id: string; email: string };
@@ -29,11 +25,9 @@ openApiRegistry.registerPath({
 });
 
 export const getCurrentUserController = async (req: Request, res: Response) => {
-  const cookies = validateData(req.cookies, getCurrentUserRequestSchema);
-
+  void req.userId;
   // const useCase = new GetCurrentUserUseCase(/* dependência mockada */);
-  // const result = await useCase.execute({ userId: cookies.confirma_session });
-  void cookies;
+  // const result = await useCase.execute({ userId: req.userId! });
 
   const response: GetCurrentUserResponseDto = {
     user: { id: 'user_mock', email: 'dev@example.com' },

@@ -3,7 +3,6 @@ import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
 import { validateData } from '../../../../../shared/infrastructure/validation/zod/data-validation.js';
 import {
-  configureZApiRequestSchema,
   configureZApiBodySchema,
   configureZApiResponseSchema,
 } from '../../schemas/zod/configure-z-api.schema.js';
@@ -27,11 +26,11 @@ openApiRegistry.registerPath({
 });
 
 export const configureZApiController = async (req: Request, res: Response) => {
-  const cookies = validateData(req.cookies, configureZApiRequestSchema);
   const body = validateData(req.body, configureZApiBodySchema);
+  void req.userId;
+  void req.accountId;
   // const useCase = new ConfigureZApiUseCase(/* dependências injetadas */);
-  // const result = await useCase.execute({ ...body, userId: cookies.confirma_session });
-  void cookies;
+  // const result = await useCase.execute({ ...body, userId: req.userId! });
   void body;
 
   return res.status(200).json({
