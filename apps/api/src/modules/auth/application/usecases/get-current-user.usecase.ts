@@ -1,5 +1,6 @@
 import type { UserRepository } from '../../domain/repositories/user.repository.js';
 import type { User } from '../../domain/models/user.model.js';
+import { AppError } from '../../../../shared/domain/errors/app-error.js';
 
 export type GetCurrentUserUseCaseInput = {
   userId: string;
@@ -11,7 +12,12 @@ export class GetCurrentUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(input: GetCurrentUserUseCaseInput): Promise<GetCurrentUserUseCaseOutput> {
-    void input;
-    throw new Error('Not implemented');
+    const user = await this.userRepository.findById(input.userId);
+
+    if (!user) {
+      throw new AppError('UNAUTHENTICATED', 'Sessão ausente ou inválida.', 401);
+    }
+
+    return user;
   }
 }
