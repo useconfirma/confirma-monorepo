@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.astro/
+*.tsbuildinfo
+
+# Tooling caches
+.turbo/
+.eslintcache
+.cache/
+coverage/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
