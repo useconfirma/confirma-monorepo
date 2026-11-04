@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import { buildOpenApiDocument } from './docs/openapi.js';
 import { errorMiddleware } from './middleware/errors.middleware.js';
+import { routes } from './routes.js';
 
 export const app = express();
 
@@ -20,5 +21,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 app.use((_req, res) => {
   res.status(404).json({ error: { code: 'not_found', message: 'Recurso não encontrado.' } });
 });
+
+app.use(routes);
 
 app.use(errorMiddleware);
