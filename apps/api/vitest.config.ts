@@ -1,9 +1,9 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  test: {
-    include: ['src/**/*.spec.ts'],
-    mockReset: true,
-    restoreMocks: true,
-  },
+    test: {
+        include: ['src/**/*.spec.ts'],
+        mockReset: true,
+        restoreMocks: true,
+    },
 });

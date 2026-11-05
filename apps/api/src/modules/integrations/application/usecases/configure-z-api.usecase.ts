@@ -3,48 +3,59 @@ import type { ZApiConfiguration } from '../../../accounts/domain/models/account.
 import type { SecretProtector } from '../../domain/providers/secret-protector.js';
 import type { ZApiProvider } from '../../domain/providers/z-api.provider.js';
 import type {
-  IntegrationRepository,
-  UpdateZApiInput,
+    IntegrationRepository,
+    UpdateZApiInput,
 } from '../../domain/repositories/integration.repository.js';
 
 export type ConfigureZApiUseCaseInput = Omit<
-  UpdateZApiInput,
-  'userId' | 'callbackTokenHash' | 'updatedAt'
+    UpdateZApiInput,
+    'userId' | 'callbackTokenHash' | 'updatedAt'
 > & {
-  userId: string;
+    userId: string;
 };
 
 export type ConfigureZApiUseCaseOutput = ZApiConfiguration;
 
 export class ConfigureZApiUseCase {
-  constructor(
-    private readonly integrationRepository: IntegrationRepository,
-    private readonly secretProtector: SecretProtector,
-    private readonly zApiProvider: ZApiProvider,
-    private readonly publicApiUrl: string,
-  ) {}
+    constructor(
+        private readonly integrationRepository: IntegrationRepository,
+        private readonly secretProtector: SecretProtector,
+        private readonly zApiProvider: ZApiProvider,
+        private readonly publicApiUrl: string,
+    ) {}
 
-  async execute(input: ConfigureZApiUseCaseInput): Promise<ConfigureZApiUseCaseOutput> {
-    if (!input.instanceId || !input.instanceToken || !input.clientToken) {
-      throw new AppError('ZAPI_CONFIGURATION_FAILED', 'Configuração da Z-API inválida.', 422);
+    async execute(
+        input: ConfigureZApiUseCaseInput,
+    ): Promise<ConfigureZApiUseCaseOutput> {
+        if (!input.instanceId || !input.instanceToken || !input.clientToken) {
+            throw new AppError(
+                'ZAPI_CONFIGURATION_FAILED',
+                'Configuração da Z-API inválida.',
+                422,
+            );
+        }
+
+        const { userId, ...credentials } = input;
+        const callbackToken = this.secretProtector.protect(
+            `${userId}:${Date.now()}`,
+        );
+        const callbackUrl = new URL(
+            `/v1/providers/z-api/callbacks/${encodeURIComponent(callbackToken)}`,
+            this.publicApiUrl,
+        ).toString();
+
+        await this.zApiProvider.registerCallback({
+            ...credentials,
+            callbackUrl,
+        });
+
+        return this.integrationRepository.updateZApi({
+            ...credentials,
+            userId,
+            instanceToken: this.secretProtector.protect(input.instanceToken),
+            clientToken: this.secretProtector.protect(input.clientToken),
+            callbackTokenHash: this.secretProtector.protect(callbackToken),
+            updatedAt: new Date(),
+        });
     }
-
-    const { userId, ...credentials } = input;
-    const callbackToken = this.secretProtector.protect(`${userId}:${Date.now()}`);
-    const callbackUrl = new URL(
-      `/v1/providers/z-api/callbacks/${encodeURIComponent(callbackToken)}`,
-      this.publicApiUrl,
-    ).toString();
-
-    await this.zApiProvider.registerCallback({ ...credentials, callbackUrl });
-
-    return this.integrationRepository.updateZApi({
-      ...credentials,
-      userId,
-      instanceToken: this.secretProtector.protect(input.instanceToken),
-      clientToken: this.secretProtector.protect(input.clientToken),
-      callbackTokenHash: this.secretProtector.protect(callbackToken),
-      updatedAt: new Date(),
-    });
-  }
 }

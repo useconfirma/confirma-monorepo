@@ -7,27 +7,31 @@ import { loginRequestSchema } from '../../schemas/zod/login.schema.js';
 type LoginResponseDto = Record<string, never>;
 
 openApiRegistry.registerPath({
-  method: 'post',
-  path: '/sessions',
-  tags: ['Auth'],
-  summary: 'Entrar',
-  request: { body: { content: { 'application/json': { schema: loginRequestSchema } } } },
-  responses: {
-    204: { description: 'Sessão criada' },
-    401: {
-      description: 'Credenciais inválidas',
-      content: { 'application/json': { schema: errorResponseSchema } },
+    method: 'post',
+    path: '/sessions',
+    tags: ['Auth'],
+    summary: 'Entrar',
+    request: {
+        body: {
+            content: { 'application/json': { schema: loginRequestSchema } },
+        },
     },
-  },
+    responses: {
+        204: { description: 'Sessão criada' },
+        401: {
+            description: 'Credenciais inválidas',
+            content: { 'application/json': { schema: errorResponseSchema } },
+        },
+    },
 });
 
 export const loginController = async (req: Request, res: Response) => {
-  const body = validateData(req.body, loginRequestSchema);
+    const body = validateData(req.body, loginRequestSchema);
 
-  // const useCase = new LoginUseCase(/* dependência mockada */);
-  // const result = await useCase.execute(body);
-  void body;
+    // const useCase = new LoginUseCase(/* dependência mockada */);
+    // const result = await useCase.execute(body);
+    void body;
 
-  const response: LoginResponseDto = {};
-  return res.status(204).json(response);
+    const response: LoginResponseDto = {};
+    return res.status(204).json(response);
 };

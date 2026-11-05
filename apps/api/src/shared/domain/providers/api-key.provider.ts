@@ -1,3 +1,3 @@
 export interface ApiKeyProvider {
-  generate(): string;
+    generate(): string;
 }

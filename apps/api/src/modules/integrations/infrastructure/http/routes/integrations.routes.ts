@@ -10,22 +10,25 @@ import { generateApiKeyController } from '../controllers/generate-api-key.contro
 export const integrationsRoutes = Router();
 
 integrationsRoutes.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 120,
-    standardHeaders: 'draft-8',
-    legacyHeaders: false,
-    message: {
-      code: 'RATE_LIMIT_EXCEEDED',
-      message: 'Muitas solicitações. Tente novamente mais tarde.',
-    },
-  }),
+    rateLimit({
+        windowMs: 15 * 60 * 1000,
+        limit: 120,
+        standardHeaders: 'draft-8',
+        legacyHeaders: false,
+        message: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: 'Muitas solicitações. Tente novamente mais tarde.',
+        },
+    }),
 );
 
 integrationsRoutes.use(authenticate);
 integrationsRoutes.use(authorizeAccount);
 
-integrationsRoutes.put('/integration/send-window', configureSendWindowController);
+integrationsRoutes.put(
+    '/integration/send-window',
+    configureSendWindowController,
+);
 integrationsRoutes.post('/integration/api-key', generateApiKeyController);
 integrationsRoutes.put('/integration/webhook', configureWebhookController);
 integrationsRoutes.put('/integration/z-api', configureZApiController);

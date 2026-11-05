@@ -1,12 +1,12 @@
 export type JwtPayload = {
-  sub: string;
+    sub: string;
 };
 
 export type JwtSignOptions = {
-  expiresIn: number;
+    expiresIn: number;
 };
 
 export interface JwtProvider {
-  sign(payload: JwtPayload, options: JwtSignOptions): string;
-  verify(token: string): JwtPayload | null;
+    sign(payload: JwtPayload, options: JwtSignOptions): string;
+    verify(token: string): JwtPayload | null;
 }

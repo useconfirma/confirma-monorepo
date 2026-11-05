@@ -11,16 +11,16 @@ import { verifyInvitationController } from '../controllers/verify-invitation.con
 export const authRoutes = Router();
 
 authRoutes.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 20,
-    standardHeaders: 'draft-8',
-    legacyHeaders: false,
-    message: {
-      code: 'RATE_LIMIT_EXCEEDED',
-      message: 'Muitas solicitações. Tente novamente mais tarde.',
-    },
-  }),
+    rateLimit({
+        windowMs: 15 * 60 * 1000,
+        limit: 20,
+        standardHeaders: 'draft-8',
+        legacyHeaders: false,
+        message: {
+            code: 'RATE_LIMIT_EXCEEDED',
+            message: 'Muitas solicitações. Tente novamente mais tarde.',
+        },
+    }),
 );
 
 authRoutes.post('/invitations', requestInvitationController);

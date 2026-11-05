@@ -9,3 +9,7 @@ coverage
 *.tmp
 pnpm-lock.yaml
 docs
+AGENTS.md
+
+# TanStack Router
+routeTree.gen.ts

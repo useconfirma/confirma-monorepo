@@ -1,3 +1,3 @@
 export interface SecretProtector {
-  protect(value: string): string;
+    protect(value: string): string;
 }

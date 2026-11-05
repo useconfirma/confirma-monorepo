@@ -3,21 +3,27 @@ import type { User } from '../../domain/models/user.model.js';
 import { AppError } from '../../../../shared/domain/errors/app-error.js';
 
 export type GetCurrentUserUseCaseInput = {
-  userId: string;
+    userId: string;
 };
 
 export type GetCurrentUserUseCaseOutput = User;
 
 export class GetCurrentUserUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+    constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(input: GetCurrentUserUseCaseInput): Promise<GetCurrentUserUseCaseOutput> {
-    const user = await this.userRepository.findById(input.userId);
+    async execute(
+        input: GetCurrentUserUseCaseInput,
+    ): Promise<GetCurrentUserUseCaseOutput> {
+        const user = await this.userRepository.findById(input.userId);
 
-    if (!user) {
-      throw new AppError('UNAUTHENTICATED', 'Sessão ausente ou inválida.', 401);
+        if (!user) {
+            throw new AppError(
+                'UNAUTHENTICATED',
+                'Sessão ausente ou inválida.',
+                401,
+            );
+        }
+
+        return user;
     }
-
-    return user;
-  }
 }

@@ -3,28 +3,38 @@ import { AppError } from '../../../../shared/domain/errors/app-error.js';
 import type { CryptoProvider } from '../../../../shared/domain/providers/crypto-provider.js';
 
 export type VerifyInvitationUseCaseInput = {
-  invitationToken: string;
+    invitationToken: string;
 };
 
 export type VerifyInvitationUseCaseOutput = {
-  email: string;
+    email: string;
 };
 
 export class VerifyInvitationUseCase {
-  constructor(
-    private readonly invitationRepository: InvitationRepository,
-    private readonly cryptoProvider: CryptoProvider,
-  ) {}
+    constructor(
+        private readonly invitationRepository: InvitationRepository,
+        private readonly cryptoProvider: CryptoProvider,
+    ) {}
 
-  async execute(input: VerifyInvitationUseCaseInput): Promise<VerifyInvitationUseCaseOutput> {
-    const invitation = await this.invitationRepository.findByTokenHash(
-      this.cryptoProvider.hashToken(input.invitationToken),
-    );
+    async execute(
+        input: VerifyInvitationUseCaseInput,
+    ): Promise<VerifyInvitationUseCaseOutput> {
+        const invitation = await this.invitationRepository.findByTokenHash(
+            this.cryptoProvider.hashToken(input.invitationToken),
+        );
 
-    if (!invitation || invitation.usedAt || invitation.expiresAt <= new Date()) {
-      throw new AppError('INVITATION_UNAVAILABLE', 'Convite indisponível.', 410);
+        if (
+            !invitation ||
+            invitation.usedAt ||
+            invitation.expiresAt <= new Date()
+        ) {
+            throw new AppError(
+                'INVITATION_UNAVAILABLE',
+                'Convite indisponível.',
+                410,
+            );
+        }
+
+        return { email: invitation.email };
     }
-
-    return { email: invitation.email };
-  }
 }

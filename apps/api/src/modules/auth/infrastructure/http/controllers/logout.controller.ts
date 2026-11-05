@@ -5,24 +5,24 @@ import { errorResponseSchema } from '../../../../../shared/infrastructure/schema
 type LogoutResponseDto = Record<string, never>;
 
 openApiRegistry.registerPath({
-  method: 'delete',
-  path: '/sessions/current',
-  tags: ['Auth'],
-  summary: 'Sair',
-  responses: {
-    204: { description: 'Sessão encerrada' },
-    401: {
-      description: 'Sessão ausente ou inválida',
-      content: { 'application/json': { schema: errorResponseSchema } },
+    method: 'delete',
+    path: '/sessions/current',
+    tags: ['Auth'],
+    summary: 'Sair',
+    responses: {
+        204: { description: 'Sessão encerrada' },
+        401: {
+            description: 'Sessão ausente ou inválida',
+            content: { 'application/json': { schema: errorResponseSchema } },
+        },
     },
-  },
 });
 
 export const logoutController = async (req: Request, res: Response) => {
-  void req.userId;
-  // const useCase = new LogoutUseCase();
-  // await useCase.execute(/* sessão já validada pelo middleware */);
+    void req.userId;
+    // const useCase = new LogoutUseCase();
+    // await useCase.execute(/* sessão já validada pelo middleware */);
 
-  const response: LogoutResponseDto = {};
-  return res.status(204).json(response);
+    const response: LogoutResponseDto = {};
+    return res.status(204).json(response);
 };

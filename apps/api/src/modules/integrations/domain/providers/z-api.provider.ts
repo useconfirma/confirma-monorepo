@@ -1,10 +1,10 @@
 export type RegisterZApiCallbackInput = {
-  instanceId: string;
-  instanceToken: string;
-  clientToken: string;
-  callbackUrl: string;
+    instanceId: string;
+    instanceToken: string;
+    clientToken: string;
+    callbackUrl: string;
 };
 
 export interface ZApiProvider {
-  registerCallback(input: RegisterZApiCallbackInput): Promise<void>;
+    registerCallback(input: RegisterZApiCallbackInput): Promise<void>;
 }
