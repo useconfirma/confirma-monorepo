@@ -20,6 +20,8 @@
         "axios": "^1.21.0",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
+        "tailwind-merge": "^3.7.0",
+        "tailwind-variants": "^4.0.1",
         "tailwindcss": "^4.3.4"
     },
     "devDependencies": {

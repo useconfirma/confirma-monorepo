@@ -1,1 +1,284 @@
 @import 'tailwindcss';
+
+@theme {
+    /* Cores: docs/product/assets/tokens.json */
+    --color-*: initial;
+
+    /* palette.marca */
+    --color-verde: #0a7f50;
+    --color-menta: #3ddc97;
+    --color-noite: #0b1f1a;
+    --color-nevoa: #f3f7f5;
+
+    /* palette.apoio */
+    --color-branco: #ffffff;
+    --color-verde-escuro: #13302a;
+    --color-verde-claro: #e6f5ee;
+    --color-cinza-verde-escuro: #4a5e57;
+    --color-cinza-verde-medio: #9db5ac;
+    --color-cinza-verde-claro: #d5e1dc;
+    --color-verde-profundo: #24443b;
+    --color-cinza-verde: #738a82;
+    --color-verde-acinzentado: #5e8579;
+
+    /* palette.acentos */
+    --color-ambar: #f5a524;
+    --color-marrom-ambar: #3a2400;
+    --color-vermelho: #c8262c;
+    --color-coral: #f26b6f;
+
+    /* Tipografia */
+    --font-*: initial;
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:
+        'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* Pesos carregados em index.html */
+    --font-weight-*: initial;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    --text-*: initial;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: 1rem;
+    --text-sm: 0.875rem;
+    --text-sm--line-height: 1.25rem;
+    --text-base: 1rem;
+    --text-base--line-height: 1.5rem;
+    --text-lg: 1.125rem;
+    --text-lg--line-height: 1.75rem;
+    --text-xl: 1.25rem;
+    --text-xl--line-height: 1.75rem;
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: 2rem;
+    --text-2xl--letter-spacing: -0.01em;
+    --text-3xl: 1.875rem;
+    --text-3xl--line-height: 2.25rem;
+    --text-3xl--letter-spacing: -0.015em;
+
+    --tracking-*: initial;
+    --tracking-tight: -0.01em;
+    --tracking-normal: 0em;
+    --tracking-wide: 0.02em;
+    --tracking-caps: 0.06em;
+
+    /* Raio */
+    --radius-*: initial;
+    --radius-xs: 0.25rem;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+
+    /* Sombra: só para camadas sobrepostas; base Noite */
+    --shadow-*: initial;
+    --shadow-xs: 0 1px 2px 0 rgb(11 31 26 / 0.05);
+    --shadow-sm:
+        0 1px 3px 0 rgb(11 31 26 / 0.08), 0 1px 2px -1px rgb(11 31 26 / 0.06);
+    --shadow-md:
+        0 4px 12px -2px rgb(11 31 26 / 0.1), 0 2px 4px -2px rgb(11 31 26 / 0.06);
+    --shadow-lg:
+        0 12px 32px -8px rgb(11 31 26 / 0.18),
+        0 4px 8px -4px rgb(11 31 26 / 0.08);
+
+    --inset-shadow-*: initial;
+    --inset-shadow-xs: inset 0 1px 1px rgb(11 31 26 / 0.05);
+
+    --drop-shadow-*: initial;
+
+    /* Movimento */
+    --ease-*: initial;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+    --default-transition-duration: 150ms;
+    --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+    --animate-*: initial;
+    --animate-fade-in: fade-in 150ms cubic-bezier(0, 0, 0.2, 1);
+    --animate-fade-out: fade-out 100ms cubic-bezier(0.4, 0, 1, 1);
+    --animate-scale-in: scale-in 150ms cubic-bezier(0, 0, 0.2, 1);
+    --animate-slide-up: slide-up 200ms cubic-bezier(0, 0, 0.2, 1);
+    --animate-slide-down: slide-down 200ms cubic-bezier(0, 0, 0.2, 1);
+    --animate-spin: spin 800ms linear infinite;
+    --animate-pulse: pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fade-out {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+    /* Popovers, menus */
+    @keyframes scale-in {
+        from {
+            opacity: 0;
+            transform: scale(0.96);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Dialogs, toasts */
+    @keyframes slide-up {
+        from {
+            opacity: 0;
+            transform: translateY(0.5rem);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slide-down {
+        from {
+            opacity: 0;
+            transform: translateY(-0.5rem);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Carregamento */
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Skeleton */
+    @keyframes pulse {
+        50% {
+            opacity: 0.5;
+        }
+    }
+}
+
+/* Semântica: cada token aponta para um token de fundação */
+@theme inline {
+    /* Superfícies */
+    --color-background: var(--color-nevoa);
+    --color-surface: var(--color-branco);
+    --color-surface-muted: var(--color-nevoa);
+    --color-border: var(--color-cinza-verde-claro);
+    --color-border-strong: var(--color-cinza-verde-medio);
+    --color-overlay: rgb(11 31 26 / 0.48);
+
+    /* Texto */
+    --color-foreground: var(--color-noite);
+    --color-muted: var(--color-cinza-verde-escuro);
+    --color-subtle: var(--color-cinza-verde);
+    --color-disabled: var(--color-cinza-verde-medio);
+
+    /* Ação primária: Noite; Menta só sobre Noite */
+    --color-primary: var(--color-noite);
+    --color-primary-hover: var(--color-verde-escuro);
+    --color-primary-active: var(--color-verde-profundo);
+    --color-primary-foreground: var(--color-branco);
+    --color-primary-accent: var(--color-menta);
+
+    /* Ação secundária */
+    --color-secondary: var(--color-branco);
+    --color-secondary-hover: var(--color-nevoa);
+    --color-secondary-foreground: var(--color-noite);
+
+    /* Marca: identidade, foco, link e item ativo */
+    --color-brand: var(--color-verde);
+    --color-brand-soft: var(--color-verde-claro);
+    --color-link: var(--color-verde);
+    --color-ring: var(--color-verde);
+
+    /* Estados */
+    --color-success: var(--color-verde);
+    --color-success-soft: var(--color-verde-claro);
+    --color-warning: var(--color-ambar);
+    --color-warning-foreground: var(--color-marrom-ambar);
+    --color-danger: var(--color-vermelho);
+    --color-danger-soft: var(--color-coral);
+    --color-info: var(--color-verde-acinzentado);
+
+    /* Raio por uso */
+    --radius-control: var(--radius-md);
+    --radius-card: var(--radius-lg);
+    --radius-sheet: var(--radius-xl);
+
+    /* Sombra por uso */
+    --shadow-popover: var(--shadow-md);
+    --shadow-dialog: var(--shadow-lg);
+
+    /* Recuo da folha em relação à moldura */
+    --spacing-frame: 0.5rem;
+}
+
+@layer base {
+    :root {
+        color-scheme: light;
+
+        --duration-fast: 100ms;
+        --duration-normal: 150ms;
+        --duration-slow: 200ms;
+
+        --z-dropdown: 10;
+        --z-sticky: 20;
+        --z-overlay: 40;
+        --z-dialog: 50;
+        --z-toast: 60;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        font-weight: var(--font-weight-normal);
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    code,
+    kbd,
+    samp,
+    pre {
+        font-family: var(--font-mono);
+    }
+
+    ::selection {
+        background-color: var(--color-verde-claro);
+        color: var(--color-noite);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-ring);
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
