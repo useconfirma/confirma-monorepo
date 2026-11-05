@@ -9,6 +9,8 @@ const router = createRouter({
     routeTree,
     defaultPreload: 'intent',
     scrollRestoration: true,
+    // Área rolável do AccountLayout: volta ao topo a cada navegação.
+    scrollToTopSelectors: ['#account-content'],
     context: { queryClient: undefined! },
 });
 
