@@ -1,7 +1,7 @@
 import { Outlet } from '@tanstack/react-router';
 
-const ProtectedLayout = () => {
+const AccountLayout = () => {
     return <Outlet />;
 };
 
-export default ProtectedLayout;
+export default AccountLayout;
