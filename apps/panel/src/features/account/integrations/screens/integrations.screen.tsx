@@ -1,5 +1,12 @@
+import { PageHeader } from '@/shared/components/page-header';
+
 const IntegrationsScreen = () => {
-    return <div>IntegrationsScreen</div>;
+    return (
+        <PageHeader
+            title="Z-API"
+            description="Credenciais da instância Z-API que envia as mensagens pelo WhatsApp."
+        />
+    );
 };
 
 export default IntegrationsScreen;
