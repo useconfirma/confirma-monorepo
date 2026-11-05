@@ -12,15 +12,15 @@ export interface RouterContext {
     queryClient: QueryClient;
 }
 
-export const Route = createRootRouteWithContext<RouterContext>()({
-    component: RootComponent,
-    notFoundComponent: () => <Navigate to="/sign-in" replace />,
-});
-
-function RootComponent() {
+const RootComponent = () => {
     return (
         <>
             <Outlet />
         </>
     );
-}
+};
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+    component: RootComponent,
+    notFoundComponent: () => <Navigate to="/sign-in" replace />,
+});

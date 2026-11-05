@@ -16,11 +16,10 @@ import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as ProtectedShellLayoutRouteImport } from './routes/_protected/_shell/layout'
 import { Route as ProtectedWelcomeRouteImport } from './routes/_protected/welcome'
-import { Route as ProtectedShellIndexRouteImport } from './routes/_protected/_shell/index'
-import { Route as ProtectedShellIntegrationsApiKeyRouteImport } from './routes/_protected/_shell/integrations/api-key'
-import { Route as ProtectedShellIntegrationsSendWindowRouteImport } from './routes/_protected/_shell/integrations/send-window'
-import { Route as ProtectedShellIntegrationsWebhookRouteImport } from './routes/_protected/_shell/integrations/webhook'
-import { Route as ProtectedShellIntegrationsZApiRouteImport } from './routes/_protected/_shell/integrations/z-api'
+import { Route as ProtectedShellAccountApiKeyRouteImport } from './routes/_protected/_shell/account/api-key'
+import { Route as ProtectedShellAccountIntegrationsRouteImport } from './routes/_protected/_shell/account/integrations'
+import { Route as ProtectedShellAccountSendWindowRouteImport } from './routes/_protected/_shell/account/send-window'
+import { Route as ProtectedShellAccountWebhookRouteImport } from './routes/_protected/_shell/account/webhook'
 
 const AuthLayoutRoute = AuthLayoutRouteImport.update({
   id: '/_auth',
@@ -54,57 +53,52 @@ const ProtectedWelcomeRoute = ProtectedWelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => ProtectedLayoutRoute,
 } as any)
-const ProtectedShellIndexRoute = ProtectedShellIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProtectedShellLayoutRoute,
-} as any)
-const ProtectedShellIntegrationsApiKeyRoute =
-  ProtectedShellIntegrationsApiKeyRouteImport.update({
-    id: '/integrations/api-key',
-    path: '/integrations/api-key',
+const ProtectedShellAccountApiKeyRoute =
+  ProtectedShellAccountApiKeyRouteImport.update({
+    id: '/account/api-key',
+    path: '/account/api-key',
     getParentRoute: () => ProtectedShellLayoutRoute,
   } as any)
-const ProtectedShellIntegrationsSendWindowRoute =
-  ProtectedShellIntegrationsSendWindowRouteImport.update({
-    id: '/integrations/send-window',
-    path: '/integrations/send-window',
+const ProtectedShellAccountIntegrationsRoute =
+  ProtectedShellAccountIntegrationsRouteImport.update({
+    id: '/account/integrations',
+    path: '/account/integrations',
     getParentRoute: () => ProtectedShellLayoutRoute,
   } as any)
-const ProtectedShellIntegrationsWebhookRoute =
-  ProtectedShellIntegrationsWebhookRouteImport.update({
-    id: '/integrations/webhook',
-    path: '/integrations/webhook',
+const ProtectedShellAccountSendWindowRoute =
+  ProtectedShellAccountSendWindowRouteImport.update({
+    id: '/account/send-window',
+    path: '/account/send-window',
     getParentRoute: () => ProtectedShellLayoutRoute,
   } as any)
-const ProtectedShellIntegrationsZApiRoute =
-  ProtectedShellIntegrationsZApiRouteImport.update({
-    id: '/integrations/z-api',
-    path: '/integrations/z-api',
+const ProtectedShellAccountWebhookRoute =
+  ProtectedShellAccountWebhookRouteImport.update({
+    id: '/account/webhook',
+    path: '/account/webhook',
     getParentRoute: () => ProtectedShellLayoutRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof ProtectedShellIndexRoute
+  '/': typeof ProtectedShellLayoutRouteWithChildren
   '/request-invitation': typeof AuthRequestInvitationRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/welcome': typeof ProtectedWelcomeRoute
-  '/integrations/api-key': typeof ProtectedShellIntegrationsApiKeyRoute
-  '/integrations/send-window': typeof ProtectedShellIntegrationsSendWindowRoute
-  '/integrations/webhook': typeof ProtectedShellIntegrationsWebhookRoute
-  '/integrations/z-api': typeof ProtectedShellIntegrationsZApiRoute
+  '/account/api-key': typeof ProtectedShellAccountApiKeyRoute
+  '/account/integrations': typeof ProtectedShellAccountIntegrationsRoute
+  '/account/send-window': typeof ProtectedShellAccountSendWindowRoute
+  '/account/webhook': typeof ProtectedShellAccountWebhookRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof ProtectedShellIndexRoute
+  '/': typeof ProtectedShellLayoutRouteWithChildren
   '/request-invitation': typeof AuthRequestInvitationRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/welcome': typeof ProtectedWelcomeRoute
-  '/integrations/api-key': typeof ProtectedShellIntegrationsApiKeyRoute
-  '/integrations/send-window': typeof ProtectedShellIntegrationsSendWindowRoute
-  '/integrations/webhook': typeof ProtectedShellIntegrationsWebhookRoute
-  '/integrations/z-api': typeof ProtectedShellIntegrationsZApiRoute
+  '/account/api-key': typeof ProtectedShellAccountApiKeyRoute
+  '/account/integrations': typeof ProtectedShellAccountIntegrationsRoute
+  '/account/send-window': typeof ProtectedShellAccountSendWindowRoute
+  '/account/webhook': typeof ProtectedShellAccountWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -115,11 +109,10 @@ export interface FileRoutesById {
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
   '/_protected/welcome': typeof ProtectedWelcomeRoute
-  '/_protected/_shell/': typeof ProtectedShellIndexRoute
-  '/_protected/_shell/integrations/api-key': typeof ProtectedShellIntegrationsApiKeyRoute
-  '/_protected/_shell/integrations/send-window': typeof ProtectedShellIntegrationsSendWindowRoute
-  '/_protected/_shell/integrations/webhook': typeof ProtectedShellIntegrationsWebhookRoute
-  '/_protected/_shell/integrations/z-api': typeof ProtectedShellIntegrationsZApiRoute
+  '/_protected/_shell/account/api-key': typeof ProtectedShellAccountApiKeyRoute
+  '/_protected/_shell/account/integrations': typeof ProtectedShellAccountIntegrationsRoute
+  '/_protected/_shell/account/send-window': typeof ProtectedShellAccountSendWindowRoute
+  '/_protected/_shell/account/webhook': typeof ProtectedShellAccountWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,10 +122,10 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/welcome'
-    | '/integrations/api-key'
-    | '/integrations/send-window'
-    | '/integrations/webhook'
-    | '/integrations/z-api'
+    | '/account/api-key'
+    | '/account/integrations'
+    | '/account/send-window'
+    | '/account/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,10 +133,10 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/welcome'
-    | '/integrations/api-key'
-    | '/integrations/send-window'
-    | '/integrations/webhook'
-    | '/integrations/z-api'
+    | '/account/api-key'
+    | '/account/integrations'
+    | '/account/send-window'
+    | '/account/webhook'
   id:
     | '__root__'
     | '/_auth'
@@ -153,11 +146,10 @@ export interface FileRouteTypes {
     | '/_auth/sign-in'
     | '/_auth/sign-up'
     | '/_protected/welcome'
-    | '/_protected/_shell/'
-    | '/_protected/_shell/integrations/api-key'
-    | '/_protected/_shell/integrations/send-window'
-    | '/_protected/_shell/integrations/webhook'
-    | '/_protected/_shell/integrations/z-api'
+    | '/_protected/_shell/account/api-key'
+    | '/_protected/_shell/account/integrations'
+    | '/_protected/_shell/account/send-window'
+    | '/_protected/_shell/account/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -216,39 +208,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedWelcomeRouteImport
       parentRoute: typeof ProtectedLayoutRoute
     }
-    '/_protected/_shell/': {
-      id: '/_protected/_shell/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof ProtectedShellIndexRouteImport
+    '/_protected/_shell/account/api-key': {
+      id: '/_protected/_shell/account/api-key'
+      path: '/account/api-key'
+      fullPath: '/account/api-key'
+      preLoaderRoute: typeof ProtectedShellAccountApiKeyRouteImport
       parentRoute: typeof ProtectedShellLayoutRoute
     }
-    '/_protected/_shell/integrations/api-key': {
-      id: '/_protected/_shell/integrations/api-key'
-      path: '/integrations/api-key'
-      fullPath: '/integrations/api-key'
-      preLoaderRoute: typeof ProtectedShellIntegrationsApiKeyRouteImport
+    '/_protected/_shell/account/integrations': {
+      id: '/_protected/_shell/account/integrations'
+      path: '/account/integrations'
+      fullPath: '/account/integrations'
+      preLoaderRoute: typeof ProtectedShellAccountIntegrationsRouteImport
       parentRoute: typeof ProtectedShellLayoutRoute
     }
-    '/_protected/_shell/integrations/send-window': {
-      id: '/_protected/_shell/integrations/send-window'
-      path: '/integrations/send-window'
-      fullPath: '/integrations/send-window'
-      preLoaderRoute: typeof ProtectedShellIntegrationsSendWindowRouteImport
+    '/_protected/_shell/account/send-window': {
+      id: '/_protected/_shell/account/send-window'
+      path: '/account/send-window'
+      fullPath: '/account/send-window'
+      preLoaderRoute: typeof ProtectedShellAccountSendWindowRouteImport
       parentRoute: typeof ProtectedShellLayoutRoute
     }
-    '/_protected/_shell/integrations/webhook': {
-      id: '/_protected/_shell/integrations/webhook'
-      path: '/integrations/webhook'
-      fullPath: '/integrations/webhook'
-      preLoaderRoute: typeof ProtectedShellIntegrationsWebhookRouteImport
-      parentRoute: typeof ProtectedShellLayoutRoute
-    }
-    '/_protected/_shell/integrations/z-api': {
-      id: '/_protected/_shell/integrations/z-api'
-      path: '/integrations/z-api'
-      fullPath: '/integrations/z-api'
-      preLoaderRoute: typeof ProtectedShellIntegrationsZApiRouteImport
+    '/_protected/_shell/account/webhook': {
+      id: '/_protected/_shell/account/webhook'
+      path: '/account/webhook'
+      fullPath: '/account/webhook'
+      preLoaderRoute: typeof ProtectedShellAccountWebhookRouteImport
       parentRoute: typeof ProtectedShellLayoutRoute
     }
   }
@@ -271,21 +256,18 @@ const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
 )
 
 interface ProtectedShellLayoutRouteChildren {
-  ProtectedShellIndexRoute: typeof ProtectedShellIndexRoute
-  ProtectedShellIntegrationsApiKeyRoute: typeof ProtectedShellIntegrationsApiKeyRoute
-  ProtectedShellIntegrationsSendWindowRoute: typeof ProtectedShellIntegrationsSendWindowRoute
-  ProtectedShellIntegrationsWebhookRoute: typeof ProtectedShellIntegrationsWebhookRoute
-  ProtectedShellIntegrationsZApiRoute: typeof ProtectedShellIntegrationsZApiRoute
+  ProtectedShellAccountApiKeyRoute: typeof ProtectedShellAccountApiKeyRoute
+  ProtectedShellAccountIntegrationsRoute: typeof ProtectedShellAccountIntegrationsRoute
+  ProtectedShellAccountSendWindowRoute: typeof ProtectedShellAccountSendWindowRoute
+  ProtectedShellAccountWebhookRoute: typeof ProtectedShellAccountWebhookRoute
 }
 
 const ProtectedShellLayoutRouteChildren: ProtectedShellLayoutRouteChildren = {
-  ProtectedShellIndexRoute: ProtectedShellIndexRoute,
-  ProtectedShellIntegrationsApiKeyRoute: ProtectedShellIntegrationsApiKeyRoute,
-  ProtectedShellIntegrationsSendWindowRoute:
-    ProtectedShellIntegrationsSendWindowRoute,
-  ProtectedShellIntegrationsWebhookRoute:
-    ProtectedShellIntegrationsWebhookRoute,
-  ProtectedShellIntegrationsZApiRoute: ProtectedShellIntegrationsZApiRoute,
+  ProtectedShellAccountApiKeyRoute: ProtectedShellAccountApiKeyRoute,
+  ProtectedShellAccountIntegrationsRoute:
+    ProtectedShellAccountIntegrationsRoute,
+  ProtectedShellAccountSendWindowRoute: ProtectedShellAccountSendWindowRoute,
+  ProtectedShellAccountWebhookRoute: ProtectedShellAccountWebhookRoute,
 }
 
 const ProtectedShellLayoutRouteWithChildren =
