@@ -6,7 +6,7 @@ export const Route = createFileRoute('/_protected')({
         try {
             return await context.queryClient.query(currentUserQueryOptions);
         } catch {
-            throw redirect({ to: '/sign-in' });
+            // throw redirect({ to: '/sign-in' });
         }
     },
     component: Outlet,
