@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { OpenApiGeneratorV31 } from '@asteasolutions/zod-to-openapi';
 import { openApiRegistry } from './docs/openapi.js';
@@ -15,6 +16,7 @@ const openApiDocument = new OpenApiGeneratorV31(
     info: { title: 'Confirma API', version: '0.0.0' },
 });
 
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

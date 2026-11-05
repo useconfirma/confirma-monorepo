@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { currentUserQueryOptions } from '@/shared/hooks/use-get-current-user.hook';
 
 export const Route = createFileRoute('/_protected')({
