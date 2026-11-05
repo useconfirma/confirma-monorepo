@@ -1,12 +1,16 @@
 import { Link } from '@tanstack/react-router';
-import { X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, X } from 'lucide-react';
 import {
     DialogClose,
     DialogContent,
     DialogTitle,
 } from '@/shared/components/ui/dialog';
+import { apiClient } from '@/shared/lib/api-client';
 import { cn } from '@/shared/lib/tailwind';
 import { AccountNavigation } from './account-navigation';
+
+// Referência interativa da API, servida pela própria API em `/docs`.
+const docsUrl = `${apiClient.defaults.baseURL}/docs`;
 
 // Junta entre faixas da placa: linha escura com reflexo claro logo abaixo.
 const seam =
@@ -59,11 +63,28 @@ const SidebarContents = ({ onNavigate, closable }: SidebarContentsProps) => (
             <AccountNavigation onNavigate={onNavigate} />
         </div>
 
-        <div className={cn('border-t px-5 py-4 text-xs', seam)}>
-            <p className="text-branco font-medium">Beta fechado</p>
-            <p className="text-cinza-verde-medio mt-0.5">
-                Use apenas dados fictícios.
-            </p>
+        <div className={cn('border-t px-3 py-3', seam)}>
+            <a
+                href={docsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-control text-cinza-verde-medio hover:bg-branco/4 hover:text-branco focus-visible:outline-menta flex min-h-10 items-center gap-3 px-3 text-sm font-medium transition-[color,background-color] duration-200 focus-visible:-outline-offset-2"
+            >
+                <BookOpen
+                    aria-hidden="true"
+                    size={18}
+                    strokeWidth={1.75}
+                    className="shrink-0"
+                />
+                <span className="flex-1 truncate">Documentação da API</span>
+                <ArrowUpRight
+                    aria-hidden="true"
+                    size={16}
+                    strokeWidth={1.75}
+                    className="shrink-0"
+                />
+                <span className="sr-only">(abre em nova aba)</span>
+            </a>
         </div>
     </>
 );
