@@ -19,7 +19,7 @@ accountsRoutes.use(
     }),
 );
 
-// accountsRoutes.use(authenticate);
-// accountsRoutes.use(authorizeAccount);
+accountsRoutes.use(authenticate);
+accountsRoutes.use(authorizeAccount);
 
 accountsRoutes.get('/account', getAccountController);
