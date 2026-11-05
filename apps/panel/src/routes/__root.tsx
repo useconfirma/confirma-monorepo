@@ -14,7 +14,7 @@ export interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
     component: RootComponent,
-    notFoundComponent: () => <Navigate to="/" replace />,
+    notFoundComponent: () => <Navigate to="/sign-in" replace />,
 });
 
 function RootComponent() {

@@ -18,13 +18,15 @@ declare module '@tanstack/react-router' {
     }
 }
 
+const App = () => {
+    const queryClient = useQueryClient();
+    return <RouterProvider router={router} context={{ queryClient }} />;
+};
+
 ReactDOM.createRoot(document.getElementById('app')!).render(
     <StrictMode>
         <QueryProvider>
-            <RouterProvider
-                router={router}
-                context={{ queryClient: useQueryClient() }}
-            />
+            <App />
         </QueryProvider>
     </StrictMode>,
 );

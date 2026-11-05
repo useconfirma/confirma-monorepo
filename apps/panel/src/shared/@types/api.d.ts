@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/account": {
+    '/account': {
         parameters: {
             query?: never;
             header?: never;
@@ -27,7 +27,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             account: {
                                 id: string;
                                 name: string;
@@ -67,7 +67,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -85,7 +85,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/accounts": {
+    '/accounts': {
         parameters: {
             query?: never;
             header?: never;
@@ -104,7 +104,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": {
+                    'application/json': {
                         invitationToken: string;
                         password: string;
                         accountName: string;
@@ -118,7 +118,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             user: {
                                 id: string;
                                 /** Format: email */
@@ -137,7 +137,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -151,7 +151,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -165,7 +165,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -181,7 +181,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/me": {
+    '/users/me': {
         parameters: {
             query?: never;
             header?: never;
@@ -204,7 +204,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             user: {
                                 id: string;
                                 /** Format: email */
@@ -219,7 +219,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -237,7 +237,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sessions": {
+    '/sessions': {
         parameters: {
             query?: never;
             header?: never;
@@ -256,7 +256,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": {
+                    'application/json': {
                         /** Format: email */
                         email: string;
                         password: string;
@@ -277,7 +277,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -293,7 +293,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sessions/current": {
+    '/sessions/current': {
         parameters: {
             query?: never;
             header?: never;
@@ -326,7 +326,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -341,7 +341,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/invitations": {
+    '/invitations': {
         parameters: {
             query?: never;
             header?: never;
@@ -360,7 +360,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": {
+                    'application/json': {
                         /** Format: email */
                         email: string;
                     };
@@ -373,7 +373,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             accepted: boolean;
                         };
                     };
@@ -384,7 +384,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -400,7 +400,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/invitations/{invitationToken}": {
+    '/invitations/{invitationToken}': {
         parameters: {
             query?: never;
             header?: never;
@@ -425,7 +425,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             /** Format: email */
                             email: string;
                         };
@@ -437,7 +437,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -455,7 +455,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/integration/send-window": {
+    '/integration/send-window': {
         parameters: {
             query?: never;
             header?: never;
@@ -473,7 +473,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": {
+                    'application/json': {
                         start: string;
                         end: string;
                         timeZone: string;
@@ -487,7 +487,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             configured: boolean;
                             start: string;
                             end: string;
@@ -503,7 +503,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -520,7 +520,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/integration/webhook": {
+    '/integration/webhook': {
         parameters: {
             query?: never;
             header?: never;
@@ -538,7 +538,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": {
+                    'application/json': {
                         url: string;
                         secret: string;
                     };
@@ -551,7 +551,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             configured: boolean;
                             /** Format: uri */
                             url: string;
@@ -566,7 +566,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -583,7 +583,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/integration/z-api": {
+    '/integration/z-api': {
         parameters: {
             query?: never;
             header?: never;
@@ -601,7 +601,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": {
+                    'application/json': {
                         instanceId: string;
                         instanceToken: string;
                         clientToken: string;
@@ -615,7 +615,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             configured: boolean;
                             instanceId: string;
                             /** Format: date-time */
@@ -629,7 +629,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;
@@ -646,7 +646,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/integration/api-key": {
+    '/integration/api-key': {
         parameters: {
             query?: never;
             header?: never;
@@ -671,7 +671,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             apiKey: string;
                             /** Format: date-time */
                             createdAt: string;
@@ -684,7 +684,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
+                        'application/json': {
                             error: {
                                 code: string;
                                 message: string;

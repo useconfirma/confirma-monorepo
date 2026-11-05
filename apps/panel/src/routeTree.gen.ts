@@ -9,50 +9,305 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthLayoutRouteImport } from './routes/_auth/layout'
+import { Route as ProtectedLayoutRouteImport } from './routes/_protected/layout'
+import { Route as AuthRequestInvitationRouteImport } from './routes/_auth/request-invitation'
+import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
+import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
+import { Route as ProtectedShellLayoutRouteImport } from './routes/_protected/_shell/layout'
+import { Route as ProtectedWelcomeRouteImport } from './routes/_protected/welcome'
+import { Route as ProtectedShellIndexRouteImport } from './routes/_protected/_shell/index'
+import { Route as ProtectedShellIntegrationsApiKeyRouteImport } from './routes/_protected/_shell/integrations/api-key'
+import { Route as ProtectedShellIntegrationsSendWindowRouteImport } from './routes/_protected/_shell/integrations/send-window'
+import { Route as ProtectedShellIntegrationsWebhookRouteImport } from './routes/_protected/_shell/integrations/webhook'
+import { Route as ProtectedShellIntegrationsZApiRouteImport } from './routes/_protected/_shell/integrations/z-api'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthLayoutRoute = AuthLayoutRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProtectedLayoutRoute = ProtectedLayoutRouteImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRequestInvitationRoute = AuthRequestInvitationRouteImport.update({
+  id: '/request-invitation',
+  path: '/request-invitation',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => AuthLayoutRoute,
+} as any)
+const ProtectedShellLayoutRoute = ProtectedShellLayoutRouteImport.update({
+  id: '/_shell',
+  getParentRoute: () => ProtectedLayoutRoute,
+} as any)
+const ProtectedWelcomeRoute = ProtectedWelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => ProtectedLayoutRoute,
+} as any)
+const ProtectedShellIndexRoute = ProtectedShellIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProtectedShellLayoutRoute,
+} as any)
+const ProtectedShellIntegrationsApiKeyRoute =
+  ProtectedShellIntegrationsApiKeyRouteImport.update({
+    id: '/integrations/api-key',
+    path: '/integrations/api-key',
+    getParentRoute: () => ProtectedShellLayoutRoute,
+  } as any)
+const ProtectedShellIntegrationsSendWindowRoute =
+  ProtectedShellIntegrationsSendWindowRouteImport.update({
+    id: '/integrations/send-window',
+    path: '/integrations/send-window',
+    getParentRoute: () => ProtectedShellLayoutRoute,
+  } as any)
+const ProtectedShellIntegrationsWebhookRoute =
+  ProtectedShellIntegrationsWebhookRouteImport.update({
+    id: '/integrations/webhook',
+    path: '/integrations/webhook',
+    getParentRoute: () => ProtectedShellLayoutRoute,
+  } as any)
+const ProtectedShellIntegrationsZApiRoute =
+  ProtectedShellIntegrationsZApiRouteImport.update({
+    id: '/integrations/z-api',
+    path: '/integrations/z-api',
+    getParentRoute: () => ProtectedShellLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof ProtectedShellIndexRoute
+  '/request-invitation': typeof AuthRequestInvitationRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/sign-up': typeof AuthSignUpRoute
+  '/welcome': typeof ProtectedWelcomeRoute
+  '/integrations/api-key': typeof ProtectedShellIntegrationsApiKeyRoute
+  '/integrations/send-window': typeof ProtectedShellIntegrationsSendWindowRoute
+  '/integrations/webhook': typeof ProtectedShellIntegrationsWebhookRoute
+  '/integrations/z-api': typeof ProtectedShellIntegrationsZApiRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof ProtectedShellIndexRoute
+  '/request-invitation': typeof AuthRequestInvitationRoute
+  '/sign-in': typeof AuthSignInRoute
+  '/sign-up': typeof AuthSignUpRoute
+  '/welcome': typeof ProtectedWelcomeRoute
+  '/integrations/api-key': typeof ProtectedShellIntegrationsApiKeyRoute
+  '/integrations/send-window': typeof ProtectedShellIntegrationsSendWindowRoute
+  '/integrations/webhook': typeof ProtectedShellIntegrationsWebhookRoute
+  '/integrations/z-api': typeof ProtectedShellIntegrationsZApiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_auth': typeof AuthLayoutRouteWithChildren
+  '/_protected': typeof ProtectedLayoutRouteWithChildren
+  '/_protected/_shell': typeof ProtectedShellLayoutRouteWithChildren
+  '/_auth/request-invitation': typeof AuthRequestInvitationRoute
+  '/_auth/sign-in': typeof AuthSignInRoute
+  '/_auth/sign-up': typeof AuthSignUpRoute
+  '/_protected/welcome': typeof ProtectedWelcomeRoute
+  '/_protected/_shell/': typeof ProtectedShellIndexRoute
+  '/_protected/_shell/integrations/api-key': typeof ProtectedShellIntegrationsApiKeyRoute
+  '/_protected/_shell/integrations/send-window': typeof ProtectedShellIntegrationsSendWindowRoute
+  '/_protected/_shell/integrations/webhook': typeof ProtectedShellIntegrationsWebhookRoute
+  '/_protected/_shell/integrations/z-api': typeof ProtectedShellIntegrationsZApiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/request-invitation'
+    | '/sign-in'
+    | '/sign-up'
+    | '/welcome'
+    | '/integrations/api-key'
+    | '/integrations/send-window'
+    | '/integrations/webhook'
+    | '/integrations/z-api'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/request-invitation'
+    | '/sign-in'
+    | '/sign-up'
+    | '/welcome'
+    | '/integrations/api-key'
+    | '/integrations/send-window'
+    | '/integrations/webhook'
+    | '/integrations/z-api'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/_protected'
+    | '/_protected/_shell'
+    | '/_auth/request-invitation'
+    | '/_auth/sign-in'
+    | '/_auth/sign-up'
+    | '/_protected/welcome'
+    | '/_protected/_shell/'
+    | '/_protected/_shell/integrations/api-key'
+    | '/_protected/_shell/integrations/send-window'
+    | '/_protected/_shell/integrations/webhook'
+    | '/_protected/_shell/integrations/z-api'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
+  ProtectedLayoutRoute: typeof ProtectedLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/request-invitation': {
+      id: '/_auth/request-invitation'
+      path: '/request-invitation'
+      fullPath: '/request-invitation'
+      preLoaderRoute: typeof AuthRequestInvitationRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/sign-in': {
+      id: '/_auth/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_auth/sign-up': {
+      id: '/_auth/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof AuthLayoutRoute
+    }
+    '/_protected/_shell': {
+      id: '/_protected/_shell'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ProtectedShellLayoutRouteImport
+      parentRoute: typeof ProtectedLayoutRoute
+    }
+    '/_protected/welcome': {
+      id: '/_protected/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof ProtectedWelcomeRouteImport
+      parentRoute: typeof ProtectedLayoutRoute
+    }
+    '/_protected/_shell/': {
+      id: '/_protected/_shell/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof ProtectedShellIndexRouteImport
+      parentRoute: typeof ProtectedShellLayoutRoute
+    }
+    '/_protected/_shell/integrations/api-key': {
+      id: '/_protected/_shell/integrations/api-key'
+      path: '/integrations/api-key'
+      fullPath: '/integrations/api-key'
+      preLoaderRoute: typeof ProtectedShellIntegrationsApiKeyRouteImport
+      parentRoute: typeof ProtectedShellLayoutRoute
+    }
+    '/_protected/_shell/integrations/send-window': {
+      id: '/_protected/_shell/integrations/send-window'
+      path: '/integrations/send-window'
+      fullPath: '/integrations/send-window'
+      preLoaderRoute: typeof ProtectedShellIntegrationsSendWindowRouteImport
+      parentRoute: typeof ProtectedShellLayoutRoute
+    }
+    '/_protected/_shell/integrations/webhook': {
+      id: '/_protected/_shell/integrations/webhook'
+      path: '/integrations/webhook'
+      fullPath: '/integrations/webhook'
+      preLoaderRoute: typeof ProtectedShellIntegrationsWebhookRouteImport
+      parentRoute: typeof ProtectedShellLayoutRoute
+    }
+    '/_protected/_shell/integrations/z-api': {
+      id: '/_protected/_shell/integrations/z-api'
+      path: '/integrations/z-api'
+      fullPath: '/integrations/z-api'
+      preLoaderRoute: typeof ProtectedShellIntegrationsZApiRouteImport
+      parentRoute: typeof ProtectedShellLayoutRoute
     }
   }
 }
 
+interface AuthLayoutRouteChildren {
+  AuthRequestInvitationRoute: typeof AuthRequestInvitationRoute
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+}
+
+const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+  AuthRequestInvitationRoute: AuthRequestInvitationRoute,
+  AuthSignInRoute: AuthSignInRoute,
+  AuthSignUpRoute: AuthSignUpRoute,
+}
+
+const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
+  AuthLayoutRouteChildren,
+)
+
+interface ProtectedShellLayoutRouteChildren {
+  ProtectedShellIndexRoute: typeof ProtectedShellIndexRoute
+  ProtectedShellIntegrationsApiKeyRoute: typeof ProtectedShellIntegrationsApiKeyRoute
+  ProtectedShellIntegrationsSendWindowRoute: typeof ProtectedShellIntegrationsSendWindowRoute
+  ProtectedShellIntegrationsWebhookRoute: typeof ProtectedShellIntegrationsWebhookRoute
+  ProtectedShellIntegrationsZApiRoute: typeof ProtectedShellIntegrationsZApiRoute
+}
+
+const ProtectedShellLayoutRouteChildren: ProtectedShellLayoutRouteChildren = {
+  ProtectedShellIndexRoute: ProtectedShellIndexRoute,
+  ProtectedShellIntegrationsApiKeyRoute: ProtectedShellIntegrationsApiKeyRoute,
+  ProtectedShellIntegrationsSendWindowRoute:
+    ProtectedShellIntegrationsSendWindowRoute,
+  ProtectedShellIntegrationsWebhookRoute:
+    ProtectedShellIntegrationsWebhookRoute,
+  ProtectedShellIntegrationsZApiRoute: ProtectedShellIntegrationsZApiRoute,
+}
+
+const ProtectedShellLayoutRouteWithChildren =
+  ProtectedShellLayoutRoute._addFileChildren(ProtectedShellLayoutRouteChildren)
+
+interface ProtectedLayoutRouteChildren {
+  ProtectedShellLayoutRoute: typeof ProtectedShellLayoutRouteWithChildren
+  ProtectedWelcomeRoute: typeof ProtectedWelcomeRoute
+}
+
+const ProtectedLayoutRouteChildren: ProtectedLayoutRouteChildren = {
+  ProtectedShellLayoutRoute: ProtectedShellLayoutRouteWithChildren,
+  ProtectedWelcomeRoute: ProtectedWelcomeRoute,
+}
+
+const ProtectedLayoutRouteWithChildren = ProtectedLayoutRoute._addFileChildren(
+  ProtectedLayoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AuthLayoutRoute: AuthLayoutRouteWithChildren,
+  ProtectedLayoutRoute: ProtectedLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
