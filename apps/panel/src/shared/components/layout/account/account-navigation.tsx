@@ -43,7 +43,7 @@ const linkStatusLight =
     'opacity-0 group-data-[status=active]:opacity-100' as const;
 
 interface AccountNavigationProps {
-    onNavigate: () => void;
+    onNavigate?: () => void;
 }
 
 export const AccountNavigation = ({ onNavigate }: AccountNavigationProps) => (
@@ -82,7 +82,7 @@ export const AccountNavigation = ({ onNavigate }: AccountNavigationProps) => (
 
 interface NavigationSubmenuProps {
     item: NavigationItem & { children: NavigationLink[] };
-    onNavigate: () => void;
+    onNavigate?: () => void;
 }
 
 const NavigationSubmenu = ({ item, onNavigate }: NavigationSubmenuProps) => {

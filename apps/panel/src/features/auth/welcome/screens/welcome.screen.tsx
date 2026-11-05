@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { Button } from '@/shared/components/ui/button';
 import { WelcomeIllustration } from '../components/welcome-illustration';
 
 const appear =
@@ -29,13 +30,14 @@ const WelcomeScreen = () => (
                     suas integrações e começar a confirmar agendamentos pelo
                     WhatsApp diretamente da sua aplicação.
                 </p>
-                <Link
-                    to="/overview"
-                    className={`${appear} rounded-control from-verde-escuro to-noite text-primary-foreground border-branco/10 border-t-branco/20 hover:from-verde-profundo hover:to-verde-escuro active:from-noite active:to-noite mt-7 inline-flex h-11 w-full items-center justify-center border bg-linear-to-b px-6 text-sm font-medium shadow-[0_8px_16px_-8px_color-mix(in_oklab,var(--color-noite)_60%,transparent),inset_0_1px_0_color-mix(in_oklab,var(--color-branco)_14%,transparent)] transition-[translate,box-shadow,--tw-gradient-from,--tw-gradient-to] duration-200 active:translate-y-px active:shadow-[inset_0_2px_4px_color-mix(in_oklab,var(--color-noite)_70%,black)] sm:w-auto`}
+                <Button
+                    asChild
+                    size="lg"
+                    className={`${appear} mt-7 w-full sm:w-auto`}
                     style={{ animationDelay: '550ms' }}
                 >
-                    Acessar meu painel
-                </Link>
+                    <Link to="/overview">Acessar meu painel</Link>
+                </Button>
             </div>
         </main>
     </div>

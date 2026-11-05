@@ -1,6 +1,8 @@
 import { extendTailwindMerge, type ClassNameValue } from 'tailwind-merge';
 import { createTV } from 'tailwind-variants';
 
+export type { VariantProps } from 'tailwind-variants';
+
 // Ensina o tailwind-merge os tokens do styles.css que não seguem a escala padrão.
 const twMerge = extendTailwindMerge({
     extend: {
@@ -15,6 +17,8 @@ const twMerge = extendTailwindMerge({
                 'scale-in',
                 'slide-up',
                 'slide-down',
+                'drawer-in',
+                'drawer-out',
             ],
             spacing: ['frame'],
         },
