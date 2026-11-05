@@ -4,7 +4,7 @@ import { AppError } from '../../domain/errors/app-error.js';
 
 const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'production']).default('development'),
-    PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    PORT: z.coerce.number().int().min(1).max(65535).default(8080),
 });
 
 const parsed = envSchema.safeParse(process.env);

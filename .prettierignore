@@ -13,3 +13,4 @@ AGENTS.md
 
 # TanStack Router
 routeTree.gen.ts
+apps/panel/src/shared/types/api.d.ts
