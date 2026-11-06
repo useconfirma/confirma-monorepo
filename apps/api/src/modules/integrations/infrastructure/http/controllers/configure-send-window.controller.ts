@@ -1,4 +1,6 @@
 import type { Request, Response } from 'express';
+import { ConfigureSendWindowUseCase } from '../../../application/usecases/configure-send-window.usecase.js';
+import { PrismaIntegrationRepository } from '../../repositories/prisma/prisma-integration.repository.js';
 import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/openapi.js';
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
 import { validateData } from '../../../../../shared/infrastructure/validation/zod/data-validation.js';
@@ -6,6 +8,18 @@ import {
     configureSendWindowBodySchema,
     configureSendWindowResponseSchema,
 } from '../../schemas/zod/configure-send-window.schema.js';
+
+type ConfigureSendWindowResponseDto = {
+    configured: boolean;
+    start: string;
+    end: string;
+    timeZone: string;
+    updatedAt: string;
+};
+
+const configureSendWindow = new ConfigureSendWindowUseCase(
+    new PrismaIntegrationRepository(),
+);
 
 openApiRegistry.registerPath({
     method: 'put',
@@ -40,17 +54,17 @@ export const configureSendWindowController = async (
     res: Response,
 ) => {
     const body = validateData(req.body, configureSendWindowBodySchema);
-    void req.userId;
-    void req.accountId;
-    // const useCase = new ConfigureSendWindowUseCase(/* dependências injetadas */);
-    // const result = await useCase.execute({ ...body, userId: req.userId! });
-    void body;
-
-    return res.status(200).json({
-        configured: false,
-        start: null,
-        end: null,
-        timeZone: null,
-        updatedAt: null,
+    const result = await configureSendWindow.execute({
+        ...body,
+        userId: req.userId!,
     });
+    const response: ConfigureSendWindowResponseDto = {
+        configured: result.configured,
+        start: result.start!,
+        end: result.end!,
+        timeZone: result.timeZone!,
+        updatedAt: result.updatedAt!.toISOString(),
+    };
+
+    return res.status(200).json(response);
 };

@@ -166,7 +166,7 @@ endpoints:
           id: API-12,
           use-case: UC-13,
           method: POST,
-          path: '/providers/z-api/callbacks/{callbackToken}',
+          path: '/v1/providers/z-api/callbacks/{callbackToken}',
           authorization: 'Identificador secreto associado à integração',
           request:
               { params: ['callbackToken'], query: [], body: ['payload Z-API'] },
@@ -278,8 +278,8 @@ endpoints:
 ```json
 {
     "account": {
-        "id": "account_mock",
-        "name": "Account de teste",
+        "id": "account_123",
+        "name": "Clínica Teste",
         "sendWindow": {
             "configured": false,
             "start": null,
@@ -328,16 +328,15 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 
 - **Caso de uso:** UC-07; requisito RF-02.
 - **Entrada:** `{ "start": "08:00", "end": "18:00", "timeZone": "America/Sao_Paulo" }`.
-- **Resposta atual:** `200` com `{ "configured": false, "start": null, "end": null, "timeZone": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`.
+- **Resposta atual:** `200` com a janela persistida e `configured: true`. O caso de uso valida formato, ordem dos horários e fuso IANA antes de gravar no Prisma.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `422` com `INVALID_SEND_WINDOW`.
 
 ### API-08 — Gerar API Key
 
 `POST /integration/api-key`
 
 - **Caso de uso:** UC-08; requisito RF-03.
-- **Resposta atual:** `201` com `{ "apiKey": "api_key_mock", "createdAt": "..." }`.
-- **Comportamento atual:** retorna uma API Key mockada e não executa o caso de uso.
+- **Resposta atual:** `201` com a API Key gerada e `createdAt`. A chave em texto puro é retornada somente nessa resposta; o hash é persistido e as chaves ativas anteriores são revogadas.
 - **Erros:** `401` com `UNAUTHENTICATED`.
 
 ### API-09 — Configurar webhook de saída
@@ -346,8 +345,8 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 
 - **Caso de uso:** UC-09; requisitos RF-02 e RF-09.
 - **Entrada:** `{ "url": "https://example.com/confirma", "secret": "<secret>" }`.
-- **Resposta atual:** `200` com `{ "configured": false, "url": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`.
+- **Resposta atual:** `200` com `{ "configured": true, "url": "https://example.com/confirma", "updatedAt": "..." }`. O segredo é protegido antes de ser persistido e nunca é retornado.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `422` com `INVALID_WEBHOOK`.
 
 ### API-10 — Configurar Z-API
 
@@ -355,8 +354,8 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 
 - **Caso de uso:** UC-10; requisitos RF-02 e RF-07.
 - **Entrada:** `instanceId`, `instanceToken` e `clientToken`, strings obrigatórias.
-- **Resposta atual:** `200` com `{ "configured": false, "instanceId": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`.
+- **Resposta atual:** `200` com `{ "configured": true, "instanceId": "instance-id", "updatedAt": "..." }`. O callback é registrado na Z-API antes de persistir as credenciais protegidas.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `422` com `ZAPI_CONFIGURATION_FAILED`; `503` se o registro do callback falhar.
 
 ### API-11 — Criar agendamento
 

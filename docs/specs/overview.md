@@ -104,4 +104,4 @@ O Beta é funcional quando um desenvolvedor convidado consegue configurar a inte
 
 ## Estágio da implementação
 
-O acesso por convite, cadastro, login, logout, consulta do usuário e consulta da account já usa persistência e providers reais na API. As configurações de integração ainda possuem respostas simuladas. As rotas de criação de agendamento e callback da Z-API, assim como o processamento e a entrega de webhooks, ainda não estão implementados. O fluxo completo descrito acima é o objetivo de validação do Beta, não uma capacidade já concluída.
+O acesso por convite, cadastro, login, logout, consulta do usuário, consulta da account e configurações de integração já usa persistência e providers reais na API. As rotas de criação de agendamento e callback da Z-API, assim como o processamento e a entrega de webhooks, ainda não estão implementados. O fluxo completo descrito acima é o objetivo de validação do Beta, não uma capacidade já concluída.

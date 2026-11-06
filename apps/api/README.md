@@ -70,8 +70,9 @@ seus blocos de configuração sem expor segredos.
 ### `integrations`
 
 Expõe as configurações de janela de envio, webhook, Z-API e geração de API Key.
-As rotas são protegidas por autenticação e autorização. Os controllers ainda
-possuem respostas mockadas; os casos de uso e contratos já estão separados.
+As rotas são protegidas por autenticação e autorização. Os controllers usam os
+casos de uso, o repository Prisma e os providers de proteção de segredos; a
+configuração da Z-API também registra o callback externo antes de persistir.
 
 ### `appointments` e `webhooks`
 
