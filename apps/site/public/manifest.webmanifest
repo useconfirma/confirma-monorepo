@@ -1,0 +1,24 @@
+{
+    "name": "Confirma",
+    "short_name": "Confirma",
+    "description": "Confirmações de agendamento pelo WhatsApp.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#F3F7F5",
+    "theme_color": "#0B1F1A",
+    "lang": "pt-BR",
+    "icons": [
+        {
+            "src": "/apple-touch-icon.svg",
+            "sizes": "180x180",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

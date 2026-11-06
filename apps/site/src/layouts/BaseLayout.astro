@@ -1,0 +1,41 @@
+---
+import Seo from '../components/Seo.astro';
+import { siteConfig } from '../config/site';
+import '../styles/global.css';
+
+interface Props {
+    title?: string;
+    description?: string;
+    canonical?: string;
+    noindex?: boolean;
+}
+
+const { title, description, canonical, noindex } = Astro.props;
+---
+
+<!doctype html>
+<html lang={siteConfig.language}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="theme-color" content="#0B1F1A" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.svg"
+        />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0A7F50" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="msapplication-TileColor" content="#0A7F50" />
+        <Seo
+            title={title}
+            description={description}
+            canonical={canonical}
+            noindex={noindex}
+        />
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>

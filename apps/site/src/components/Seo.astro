@@ -1,0 +1,72 @@
+---
+import { siteConfig } from '../config/site';
+
+interface Props {
+    title?: string;
+    description?: string;
+    canonical?: string;
+    noindex?: boolean;
+}
+
+const {
+    title = siteConfig.title,
+    description = siteConfig.description,
+    canonical = siteConfig.url,
+    noindex = false,
+} = Astro.props;
+
+const absoluteCanonical = new URL(canonical, siteConfig.url).toString();
+const absoluteImage = new URL(siteConfig.ogImage, siteConfig.url).toString();
+
+const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+        {
+            '@type': 'Organization',
+            '@id': `${siteConfig.url}/#organization`,
+            name: siteConfig.name,
+            url: siteConfig.url,
+            logo: new URL('/favicon.svg', siteConfig.url).toString(),
+        },
+        {
+            '@type': 'SoftwareApplication',
+            name: siteConfig.name,
+            applicationCategory: 'BusinessApplication',
+            operatingSystem: 'Web',
+            description,
+            url: siteConfig.url,
+            publisher: { '@id': `${siteConfig.url}/#organization` },
+        },
+        {
+            '@type': 'WebSite',
+            name: siteConfig.name,
+            url: siteConfig.url,
+            inLanguage: siteConfig.language,
+        },
+    ],
+};
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+<link rel="canonical" href={absoluteCanonical} />
+
+<meta property="og:locale" content={siteConfig.locale} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteConfig.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={absoluteCanonical} />
+<meta property="og:image" content={absoluteImage} />
+<meta
+    property="og:image:alt"
+    content="Confirma — confirmações de agendamento"
+/>
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={absoluteImage} />
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "prisma:generate": "prisma generate",
-        "dev": "prisma generate && tsx watch src/shared/infrastructure/http/server.ts",
+        "dev": "tsx watch src/shared/infrastructure/http/server.ts",
         "build": "prisma generate && tsc -p tsconfig.json",
         "start": "node dist/shared/infrastructure/http/server.js",
         "typecheck": "prisma generate && tsc --noEmit",
