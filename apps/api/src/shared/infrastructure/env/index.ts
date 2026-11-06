@@ -8,8 +8,10 @@ const envSchema = z.object({
     DATABASE_URL: z.url(),
     JWT_SECRET: z.string().min(1).default('default-secret'),
     RESEND_API_KEY: z.string().min(1),
-    RESEND_FROM_EMAIL: z.email(),
-    PUBLIC_APP_URL: z.url(),
+    RESEND_FROM_EMAIL: z
+        .email()
+        .default('Confirma <noreply@mail.useconfirma.com.br>'),
+    PUBLIC_APP_URL: z.url().default('http://localhost:3000'),
 });
 
 const parsed = envSchema.safeParse(process.env);
