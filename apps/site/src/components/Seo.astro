@@ -16,7 +16,10 @@ const {
 } = Astro.props;
 
 const absoluteCanonical = new URL(canonical, siteConfig.url).toString();
-const absoluteImage = new URL(siteConfig.ogImage, siteConfig.url).toString();
+const absoluteImage = new URL(
+    siteConfig.ogImage.path,
+    siteConfig.url,
+).toString();
 
 const structuredData = {
     '@context': 'https://schema.org',
@@ -26,7 +29,7 @@ const structuredData = {
             '@id': `${siteConfig.url}/#organization`,
             name: siteConfig.name,
             url: siteConfig.url,
-            logo: new URL('/favicon.svg', siteConfig.url).toString(),
+            logo: new URL(siteConfig.logo, siteConfig.url).toString(),
         },
         {
             '@type': 'SoftwareApplication',
@@ -59,14 +62,15 @@ const structuredData = {
 <meta property="og:description" content={description} />
 <meta property="og:url" content={absoluteCanonical} />
 <meta property="og:image" content={absoluteImage} />
-<meta
-    property="og:image:alt"
-    content="Confirma — confirmações de agendamento"
-/>
+<meta property="og:image:type" content={siteConfig.ogImage.type} />
+<meta property="og:image:width" content={String(siteConfig.ogImage.width)} />
+<meta property="og:image:height" content={String(siteConfig.ogImage.height)} />
+<meta property="og:image:alt" content={siteConfig.ogImage.alt} />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={absoluteImage} />
+<meta name="twitter:image:alt" content={siteConfig.ogImage.alt} />
 
 <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

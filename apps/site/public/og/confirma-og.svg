@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#0B1F1A"/>
-  <circle cx="1020" cy="120" r="180" fill="#0A7F50"/>
-  <circle cx="1110" cy="520" r="240" fill="#13302A"/>
-  <text x="84" y="245" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="92" font-weight="700">Confirma</text>
-  <text x="88" y="330" fill="#3DDC97" font-family="Arial, sans-serif" font-size="40">Confirmações de agendamento pelo WhatsApp</text>
-  <rect x="88" y="405" width="180" height="12" fill="#3DDC97"/>
-</svg>

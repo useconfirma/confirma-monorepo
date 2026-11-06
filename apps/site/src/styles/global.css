@@ -1,1 +1,799 @@
 @import 'tailwindcss';
+
+/* ==========================================================================
+   Confirma — Design System do site
+   Cores: docs/product/assets/tokens.json. Fontes: public/fonts (SIL OFL 1.1).
+   Material único: esmalte. Superfícies sólidas, luz vinda de cima, sem
+   gradientes, sem desfoque e com sombra apenas onde há interação.
+   ========================================================================== */
+
+/* Fontes ------------------------------------------------------------------ */
+
+@font-face {
+    font-family: 'IBM Plex Sans';
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: swap;
+    src: url('/fonts/ibm-plex-sans-latin-wght.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/ibm-plex-mono-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/fonts/ibm-plex-mono-latin-500.woff2') format('woff2');
+}
+
+/* Tokens ------------------------------------------------------------------ */
+
+@theme static {
+    /* palette.marca */
+    --color-*: initial;
+    --color-verde: #0a7f50;
+    --color-menta: #3ddc97;
+    --color-noite: #0b1f1a;
+    --color-nevoa: #f3f7f5;
+
+    /* palette.apoio */
+    --color-branco: #ffffff;
+    --color-verde-escuro: #13302a;
+    --color-verde-claro: #e6f5ee;
+    --color-cinza-verde-escuro: #4a5e57;
+    --color-cinza-verde-medio: #9db5ac;
+    --color-cinza-verde-claro: #d5e1dc;
+    --color-verde-profundo: #24443b;
+    --color-cinza-verde: #738a82;
+    --color-verde-acinzentado: #5e8579;
+
+    /* palette.acentos */
+    --color-ambar: #f5a524;
+    --color-marrom-ambar: #3a2400;
+    --color-vermelho: #c8262c;
+    --color-coral: #f26b6f;
+
+    /* Papéis semânticos. Superfícies escuras (.on-noite) os redefinem. */
+    --color-canvas: var(--color-nevoa);
+    --color-surface: var(--color-branco);
+    --color-surface-sunken: var(--color-nevoa);
+    --color-surface-hover: var(--color-verde-claro);
+    --color-ink: var(--color-noite);
+    --color-ink-muted: var(--color-cinza-verde-escuro);
+    --color-line: var(--color-cinza-verde-claro);
+    --color-line-strong: var(--color-cinza-verde);
+    --color-link: var(--color-verde);
+    --color-link-hover: var(--color-verde-escuro);
+    --color-focus: var(--color-verde);
+    --color-action: var(--color-noite);
+    --color-action-hover: var(--color-verde-escuro);
+    --color-on-action: var(--color-branco);
+    --color-confirmed: var(--color-verde);
+    --color-danger: var(--color-vermelho);
+
+    /* Tipografia */
+    --font-*: initial;
+    --font-sans:
+        'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+        Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono:
+        'IBM Plex Mono', ui-monospace, SFMono-Regular, 'Cascadia Mono',
+        'Segoe UI Mono', Menlo, Consolas, monospace;
+
+    --font-weight-*: initial;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Escala fluida entre 390px e 1440px de viewport */
+    --text-*: initial;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: 1.4;
+    --text-xs--letter-spacing: 0.01em;
+    --text-sm: 0.875rem;
+    --text-sm--line-height: 1.5;
+    --text-base: clamp(1rem, 0.977rem + 0.095vw, 1.0625rem);
+    --text-base--line-height: 1.6;
+    --text-lg: clamp(1.125rem, 1.079rem + 0.19vw, 1.25rem);
+    --text-lg--line-height: 1.55;
+    --text-xl: clamp(1.25rem, 1.157rem + 0.381vw, 1.5rem);
+    --text-xl--line-height: 1.35;
+    --text-xl--letter-spacing: -0.01em;
+    --text-2xl: clamp(1.5rem, 1.314rem + 0.762vw, 2rem);
+    --text-2xl--line-height: 1.2;
+    --text-2xl--letter-spacing: -0.015em;
+    --text-3xl: clamp(1.875rem, 1.55rem + 1.333vw, 2.75rem);
+    --text-3xl--line-height: 1.12;
+    --text-3xl--letter-spacing: -0.02em;
+    --text-4xl: clamp(2.25rem, 1.693rem + 2.286vw, 3.75rem);
+    --text-4xl--line-height: 1.05;
+    --text-4xl--letter-spacing: -0.03em;
+    --text-5xl: clamp(2.75rem, 1.914rem + 3.429vw, 5rem);
+    --text-5xl--line-height: 1;
+    --text-5xl--letter-spacing: -0.035em;
+
+    --leading-*: initial;
+    --leading-none: 1;
+    --leading-tight: 1.1;
+    --leading-snug: 1.3;
+    --leading-normal: 1.6;
+    --leading-relaxed: 1.75;
+
+    --tracking-*: initial;
+    --tracking-display: -0.035em;
+    --tracking-tight: -0.015em;
+    --tracking-normal: 0em;
+    --tracking-wide: 0.02em;
+    --tracking-caps: 0.08em;
+
+    /* Espaço de página (a escala numérica usa --spacing: 0.25rem) */
+    --spacing-gutter: clamp(1rem, 0.443rem + 2.286vw, 2.5rem);
+    --spacing-section: clamp(4rem, 2.514rem + 6.095vw, 8rem);
+
+    /* Breakpoints: 640, 768, 1024, 1280, 1440 */
+    --breakpoint-*: initial;
+    --breakpoint-sm: 40rem;
+    --breakpoint-md: 48rem;
+    --breakpoint-lg: 64rem;
+    --breakpoint-xl: 80rem;
+    --breakpoint-2xl: 90rem;
+
+    /* Larguras máximas */
+    --container-page: 76rem;
+    --container-narrow: 28rem;
+
+    /* Raios: o símbolo usa um balão com cantos de ~24% */
+    --radius-*: initial;
+    --radius-xs: 0.25rem;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-full: 9999px;
+
+    /* Sombras: só controles e camadas sobrepostas, tingidas de Noite */
+    --shadow-*: initial;
+    --shadow-key:
+        inset 0 1px 0 rgb(255 255 255 / 0.12), 0 1px 2px rgb(11 31 26 / 0.24);
+    --shadow-key-light:
+        inset 0 -1px 0 rgb(11 31 26 / 0.06), 0 1px 2px rgb(11 31 26 / 0.08);
+    --shadow-overlay:
+        0 12px 32px -12px rgb(11 31 26 / 0.24), 0 2px 6px rgb(11 31 26 / 0.08);
+
+    --inset-shadow-*: initial;
+    --inset-shadow-well: inset 0 1px 2px rgb(11 31 26 / 0.07);
+    --inset-shadow-pressed: inset 0 2px 3px rgb(11 31 26 / 0.32);
+    --inset-shadow-pressed-light: inset 0 2px 3px rgb(11 31 26 / 0.12);
+
+    --drop-shadow-*: initial;
+    --text-shadow-*: initial;
+    --blur-*: initial;
+
+    /* Movimento */
+    --ease-*: initial;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+    --default-transition-duration: 180ms;
+    --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+    --animate-*: initial;
+    --animate-fade-in: fade-in 240ms cubic-bezier(0, 0, 0.2, 1) both;
+    --animate-rise: rise 320ms cubic-bezier(0, 0, 0.2, 1) both;
+    --animate-check: check-draw 420ms cubic-bezier(0.2, 0, 0, 1) 120ms both;
+    --animate-waiting: waiting 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+:root {
+    color-scheme: light;
+
+    /* Durações para propriedades que não usam a transição padrão */
+    --duration-fast: 120ms;
+    --duration-base: 180ms;
+    --duration-slow: 240ms;
+
+    /* Camadas (z-index). Uso: z-(--z-header) */
+    --z-base: 0;
+    --z-raised: 10;
+    --z-sticky: 100;
+    --z-header: 200;
+    --z-overlay: 300;
+    --z-modal: 400;
+    --z-toast: 500;
+    --z-skip: 600;
+
+    /* Grade */
+    --grid-columns: 4;
+    --grid-gap: 1rem;
+
+    /* Interação */
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+    --target-min: 2.75rem;
+
+    --selection-bg: var(--color-verde);
+    --selection-fg: var(--color-branco);
+}
+
+@media (width >= 48rem) {
+    :root {
+        --grid-columns: 8;
+        --grid-gap: 1.5rem;
+    }
+}
+
+@media (width >= 64rem) {
+    :root {
+        --grid-columns: 12;
+        --grid-gap: 2rem;
+    }
+}
+
+/* Keyframes (fora do @theme para existirem mesmo sem utilitário animate-*) */
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(0.5rem);
+    }
+}
+
+/* Usar com pathLength="1" no traço do check */
+@keyframes check-draw {
+    from {
+        stroke-dashoffset: 1;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes waiting {
+    50% {
+        opacity: 0.35;
+    }
+}
+
+/* Base -------------------------------------------------------------------- */
+/* O preflight do Tailwind faz o reset; aqui ficam os complementos. */
+
+@layer base {
+    html {
+        font-family: var(--font-sans);
+        font-size: 100%;
+        line-height: var(--leading-normal);
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        font-synthesis-weight: none;
+        scroll-padding-top: 5rem;
+        background-color: var(--color-canvas);
+        color: var(--color-ink);
+    }
+
+    body {
+        min-height: 100dvh;
+        font-size: var(--text-base);
+        line-height: var(--text-base--line-height);
+        background-color: var(--color-canvas);
+        color: var(--color-ink);
+        overflow-wrap: break-word;
+    }
+
+    ::selection {
+        background-color: var(--selection-bg);
+        color: var(--selection-fg);
+    }
+
+    :is(h1, h2, h3, h4, h5, h6) {
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-ink);
+        text-wrap: balance;
+    }
+
+    h1 {
+        font-size: var(--text-5xl);
+        line-height: var(--text-5xl--line-height);
+        letter-spacing: var(--text-5xl--letter-spacing);
+    }
+
+    h2 {
+        font-size: var(--text-3xl);
+        line-height: var(--text-3xl--line-height);
+        letter-spacing: var(--text-3xl--letter-spacing);
+    }
+
+    h3 {
+        font-size: var(--text-xl);
+        line-height: var(--text-xl--line-height);
+        letter-spacing: var(--text-xl--letter-spacing);
+    }
+
+    :is(h4, h5, h6) {
+        font-size: var(--text-lg);
+        line-height: var(--text-lg--line-height);
+    }
+
+    :is(p, li, dd, figcaption, blockquote) {
+        text-wrap: pretty;
+    }
+
+    :is(strong, b) {
+        font-weight: var(--font-weight-semibold);
+    }
+
+    small {
+        font-size: var(--text-sm);
+    }
+
+    hr {
+        border-top: 1px solid var(--color-line);
+    }
+
+    /* Links */
+    a {
+        color: var(--color-link);
+        text-decoration-line: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
+        transition:
+            color var(--duration-fast) var(--ease-standard),
+            text-decoration-thickness var(--duration-fast) var(--ease-standard);
+    }
+
+    a:hover {
+        color: var(--color-link-hover);
+        text-decoration-thickness: 2px;
+    }
+
+    /* Foco visível só para teclado */
+    :focus-visible {
+        outline: var(--focus-ring-width) solid var(--color-focus);
+        outline-offset: var(--focus-ring-offset);
+    }
+
+    :focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    /* Mídia */
+    :is(img, svg, video, canvas, picture) {
+        max-width: 100%;
+    }
+
+    :is(img, video) {
+        height: auto;
+    }
+
+    /* Botões nativos */
+    :is(button, [role='button'], summary) {
+        cursor: pointer;
+        touch-action: manipulation;
+    }
+
+    :is(button:disabled, [aria-disabled='true']) {
+        cursor: not-allowed;
+    }
+
+    /* Campos: poço afundado, borda com 3:1 sobre branco */
+    :is(
+        input:not(
+            [type='checkbox'],
+            [type='radio'],
+            [type='range'],
+            [type='file'],
+            [type='color'],
+            [type='hidden'],
+            [type='submit'],
+            [type='button'],
+            [type='reset']
+        ),
+        textarea,
+        select
+    ) {
+        width: 100%;
+        min-height: var(--target-min);
+        padding: 0.625rem 0.875rem;
+        border: 1px solid var(--color-line-strong);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        color: var(--color-ink);
+        font-size: 1rem;
+        line-height: 1.5;
+        box-shadow: var(--inset-shadow-well);
+        transition:
+            border-color var(--duration-fast) var(--ease-standard),
+            box-shadow var(--duration-fast) var(--ease-standard);
+    }
+
+    textarea {
+        min-height: 6rem;
+        resize: vertical;
+    }
+
+    :is(input, textarea, select):hover:not(:disabled) {
+        border-color: var(--color-ink-muted);
+    }
+
+    :is(input, textarea, select):focus-visible {
+        border-color: var(--color-focus);
+        outline-offset: 0;
+    }
+
+    :is(input, textarea, select)[aria-invalid='true'] {
+        border-color: var(--color-danger);
+    }
+
+    :is(input, textarea, select):disabled {
+        border-color: var(--color-line);
+        background-color: var(--color-surface-sunken);
+        color: var(--color-ink-muted);
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+
+    ::placeholder {
+        color: var(--color-ink-muted);
+        opacity: 1;
+    }
+
+    :is(input[type='checkbox'], input[type='radio']) {
+        width: 1.125rem;
+        height: 1.125rem;
+        accent-color: var(--color-verde);
+    }
+
+    label {
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+    }
+
+    /* Código: chaves, IDs, estados e URLs usam Plex Mono */
+    :is(code, kbd, samp, pre) {
+        font-family: var(--font-mono);
+        font-size: 0.9em;
+        font-variant-ligatures: none;
+        font-variant-numeric: tabular-nums slashed-zero;
+    }
+
+    :is(:not(pre) > code, kbd) {
+        padding: 0.1em 0.35em;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xs);
+        background-color: var(--color-surface);
+        color: var(--color-ink);
+    }
+
+    kbd {
+        border-bottom-width: 2px;
+    }
+
+    /* Em títulos, o código mantém só a fonte para não quebrar a linha */
+    :is(h1, h2, h3, h4, h5, h6) code {
+        padding: 0;
+        border: 0;
+        background-color: transparent;
+        font-size: 0.92em;
+    }
+
+    pre {
+        padding: 1rem 1.25rem;
+        border-radius: var(--radius-lg);
+        background-color: var(--color-noite);
+        color: var(--color-nevoa);
+        line-height: var(--leading-relaxed);
+        overflow-x: auto;
+        tab-size: 4;
+    }
+
+    pre ::selection {
+        background-color: var(--color-menta);
+        color: var(--color-noite);
+    }
+}
+
+/* Componentes globais ----------------------------------------------------- */
+
+@layer components {
+    /* Botão de esmalte: sobe no repouso, afunda ao pressionar */
+    .btn {
+        --btn-bg: var(--color-action);
+        --btn-bg-hover: var(--color-action-hover);
+        --btn-fg: var(--color-on-action);
+        --btn-border: var(--color-action);
+        --btn-shadow: var(--shadow-key);
+        --btn-shadow-pressed: var(--inset-shadow-pressed);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: var(--target-min);
+        padding: 0.5rem 1.125rem;
+        border: 1px solid var(--btn-border);
+        border-radius: var(--radius-md);
+        background-color: var(--btn-bg);
+        box-shadow: var(--btn-shadow);
+        color: var(--btn-fg);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        line-height: 1.25;
+        text-decoration: none;
+        white-space: nowrap;
+        user-select: none;
+        transition:
+            background-color var(--duration-fast) var(--ease-standard),
+            border-color var(--duration-fast) var(--ease-standard),
+            box-shadow var(--duration-fast) var(--ease-standard),
+            transform var(--duration-fast) var(--ease-standard);
+    }
+
+    .btn:hover {
+        background-color: var(--btn-bg-hover);
+        color: var(--btn-fg);
+        text-decoration: none;
+    }
+
+    .btn:active:not(:disabled, [aria-disabled='true']) {
+        transform: translateY(1px);
+        box-shadow: var(--btn-shadow-pressed);
+    }
+
+    .btn:disabled,
+    .btn[aria-disabled='true'] {
+        --btn-bg: var(--color-cinza-verde-claro);
+        --btn-bg-hover: var(--color-cinza-verde-claro);
+        --btn-fg: var(--color-cinza-verde-escuro);
+        --btn-border: var(--color-cinza-verde-claro);
+        --btn-shadow: none;
+    }
+
+    .btn-secondary {
+        --btn-bg: var(--color-surface);
+        --btn-bg-hover: var(--color-surface-hover);
+        --btn-fg: var(--color-ink);
+        --btn-border: var(--color-line-strong);
+        --btn-shadow: var(--shadow-key-light);
+        --btn-shadow-pressed: var(--inset-shadow-pressed-light);
+    }
+
+    .btn-quiet {
+        --btn-bg: transparent;
+        --btn-bg-hover: var(--color-surface-hover);
+        --btn-fg: var(--color-link);
+        --btn-border: transparent;
+        --btn-shadow: none;
+        --btn-shadow-pressed: var(--inset-shadow-pressed-light);
+    }
+
+    .btn-lg {
+        min-height: 3.25rem;
+        padding-inline: 1.5rem;
+        font-size: var(--text-base);
+    }
+
+    /* Campo com rótulo, dica e erro */
+    .field {
+        display: grid;
+        gap: 0.375rem;
+    }
+
+    .field-hint {
+        color: var(--color-ink-muted);
+        font-size: var(--text-sm);
+    }
+
+    .field-error {
+        color: var(--color-danger);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+    }
+
+    /* Rótulo de seção em Plex Mono */
+    .eyebrow {
+        color: var(--color-ink-muted);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: var(--tracking-caps);
+        text-transform: uppercase;
+    }
+
+    /* Folha branca sobre a moldura Névoa, sem sombra */
+    .sheet {
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xl);
+        background-color: var(--color-surface);
+    }
+
+    /* Estado do agendamento, com os nomes do domínio */
+    .status {
+        --status-bg: var(--color-surface);
+        --status-fg: var(--color-ink-muted);
+        --status-border: var(--color-line);
+        --status-dot: var(--color-cinza-verde);
+
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.25rem 0.625rem;
+        border: 1px solid var(--status-border);
+        border-radius: var(--radius-full);
+        background-color: var(--status-bg);
+        color: var(--status-fg);
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        font-weight: var(--font-weight-medium);
+        line-height: 1.4;
+        white-space: nowrap;
+    }
+
+    .status::before {
+        content: '';
+        flex: none;
+        width: 0.5rem;
+        height: 0.5rem;
+        border: 2px solid var(--status-dot);
+        border-radius: var(--radius-full);
+        background-color: var(--status-dot);
+    }
+
+    .status[data-state='queued'] {
+        --status-bg: var(--color-ambar);
+        --status-fg: var(--color-marrom-ambar);
+        --status-border: var(--color-ambar);
+        --status-dot: var(--color-marrom-ambar);
+    }
+
+    .status[data-state='queued']::before {
+        animation: var(--animate-waiting);
+    }
+
+    .status[data-state='confirmed'] {
+        --status-bg: var(--color-confirmed);
+        --status-fg: var(--color-branco);
+        --status-border: var(--color-confirmed);
+        --status-dot: var(--color-branco);
+    }
+
+    .status[data-state='declined'] {
+        --status-fg: var(--color-ink);
+        --status-dot: var(--color-danger);
+    }
+
+    .status[data-state='declined']::before,
+    .status[data-state='expired']::before {
+        background-color: transparent;
+    }
+
+    .status[data-state='expired'] {
+        --status-bg: var(--color-surface-sunken);
+    }
+
+    .status[data-state='failed'] {
+        --status-fg: var(--color-danger);
+        --status-border: var(--color-danger);
+        --status-dot: var(--color-danger);
+    }
+
+    /* Atalho para pular ao conteúdo */
+    .skip-link {
+        position: fixed;
+        top: 0.75rem;
+        left: 0.75rem;
+        z-index: var(--z-skip);
+        padding: 0.625rem 1rem;
+        border-radius: var(--radius-md);
+        background-color: var(--color-noite);
+        color: var(--color-branco);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        transform: translateY(calc(-100% - 1rem));
+        transition: transform var(--duration-fast) var(--ease-standard);
+    }
+
+    .skip-link:focus-visible {
+        transform: none;
+        outline-color: var(--color-menta);
+    }
+}
+
+/* Utilitários ------------------------------------------------------------- */
+
+@utility container-page {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+}
+
+@utility grid-page {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    gap: var(--grid-gap);
+}
+
+/* Superfície Noite: remapeia os papéis para manter contraste */
+@utility on-noite {
+    --color-canvas: var(--color-noite);
+    --color-surface: var(--color-verde-escuro);
+    --color-surface-sunken: var(--color-noite);
+    --color-surface-hover: var(--color-verde-profundo);
+    --color-ink: var(--color-nevoa);
+    --color-ink-muted: var(--color-cinza-verde-medio);
+    --color-line: var(--color-verde-profundo);
+    --color-line-strong: var(--color-cinza-verde);
+    --color-link: var(--color-menta);
+    --color-link-hover: var(--color-branco);
+    --color-focus: var(--color-menta);
+    --color-action: var(--color-menta);
+    --color-action-hover: var(--color-branco);
+    --color-on-action: var(--color-noite);
+    --color-confirmed: var(--color-verde);
+    --color-danger: var(--color-coral);
+    --selection-bg: var(--color-menta);
+    --selection-fg: var(--color-noite);
+
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+}
+
+/* Traço que se desenha: o check do símbolo. Requer pathLength="1". */
+@utility check-draw {
+    stroke-dasharray: 1;
+    animation: var(--animate-check);
+}
+
+@utility tabular {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Preferências do sistema ------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media (forced-colors: active) {
+    .btn,
+    .status {
+        border-color: CanvasText;
+    }
+
+    :focus-visible {
+        outline-color: Highlight;
+    }
+}

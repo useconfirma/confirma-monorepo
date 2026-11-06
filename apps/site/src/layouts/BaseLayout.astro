@@ -17,17 +17,32 @@ const { title, description, canonical, noindex } = Astro.props;
 <html lang={siteConfig.language}>
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <meta name="theme-color" content="#0B1F1A" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content={siteConfig.themeColor} />
+        <link
+            rel="preload"
+            href="/fonts/ibm-plex-sans-latin-wght.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="/apple-touch-icon.svg"
+            href="/apple-touch-icon.png"
         />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0A7F50" />
+        <link
+            rel="mask-icon"
+            href="/safari-pinned-tab.svg"
+            color={siteConfig.maskIconColor}
+        />
         <link rel="manifest" href="/manifest.webmanifest" />
-        <meta name="msapplication-TileColor" content="#0A7F50" />
+        <meta
+            name="msapplication-TileColor"
+            content={siteConfig.maskIconColor}
+        />
         <Seo
             title={title}
             description={description}
