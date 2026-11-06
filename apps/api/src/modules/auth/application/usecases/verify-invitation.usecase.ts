@@ -1,5 +1,5 @@
 import type { InvitationRepository } from '../../domain/repositories/invitation.repository.js';
-import { AppError } from '../../../../shared/domain/errors/app-error.js';
+import { InvitationUnavailableError } from '../../domain/errors/invitation-unavailable.error.js';
 import type { CryptoProvider } from '../../../../shared/domain/providers/crypto-provider.js';
 
 export type VerifyInvitationUseCaseInput = {
@@ -28,11 +28,7 @@ export class VerifyInvitationUseCase {
             invitation.usedAt ||
             invitation.expiresAt <= new Date()
         ) {
-            throw new AppError(
-                'INVITATION_UNAVAILABLE',
-                'Convite indisponível.',
-                410,
-            );
+            throw new InvitationUnavailableError();
         }
 
         return { email: invitation.email };

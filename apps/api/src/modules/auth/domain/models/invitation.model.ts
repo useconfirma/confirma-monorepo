@@ -4,4 +4,6 @@ export interface Invitation {
     tokenHash: string;
     expiresAt: Date;
     usedAt: Date | null;
+    createdAt: Date;
+    createdById: string | null;
 }
