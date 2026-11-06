@@ -4,7 +4,7 @@ name: 'confirma-api'
 description: 'Contratos HTTP do painel, da API pública e dos webhooks do Confirma Beta'
 api:
     base-path: '/'
-    authentication: 'Cookie de sessão nas rotas protegidas.'
+    authentication: 'JWT stateless em cookie HttpOnly nas rotas protegidas.'
     error-format: 'JSON { error: { code, message } }'
 endpoints:
     - {
@@ -96,7 +96,7 @@ endpoints:
           request:
               { params: [], query: [], body: ['start', 'end', 'timeZone'] },
           response: { status: 200, body: ['configured', 'start', 'end', 'timeZone', 'updatedAt'] },
-          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autenticação ou autorização não configurada'],
+          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autorização não configurada'],
       }
     - {
           id: API-08,
@@ -106,7 +106,7 @@ endpoints:
           authorization: 'Cookie de sessão válido',
           request: { params: [], query: [], body: [] },
           response: { status: 201, body: ['apiKey', 'createdAt'] },
-          errors: ['401: sessão ausente ou inválida', '503: autenticação ou autorização não configurada'],
+          errors: ['401: sessão ausente ou inválida', '503: autorização não configurada'],
       }
     - {
           id: API-09,
@@ -116,7 +116,7 @@ endpoints:
           authorization: 'Cookie de sessão válido',
           request: { params: [], query: [], body: ['url', 'secret'] },
           response: { status: 200, body: ['configured', 'url', 'updatedAt'] },
-          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autenticação ou autorização não configurada'],
+          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autorização não configurada'],
       }
     - {
           id: API-10,
@@ -131,7 +131,7 @@ endpoints:
                   body: ['instanceId', 'instanceToken', 'clientToken'],
               },
           response: { status: 200, body: ['configured', 'instanceId', 'updatedAt'] },
-          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autenticação ou autorização não configurada'],
+          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autorização não configurada'],
       }
     - {
           id: API-11,
@@ -215,7 +215,7 @@ endpoints:
 - **Prefixo:** as rotas atuais não usam prefixo global. A API também expõe `GET /openapi.json` e a interface em `/docs`.
 - **Mídia:** requisições e respostas com corpo usam `application/json; charset=utf-8`.
 - **Datas:** ISO 8601; instantes incluem deslocamento UTC. Eventos emitidos pelo Confirma usam UTC.
-- **Autenticação do painel:** JWT com duração de 8 horas no cookie HttpOnly `confirma_session`, `SameSite=Lax` e `Secure` em produção. O navegador envia o cookie nas operações do painel. Não existe refresh token.
+- **Autenticação do painel:** JWT stateless com duração de 8 horas no cookie HttpOnly `confirma_session`, `SameSite=Lax` e `Secure` em produção. O navegador envia o cookie nas operações do painel. Não existe tabela de sessão nem refresh token. O logout limpa o cookie; o token emitido continua válido até expirar caso seja reutilizado fora do navegador.
 - **API pública:** `Authorization: Bearer <api-key>` nas rotas previstas do Beta. A API Key identifica a account e nunca é aceita por query string.
 - **Erro:** `{ "error": { "code": "machine_readable_code", "message": "mensagem objetiva" } }`. Não há outros campos.
 - **Segredos:** API Key é exibida somente ao gerar; senha, segredo de webhook e tokens Z-API nunca são retornados.
@@ -229,7 +229,7 @@ endpoints:
 - **Caso de uso:** UC-01; requisito RF-01.
 - **Acesso:** público.
 - **Entrada:** `{ "email": "dev@example.com" }`.
-- **Resposta atual:** `202` com `{ "accepted": true }`; o controller valida o corpo e retorna uma resposta mockada.
+- **Resposta atual:** `202` com `{ "accepted": true }`. O controller valida o corpo e executa o caso de uso com repository Prisma e envio de convite pelo Resend.
 
 ### API-14 — Verificar convite
 
@@ -238,7 +238,7 @@ endpoints:
 - **Caso de uso:** UC-16; requisito RF-01.
 - **Acesso:** público; o token secreto no caminho é a credencial.
 - **Resposta:** `200` com `{ "email": "dev@example.com" }`, o e-mail autorizado pelo convite.
-- **Resposta atual:** `200` com `{ "email": "dev@example.com" }`; o controller valida o parâmetro e retorna uma resposta mockada.
+- **Resposta atual:** `200` com o e-mail associado ao token do convite persistido. O convite usado ou expirado retorna `410`.
 
 ### API-02 — Aceitar convite e criar conta
 
@@ -248,7 +248,7 @@ endpoints:
 - **Entrada:** `invitationToken`, `password` e `accountName`, todos strings obrigatórios. O e-mail é o do convite.
 - **Resposta:** `201` com `{ "user": { "id": "...", "email": "..." }, "account": { "id": "...", "name": "..." } }`.
 - **Erro de validação:** `400` com `VALIDATION_ERROR`.
-- **Comportamento atual:** o controller valida o corpo e retorna uma resposta mockada; o caso de uso ainda não é executado.
+- **Comportamento atual:** o controller executa o caso de uso, consome o convite e cria usuário e account em uma transação Prisma. O DTO público é construído no controller com somente `id` e `email` do usuário e `id` e `name` da account; hash de senha e campos internos de persistência não são retornados.
 
 ### API-03 — Login
 
@@ -256,8 +256,8 @@ endpoints:
 
 - **Caso de uso:** UC-03; requisito RF-01.
 - **Entrada:** `email` e `password`.
-- **Resposta atual:** `204`, sem corpo e sem `Set-Cookie`; o controller ainda não executa o caso de uso de autenticação.
-- **Erros:** `400` com `VALIDATION_ERROR` para corpo inválido; a autenticação real ainda não é executada pelo controller.
+- **Resposta atual:** `204`, sem corpo, com `Set-Cookie` para `confirma_session` após validar a senha e assinar um JWT de 8 horas.
+- **Erros:** `400` com `VALIDATION_ERROR` para corpo inválido; `401` com `INVALID_CREDENTIALS` para e-mail ou senha inválidos.
 
 ### API-04 — Logout
 
@@ -265,53 +265,53 @@ endpoints:
 
 - **Caso de uso:** UC-04; requisito RF-01.
 - **Acesso:** cookie `confirma_session` válido.
-- **Resposta atual:** `204`, sem corpo e sem alteração do cookie; o controller ainda não executa o logout.
-- **Erros:** `401` com `UNAUTHENTICATED`; `503` se a autenticação não estiver configurada.
+- **Resposta atual:** `204`, sem corpo; o controller remove o cookie. Não há revogação do JWT no servidor.
+- **Erros:** `401` com `UNAUTHENTICATED` para cookie ausente, inválido ou usuário inexistente.
 
 ### API-05 — Consultar account
 
 `GET /account`
 
 - **Caso de uso:** UC-05; requisitos RF-01 e RF-02.
-- **Resposta atual:** `200` com a account mockada, em uma única requisição:
+- **Resposta do controller:** `200` com a account simulada, em uma única requisição. A rota retorna `503` antes de chegar ao controller enquanto a autorização da account não estiver configurada:
 
 ```json
 {
     "account": {
-        "id": "acc_123",
-        "name": "Clínica Teste",
+        "id": "account_mock",
+        "name": "Account de teste",
         "sendWindow": {
-            "configured": true,
-            "start": "08:00",
-            "end": "18:00",
-            "timeZone": "America/Sao_Paulo",
-            "updatedAt": "2026-11-04T12:00:00Z"
+            "configured": false,
+            "start": null,
+            "end": null,
+            "timeZone": null,
+            "updatedAt": null
         },
         "apiKey": {
-            "configured": true,
-            "createdAt": "2026-11-04T12:05:00Z"
+            "configured": false,
+            "createdAt": null
         },
         "webhook": {
-            "configured": true,
-            "url": "https://example.com/confirma",
-            "updatedAt": "2026-11-04T12:10:00Z"
+            "configured": false,
+            "url": null,
+            "updatedAt": null
         },
         "zApi": {
-            "configured": true,
-            "instanceId": "instance-id",
-            "updatedAt": "2026-11-04T12:15:00Z"
+            "configured": false,
+            "instanceId": null,
+            "updatedAt": null
         }
     }
 }
 ```
 
-Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` e os demais campos `null`:
+O formato dos blocos é estável: enquanto não configurados, usam `configured: false` e os demais campos `null`, como neste exemplo:
 
 ```json
 "webhook": { "configured": false, "url": null, "updatedAt": null }
 ```
 
-- **Erros:** `401` com `UNAUTHENTICATED`; `403` com `ACCOUNT_ACCESS_DENIED`; `503` se a autenticação ou autorização não estiver configurada.
+- **Erros:** `401` com `UNAUTHENTICATED`; `403` com `ACCOUNT_ACCESS_DENIED`; `503` quando a autorização de account não estiver configurada.
 - **Comportamento:** `sendWindow`, `apiKey`, `webhook` e `zApi` estão sempre presentes e cada um traz `configured`, para que o cliente não precise testar `null`. `updatedAt` (`createdAt` na API Key) é o instante da última gravação. Segredos nunca são retornados. É a única leitura da configuração: não há consultas individuais por recurso.
 
 ### API-06 — Consultar usuário atual
@@ -319,8 +319,8 @@ Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` 
 `GET /users/me`
 
 - **Caso de uso:** UC-06; requisito RF-01.
-- **Resposta atual:** `200` com `{ "user": { "id": "user_mock", "email": "dev@example.com" } }`.
-- **Erros:** `401` com `UNAUTHENTICATED`; `503` se a autenticação não estiver configurada.
+- **Resposta atual:** `200` com `{ "user": { "id": "...", "email": "..." } }`, obtido do usuário autenticado no Prisma.
+- **Erros:** `401` com `UNAUTHENTICATED` para cookie ausente, inválido ou usuário inexistente.
 
 ### API-07 — Configurar janela de envio
 
@@ -329,7 +329,7 @@ Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` 
 - **Caso de uso:** UC-07; requisito RF-02.
 - **Entrada:** `{ "start": "08:00", "end": "18:00", "timeZone": "America/Sao_Paulo" }`.
 - **Resposta atual:** `200` com `{ "configured": false, "start": null, "end": null, "timeZone": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autenticação ou autorização não estiver configurada.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
 
 ### API-08 — Gerar API Key
 
@@ -338,7 +338,7 @@ Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` 
 - **Caso de uso:** UC-08; requisito RF-03.
 - **Resposta atual:** `201` com `{ "apiKey": "api_key_mock", "createdAt": "..." }`.
 - **Comportamento atual:** retorna uma API Key mockada e não executa o caso de uso.
-- **Erros:** `401` com `UNAUTHENTICATED`; `503` se a autenticação ou autorização não estiver configurada.
+- **Erros:** `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
 
 ### API-09 — Configurar webhook de saída
 
@@ -347,7 +347,7 @@ Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` 
 - **Caso de uso:** UC-09; requisitos RF-02 e RF-09.
 - **Entrada:** `{ "url": "https://example.com/confirma", "secret": "<secret>" }`.
 - **Resposta atual:** `200` com `{ "configured": false, "url": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autenticação ou autorização não estiver configurada.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
 
 ### API-10 — Configurar Z-API
 
@@ -356,7 +356,7 @@ Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` 
 - **Caso de uso:** UC-10; requisitos RF-02 e RF-07.
 - **Entrada:** `instanceId`, `instanceToken` e `clientToken`, strings obrigatórias.
 - **Resposta atual:** `200` com `{ "configured": false, "instanceId": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autenticação ou autorização não estiver configurada.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
 
 ### API-11 — Criar agendamento
 
@@ -427,7 +427,7 @@ Bloco ainda não configurado mantém a mesma estrutura, com `configured: false` 
 
 ## Regras compartilhadas
 
-- Operações protegidas usam o cookie `confirma_session` e validam a account associada ao usuário.
+- Operações protegidas usam o cookie `confirma_session`; as rotas de account e integração também exigem autorização da account associada ao usuário.
 - A validação de corpos inválidos retorna `400` com `{ "error": { "code": "VALIDATION_ERROR", "message": "Dados inválidos." } }`.
-- Rotas protegidas retornam `503` quando suas dependências de autenticação ou autorização não estão configuradas no aplicativo.
+- As rotas de account e integração retornam `503` enquanto a dependência de autorização da account não estiver configurada no aplicativo. O middleware de autenticação usa diretamente o repository Prisma e o provider JWT.
 - API-11, API-12 e API-13 permanecem contratos do Beta mesmo enquanto suas rotas ainda não estiverem implementadas.

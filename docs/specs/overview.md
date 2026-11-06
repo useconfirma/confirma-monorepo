@@ -101,3 +101,7 @@ Os mesmos IDs são detalhados em `domain.md`.
 ## Critério de validação
 
 O Beta é funcional quando um desenvolvedor convidado consegue configurar a integração, criar um agendamento válido com dados fictícios, receber e responder à mensagem e receber em seu sistema um webhook assinado com o resultado. Rejeições síncronas, idempotência e falhas essenciais devem seguir os comportamentos especificados.
+
+## Estágio da implementação
+
+O acesso por convite, cadastro, login, logout e consulta do usuário já usa persistência e providers reais na API. Os controllers de account e integração ainda possuem respostas simuladas, mas suas rotas retornam `503` enquanto a autorização da account não estiver configurada. As rotas de criação de agendamento e callback da Z-API, assim como o processamento e a entrega de webhooks, ainda não estão implementados. O fluxo completo descrito acima é o objetivo de validação do Beta, não uma capacidade já concluída.

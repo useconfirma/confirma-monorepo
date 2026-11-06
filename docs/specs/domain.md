@@ -244,7 +244,7 @@ use-cases:
           actor: ACT-01,
           goal: 'Entrar.',
           preconditions: ['Conta existente.'],
-          main-flow: ['Informar credenciais.', 'Criar sessão de 8 horas.'],
+          main-flow: ['Informar credenciais.', 'Emitir JWT de 8 horas em cookie.'],
           outcome: 'Cookie de sessão emitido.',
       }
     - {
@@ -416,8 +416,10 @@ As regras normativas BR-01 a BR-28 estão no frontmatter. Elas regem acesso, con
 - **Pré-condições:** credencial correspondente válida.
 - **Fluxo principal:** validar convite, credenciais ou sessão e executar a operação sobre a conta.
 - **Fluxos alternativos essenciais:** convite expirado/usado, e-mail já cadastrado e credenciais inválidas são rejeitados sem alterar a conta.
-- **Pós-condições:** convite enviado/consumido ou sessão criada/removida/consultada.
+- **Pós-condições:** convite enviado/consumido ou cookie de autenticação emitido/removido; a consulta valida o JWT e a existência do usuário.
 - **Regras relacionadas:** BR-01, BR-02.
+
+O acesso ao painel usa JWT de 8 horas em cookie HttpOnly. Não há entidade ou tabela de sessão, nem revogação persistida: o logout remove o cookie do navegador. Convites e usuários são persistidos no PostgreSQL; o aceite do convite consome o registro e cria usuário e conta em uma transação.
 
 ### UC-16 — Verificar convite
 
