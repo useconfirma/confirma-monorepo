@@ -6,3 +6,209 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum AppointmentState {
+  QUEUED
+  SENT
+  CONFIRMED
+  DECLINED
+  EXPIRED
+  FAILED
+}
+
+enum AppointmentAttemptStatus {
+  PENDING
+  IN_PROGRESS
+  ACCEPTED
+  SENT
+  FAILED
+}
+
+enum WebhookEventStatus {
+  PENDING
+  DELIVERED
+  RETRYING
+  FAILED
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String
+  createdAt    DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime     @updatedAt @db.Timestamptz(3)
+  account      Account?
+  invitations  Invitation[]
+}
+
+model Account {
+  id                 String              @id @default(cuid())
+  name               String
+  userId             String              @unique
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  integrationConfig  IntegrationConfig?
+  apiKeys            ApiKey[]
+  appointments       Appointment[]
+  idempotencyRecords IdempotencyRecord[]
+  providerEvents     ProviderEvent[]
+  createdAt          DateTime            @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @db.Timestamptz(3)
+}
+
+model Invitation {
+  id          String    @id @default(cuid())
+  email       String
+  tokenHash   String    @unique
+  expiresAt   DateTime  @db.Timestamptz(3)
+  usedAt      DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  createdById String?
+  createdBy   User?     @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([email, expiresAt])
+}
+
+model IntegrationConfig {
+  id                         String    @id @default(cuid())
+  accountId                  String    @unique
+  account                    Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  sendWindowStart            DateTime? @db.Time(0)
+  sendWindowEnd              DateTime? @db.Time(0)
+  timeZone                   String?
+  webhookUrl                 String?
+  webhookSecretEncrypted     String?
+  zApiInstanceId             String?
+  zApiInstanceTokenEncrypted String?
+  zApiClientTokenEncrypted   String?
+  callbackTokenHash          String?   @unique
+  createdAt                  DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt                  DateTime  @updatedAt @db.Timestamptz(3)
+}
+
+model ApiKey {
+  id        String    @id @default(cuid())
+  accountId String
+  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  keyHash   String    @unique
+  keyPrefix String
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  revokedAt DateTime? @db.Timestamptz(3)
+
+  @@index([accountId, revokedAt])
+}
+
+model Appointment {
+  id                String               @id @default(cuid())
+  accountId         String
+  account           Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  externalId        String
+  patientName       String
+  patientPhone      String
+  scheduledAt       DateTime             @db.Timestamptz(3)
+  serviceName       String?
+  locationName      String?
+  state             AppointmentState     @default(QUEUED)
+  acceptedAt        DateTime             @default(now()) @db.Timestamptz(3)
+  sentAt            DateTime?            @db.Timestamptz(3)
+  terminalAt        DateTime?            @db.Timestamptz(3)
+  providerMessageId String?
+  failureReason     String?
+  createdAt         DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime             @updatedAt @db.Timestamptz(3)
+  idempotencyRecord IdempotencyRecord?
+  attempts          AppointmentAttempt[]
+  providerEvents    ProviderEvent[]
+  webhookEvents     WebhookEvent[]
+
+  @@unique([accountId, externalId])
+  @@index([state, scheduledAt])
+  @@index([providerMessageId])
+}
+
+model IdempotencyRecord {
+  id               String      @id @default(cuid())
+  accountId        String
+  account          Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  key              String
+  requestHash      String
+  responseSnapshot Json
+  appointmentId    String      @unique
+  appointment      Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  expiresAt        DateTime    @db.Timestamptz(3)
+  createdAt        DateTime    @default(now()) @db.Timestamptz(3)
+
+  @@unique([accountId, key])
+  @@index([expiresAt])
+}
+
+model AppointmentAttempt {
+  id                 String                   @id @default(cuid())
+  appointmentId      String
+  appointment        Appointment              @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  attemptNumber      Int
+  scheduledFor       DateTime                 @db.Timestamptz(3)
+  startedAt          DateTime?                @db.Timestamptz(3)
+  providerAcceptedAt DateTime?                @db.Timestamptz(3)
+  providerMessageId  String?
+  status             AppointmentAttemptStatus @default(PENDING)
+  failureReason      String?
+  createdAt          DateTime                 @default(now()) @db.Timestamptz(3)
+
+  @@unique([appointmentId, attemptNumber])
+  @@index([status, scheduledFor])
+}
+
+model ProviderEvent {
+  id                String       @id @default(cuid())
+  accountId         String
+  account           Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  appointmentId     String?
+  appointment       Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  eventType         String
+  providerEventId   String?
+  instanceId        String?
+  providerMessageId String?
+  payload           Json
+  receivedAt        DateTime     @default(now()) @db.Timestamptz(3)
+  processedAt       DateTime?    @db.Timestamptz(3)
+  processingError   String?
+
+  @@unique([accountId, providerEventId])
+  @@index([providerMessageId, receivedAt])
+  @@index([appointmentId])
+}
+
+model WebhookEvent {
+  id               String                   @id @default(cuid())
+  eventId          String                   @unique
+  appointmentId    String
+  appointment      Appointment              @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  type             String
+  state            AppointmentState
+  occurredAt       DateTime                 @db.Timestamptz(3)
+  failureReason    String?
+  status           WebhookEventStatus       @default(PENDING)
+  attemptCount     Int                      @default(0)
+  nextAttemptAt    DateTime?                @db.Timestamptz(3)
+  deliveredAt      DateTime?                @db.Timestamptz(3)
+  lastStatusCode   Int?
+  lastError        String?
+  createdAt        DateTime                 @default(now()) @db.Timestamptz(3)
+  deliveryAttempts WebhookDeliveryAttempt[]
+
+  @@index([status, nextAttemptAt])
+}
+
+model WebhookDeliveryAttempt {
+  id              String       @id @default(cuid())
+  webhookEventId  String
+  webhookEvent    WebhookEvent @relation(fields: [webhookEventId], references: [id], onDelete: Cascade)
+  attemptNumber   Int
+  attemptedAt     DateTime     @default(now()) @db.Timestamptz(3)
+  timestampHeader Int
+  statusCode      Int?
+  succeeded       Boolean      @default(false)
+  error           String?
+
+  @@unique([webhookEventId, attemptNumber])
+}
