@@ -5,6 +5,7 @@ node_modules/
 dist/
 build/
 .astro/
+apps/api/src/shared/infrastructure/database/prisma/generated/
 *.tsbuildinfo
 
 # Tooling caches
