@@ -64,18 +64,14 @@ da account.
 ### `accounts`
 
 Expõe `GET /account`, protegido por autenticação e autorização da account.
-O controller ainda contém resposta mockada e deve ser conectado ao caso de uso
-e ao repository quando esse módulo for implementado. Atualmente a rota retorna
-`503` antes de chegar ao controller porque a autorização da account não está
-configurada.
+O controller usa o caso de uso e o repository Prisma para retornar a account e
+seus blocos de configuração sem expor segredos.
 
 ### `integrations`
 
 Expõe as configurações de janela de envio, webhook, Z-API e geração de API Key.
 As rotas são protegidas por autenticação e autorização. Os controllers ainda
 possuem respostas mockadas; os casos de uso e contratos já estão separados.
-Atualmente retornam `503` antes de chegar aos controllers porque a autorização
-da account não está configurada.
 
 ### `appointments` e `webhooks`
 

@@ -1,26 +1,11 @@
 import type { RequestHandler } from 'express';
+import { PrismaAccountRepository } from '../../../../modules/accounts/infrastructure/repositories/prisma/prisma-account.repository.js';
 import { AppError } from '../../../domain/errors/app-error.js';
-import type { AccountRepository } from '../../../../modules/accounts/domain/repositories/account.repository.js';
 
-export type AccountAuthorizationMiddlewareDependencies = {
-    accountRepository: AccountRepository;
-};
+const accountRepository = new PrismaAccountRepository();
 
 export const authorizeAccount: RequestHandler = async (req, _res, next) => {
-    const dependencies = req.app.locals.accountAuthorization as
-        AccountAuthorizationMiddlewareDependencies | undefined;
-
-    if (!dependencies) {
-        throw new AppError(
-            'AUTHORIZATION_NOT_CONFIGURED',
-            'Autorização de account não configurada.',
-            503,
-        );
-    }
-
-    const account = await dependencies.accountRepository.findSummaryByUserId(
-        req.userId!,
-    );
+    const account = await accountRepository.findSummaryByUserId(req.userId!);
 
     if (!account) {
         throw new AppError(

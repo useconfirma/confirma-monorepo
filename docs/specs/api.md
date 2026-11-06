@@ -75,7 +75,7 @@ endpoints:
           authorization: 'Cookie de sessão',
           request: { params: [], query: [], body: [] },
           response: { status: 200, body: ['account'] },
-          errors: ['401: sessão ausente ou inválida'],
+          errors: ['401: sessão ausente ou inválida', '403: account não autorizada'],
       }
     - {
           id: API-06,
@@ -96,7 +96,7 @@ endpoints:
           request:
               { params: [], query: [], body: ['start', 'end', 'timeZone'] },
           response: { status: 200, body: ['configured', 'start', 'end', 'timeZone', 'updatedAt'] },
-          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autorização não configurada'],
+          errors: ['400: dados inválidos', '401: sessão ausente ou inválida'],
       }
     - {
           id: API-08,
@@ -106,7 +106,7 @@ endpoints:
           authorization: 'Cookie de sessão válido',
           request: { params: [], query: [], body: [] },
           response: { status: 201, body: ['apiKey', 'createdAt'] },
-          errors: ['401: sessão ausente ou inválida', '503: autorização não configurada'],
+          errors: ['401: sessão ausente ou inválida'],
       }
     - {
           id: API-09,
@@ -116,7 +116,7 @@ endpoints:
           authorization: 'Cookie de sessão válido',
           request: { params: [], query: [], body: ['url', 'secret'] },
           response: { status: 200, body: ['configured', 'url', 'updatedAt'] },
-          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autorização não configurada'],
+          errors: ['400: dados inválidos', '401: sessão ausente ou inválida'],
       }
     - {
           id: API-10,
@@ -131,7 +131,7 @@ endpoints:
                   body: ['instanceId', 'instanceToken', 'clientToken'],
               },
           response: { status: 200, body: ['configured', 'instanceId', 'updatedAt'] },
-          errors: ['400: dados inválidos', '401: sessão ausente ou inválida', '503: autorização não configurada'],
+          errors: ['400: dados inválidos', '401: sessão ausente ou inválida'],
       }
     - {
           id: API-11,
@@ -273,7 +273,7 @@ endpoints:
 `GET /account`
 
 - **Caso de uso:** UC-05; requisitos RF-01 e RF-02.
-- **Resposta do controller:** `200` com a account simulada, em uma única requisição. A rota retorna `503` antes de chegar ao controller enquanto a autorização da account não estiver configurada:
+- **Resposta atual:** `200` com a account e seus blocos de configuração, em uma única requisição. Blocos sem configuração mantêm `configured: false` e os campos opcionais como `null`:
 
 ```json
 {
@@ -311,7 +311,7 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 "webhook": { "configured": false, "url": null, "updatedAt": null }
 ```
 
-- **Erros:** `401` com `UNAUTHENTICATED`; `403` com `ACCOUNT_ACCESS_DENIED`; `503` quando a autorização de account não estiver configurada.
+- **Erros:** `401` com `UNAUTHENTICATED`; `403` com `ACCOUNT_ACCESS_DENIED`.
 - **Comportamento:** `sendWindow`, `apiKey`, `webhook` e `zApi` estão sempre presentes e cada um traz `configured`, para que o cliente não precise testar `null`. `updatedAt` (`createdAt` na API Key) é o instante da última gravação. Segredos nunca são retornados. É a única leitura da configuração: não há consultas individuais por recurso.
 
 ### API-06 — Consultar usuário atual
@@ -329,7 +329,7 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 - **Caso de uso:** UC-07; requisito RF-02.
 - **Entrada:** `{ "start": "08:00", "end": "18:00", "timeZone": "America/Sao_Paulo" }`.
 - **Resposta atual:** `200` com `{ "configured": false, "start": null, "end": null, "timeZone": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`.
 
 ### API-08 — Gerar API Key
 
@@ -338,7 +338,7 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 - **Caso de uso:** UC-08; requisito RF-03.
 - **Resposta atual:** `201` com `{ "apiKey": "api_key_mock", "createdAt": "..." }`.
 - **Comportamento atual:** retorna uma API Key mockada e não executa o caso de uso.
-- **Erros:** `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
+- **Erros:** `401` com `UNAUTHENTICATED`.
 
 ### API-09 — Configurar webhook de saída
 
@@ -347,7 +347,7 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 - **Caso de uso:** UC-09; requisitos RF-02 e RF-09.
 - **Entrada:** `{ "url": "https://example.com/confirma", "secret": "<secret>" }`.
 - **Resposta atual:** `200` com `{ "configured": false, "url": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`.
 
 ### API-10 — Configurar Z-API
 
@@ -356,7 +356,7 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 - **Caso de uso:** UC-10; requisitos RF-02 e RF-07.
 - **Entrada:** `instanceId`, `instanceToken` e `clientToken`, strings obrigatórias.
 - **Resposta atual:** `200` com `{ "configured": false, "instanceId": null, "updatedAt": null }`.
-- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`; `503` se a autorização de account não estiver configurada.
+- **Erros:** `400` com `VALIDATION_ERROR`; `401` com `UNAUTHENTICATED`.
 
 ### API-11 — Criar agendamento
 
@@ -429,5 +429,5 @@ O formato dos blocos é estável: enquanto não configurados, usam `configured: 
 
 - Operações protegidas usam o cookie `confirma_session`; as rotas de account e integração também exigem autorização da account associada ao usuário.
 - A validação de corpos inválidos retorna `400` com `{ "error": { "code": "VALIDATION_ERROR", "message": "Dados inválidos." } }`.
-- As rotas de account e integração retornam `503` enquanto a dependência de autorização da account não estiver configurada no aplicativo. O middleware de autenticação usa diretamente o repository Prisma e o provider JWT.
+- O middleware de autenticação usa diretamente o repository Prisma e o provider JWT. A autorização consulta a account do usuário no repository Prisma e retorna `403` quando ela não existe.
 - API-11, API-12 e API-13 permanecem contratos do Beta mesmo enquanto suas rotas ainda não estiverem implementadas.

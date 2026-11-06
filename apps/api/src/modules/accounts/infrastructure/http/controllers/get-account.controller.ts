@@ -1,4 +1,6 @@
 import type { Request, Response } from 'express';
+import { GetAccountUseCase } from '../../../application/usecases/get-account.usecase.js';
+import { PrismaAccountRepository } from '../../repositories/prisma/prisma-account.repository.js';
 import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/openapi.js';
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
 import { getAccountResponseSchema } from '../../schemas/zod/get-account.schema.js';
@@ -28,6 +30,8 @@ type GetAccountResponseDto = {
     };
 };
 
+const getAccount = new GetAccountUseCase(new PrismaAccountRepository());
+
 openApiRegistry.registerPath({
     method: 'get',
     path: '/account',
@@ -44,29 +48,40 @@ openApiRegistry.registerPath({
             description: 'Sessão ausente ou inválida',
             content: { 'application/json': { schema: errorResponseSchema } },
         },
+        403: {
+            description: 'Acesso à account não autorizado',
+            content: { 'application/json': { schema: errorResponseSchema } },
+        },
     },
 });
 
 export const getAccountController = async (req: Request, res: Response) => {
-    void req.userId;
-    void req.accountId;
-    // const useCase = new GetAccountUseCase(/* dependências injetadas */);
-    // const result = await useCase.execute({ userId: req.userId! });
-
+    const result = await getAccount.execute({ userId: req.userId! });
     const response: GetAccountResponseDto = {
         account: {
-            id: 'account_mock',
-            name: 'Account de teste',
+            id: result.id,
+            name: result.name,
             sendWindow: {
-                configured: false,
-                start: null,
-                end: null,
-                timeZone: null,
-                updatedAt: null,
+                configured: result.sendWindow.configured,
+                start: result.sendWindow.start,
+                end: result.sendWindow.end,
+                timeZone: result.sendWindow.timeZone,
+                updatedAt: result.sendWindow.updatedAt?.toISOString() ?? null,
             },
-            apiKey: { configured: false, createdAt: null },
-            webhook: { configured: false, url: null, updatedAt: null },
-            zApi: { configured: false, instanceId: null, updatedAt: null },
+            apiKey: {
+                configured: result.apiKey.configured,
+                createdAt: result.apiKey.createdAt?.toISOString() ?? null,
+            },
+            webhook: {
+                configured: result.webhook.configured,
+                url: result.webhook.url,
+                updatedAt: result.webhook.updatedAt?.toISOString() ?? null,
+            },
+            zApi: {
+                configured: result.zApi.configured,
+                instanceId: result.zApi.instanceId,
+                updatedAt: result.zApi.updatedAt?.toISOString() ?? null,
+            },
         },
     };
 
