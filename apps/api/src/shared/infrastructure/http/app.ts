@@ -3,15 +3,17 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { OpenApiGeneratorV31 } from '@asteasolutions/zod-to-openapi';
+import { authOpenApiRegistry } from '../../../modules/auth/infrastructure/http/routes/auth.routes.js';
 import { openApiRegistry } from './docs/openapi.js';
 import { errorMiddleware } from './middlewares/errors.middleware.js';
 import { routes } from './routes.js';
 
 export const app = express();
 
-const openApiDocument = new OpenApiGeneratorV31(
-    openApiRegistry.definitions,
-).generateDocument({
+const openApiDocument = new OpenApiGeneratorV31([
+    ...openApiRegistry.definitions,
+    ...authOpenApiRegistry.definitions,
+]).generateDocument({
     openapi: '3.1.0',
     info: { title: 'Confirma API', version: '0.0.0' },
 });

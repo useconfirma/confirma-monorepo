@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
-import { AppError } from '../../../../shared/domain/errors/app-error.js';
+import { AppError } from '../../domain/errors/app-error.js';
 import type {
     JwtPayload,
     JwtProvider,
     JwtSignOptions,
-} from '../../domain/providers/jwt-provider.js';
+} from '../../../modules/auth/domain/providers/jwt-provider.js';
 
 export class JsonWebTokenProvider implements JwtProvider {
     constructor(private readonly secret: string) {}

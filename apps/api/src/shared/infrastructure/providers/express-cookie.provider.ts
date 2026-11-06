@@ -3,7 +3,7 @@ import type {
     CookieOptions,
     CookieProvider,
     RemoveCookieOptions,
-} from '../../domain/providers/cookie-provider.js';
+} from '../../../modules/auth/domain/providers/cookie-provider.js';
 
 export class ExpressCookieProvider implements CookieProvider {
     constructor(

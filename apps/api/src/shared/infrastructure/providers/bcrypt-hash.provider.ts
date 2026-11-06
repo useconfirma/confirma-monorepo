@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { AppError } from '../../../../shared/domain/errors/app-error.js';
-import type { HashProvider } from '../../domain/providers/hash-provider.js';
+import { AppError } from '../../domain/errors/app-error.js';
+import type { HashProvider } from '../../../modules/auth/domain/providers/hash-provider.js';
 
 export class BcryptHashProvider implements HashProvider {
     constructor(private readonly saltRounds = 12) {}

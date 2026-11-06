@@ -1,44 +1,32 @@
 import type { RequestHandler } from 'express';
+import { PrismaUserRepository } from '../../../../modules/auth/infrastructure/repositories/prisma/prisma-user.repository.js';
+import { JsonWebTokenProvider } from '../../providers/jsonwebtoken.provider.js';
+import { env } from '../../env/index.js';
 import { AppError } from '../../../domain/errors/app-error.js';
-import type { CookieProvider } from '../../../../modules/auth/domain/providers/cookie-provider.js';
-import type { JwtProvider } from '../../../../modules/auth/domain/providers/jwt-provider.js';
-import type { UserRepository } from '../../../../modules/auth/domain/repositories/user.repository.js';
-
-export type AuthenticationMiddlewareDependencies = {
-    cookieProvider: CookieProvider;
-    jwtProvider: JwtProvider;
-    userRepository: UserRepository;
-};
+import { ExpressCookieProvider } from '../../providers/express-cookie.provider.js';
 
 const unauthenticated = (): AppError => {
     return new AppError('UNAUTHENTICATED', 'Sessão ausente ou inválida.', 401);
 };
 
-export const authenticate: RequestHandler = async (req, _res, next) => {
-    const dependencies = req.app.locals.auth as
-        AuthenticationMiddlewareDependencies | undefined;
+const jwtProvider = new JsonWebTokenProvider(env.JWT_SECRET);
+const userRepository = new PrismaUserRepository();
 
-    if (!dependencies) {
-        throw new AppError(
-            'AUTHENTICATION_NOT_CONFIGURED',
-            'Autenticação não configurada.',
-            503,
-        );
-    }
-
-    const token = dependencies.cookieProvider.get('confirma_session');
+export const authenticate: RequestHandler = async (req, res, next) => {
+    const cookies = new ExpressCookieProvider(req, res);
+    const token = cookies.get('confirma_session');
 
     if (!token) {
         throw unauthenticated();
     }
 
-    const payload = dependencies.jwtProvider.verify(token);
+    const payload = jwtProvider.verify(token);
 
     if (!payload?.sub) {
         throw unauthenticated();
     }
 
-    const user = await dependencies.userRepository.findById(payload.sub);
+    const user = await userRepository.findById(payload.sub);
 
     if (!user) {
         throw unauthenticated();

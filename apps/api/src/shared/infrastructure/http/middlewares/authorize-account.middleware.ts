@@ -7,14 +7,6 @@ export type AccountAuthorizationMiddlewareDependencies = {
 };
 
 export const authorizeAccount: RequestHandler = async (req, _res, next) => {
-    if (!req.userId) {
-        throw new AppError(
-            'UNAUTHENTICATED',
-            'Sessão ausente ou inválida.',
-            401,
-        );
-    }
-
     const dependencies = req.app.locals.accountAuthorization as
         AccountAuthorizationMiddlewareDependencies | undefined;
 
@@ -27,7 +19,7 @@ export const authorizeAccount: RequestHandler = async (req, _res, next) => {
     }
 
     const account = await dependencies.accountRepository.findSummaryByUserId(
-        req.userId,
+        req.userId!,
     );
 
     if (!account) {
