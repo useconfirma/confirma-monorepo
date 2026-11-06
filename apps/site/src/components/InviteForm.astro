@@ -1,0 +1,167 @@
+---
+/*
+ * Formulário de solicitação de convite para o Beta (API-01: POST /invitations
+ * com { "email": "..." }). O envio ainda não está ligado à API.
+ */
+interface Props {
+    id?: string;
+    class?: string;
+}
+
+const { id = 'convite', class: className } = Astro.props;
+const inputId = `${id}-email`;
+---
+
+<form
+    id={id}
+    method="post"
+    class:list={['max-w-[27rem]', className]}
+    aria-label="Solicitar convite para o Beta"
+>
+    <label for={inputId} class="sr-only">
+        E-mail
+    </label>
+    <div class="invite-field">
+        <input
+            id={inputId}
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            inputmode="email"
+            spellcheck="false"
+            placeholder="Seu e-mail de trabalho"
+            class="invite-input"
+        />
+        <button type="submit" class="invite-submit">
+            Solicitar convite para o Beta
+        </button>
+    </div>
+</form>
+
+<style>
+    /* Campo único com o botão encaixado, como um balão: o bico no topo ecoa o
+       símbolo do Confirma. */
+    .invite-field {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.25rem;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        box-shadow:
+            0 1px 2px rgb(11 31 26 / 0.05),
+            0 4px 12px -4px rgb(11 31 26 / 0.1);
+        transition:
+            border-color var(--duration-fast) var(--ease-standard),
+            box-shadow var(--duration-fast) var(--ease-standard);
+    }
+
+    .invite-field::before {
+        content: '';
+        position: absolute;
+        top: -0.3125rem;
+        left: 1.5rem;
+        width: 0.5625rem;
+        height: 0.5625rem;
+        border-top: 1px solid var(--color-line);
+        border-left: 1px solid var(--color-line);
+        background-color: var(--color-surface);
+        transform: rotate(45deg);
+        transition: border-color var(--duration-fast) var(--ease-standard);
+    }
+
+    .invite-field:hover {
+        border-color: var(--color-cinza-verde-medio);
+    }
+
+    .invite-field:hover::before {
+        border-color: var(--color-cinza-verde-medio);
+    }
+
+    .invite-field:focus-within {
+        border-color: var(--color-verde);
+        box-shadow:
+            0 0 0 3px var(--color-verde-claro),
+            0 4px 12px -4px rgb(11 31 26 / 0.1);
+    }
+
+    .invite-field:focus-within::before {
+        border-color: var(--color-verde);
+    }
+
+    /* Anula o poço global dos campos: aqui a caixa é o contorno. */
+    .invite-input {
+        flex: 1;
+        min-width: 0;
+        min-height: 2.75rem;
+        padding: 0 0.75rem;
+        border: 0;
+        border-radius: var(--radius-sm);
+        background-color: transparent;
+        box-shadow: none;
+        font-size: var(--text-sm);
+    }
+
+    .invite-input:hover:not(:disabled),
+    .invite-input:focus-visible {
+        border: 0;
+        outline: none;
+    }
+
+    .invite-submit {
+        flex: none;
+        min-height: 2.75rem;
+        padding: 0 1rem;
+        border: 1px solid var(--color-verde);
+        border-radius: var(--radius-sm);
+        background-color: var(--color-verde);
+        box-shadow:
+            inset 0 1px 0 rgb(255 255 255 / 0.16),
+            0 1px 2px rgb(11 31 26 / 0.2);
+        color: var(--color-branco);
+        font-size: var(--text-sm);
+        font-weight: var(--font-weight-medium);
+        line-height: 1.25;
+        white-space: nowrap;
+        transition:
+            background-color var(--duration-fast) var(--ease-standard),
+            box-shadow var(--duration-fast) var(--ease-standard),
+            transform var(--duration-fast) var(--ease-standard);
+    }
+
+    .invite-submit:hover {
+        border-color: color-mix(in oklab, var(--color-verde) 82%, black);
+        background-color: color-mix(in oklab, var(--color-verde) 82%, black);
+    }
+
+    .invite-submit:active {
+        transform: translateY(1px);
+        box-shadow: var(--inset-shadow-pressed);
+    }
+
+    .invite-submit:focus-visible {
+        outline-color: var(--color-noite);
+        outline-offset: 2px;
+    }
+
+    @media (width >= 40rem) {
+        .invite-field {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .invite-input,
+        .invite-submit {
+            min-height: 2.5rem;
+        }
+    }
+
+    @media (forced-colors: active) {
+        .invite-submit {
+            border-color: ButtonText;
+        }
+    }
+</style>

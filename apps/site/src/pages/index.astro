@@ -1,12 +1,12 @@
 ---
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout>
-    <main class="container-page py-section">
-        <h1 class="max-w-[18ch]">Confirmações de agendamento pelo WhatsApp</h1>
-        <p class="mt-6 max-w-prose text-lg text-ink-muted">
-            Base do site em Astro, gerada como HTML estático.
-        </p>
+    <Header />
+    <main>
+        <Hero />
     </main>
 </BaseLayout>

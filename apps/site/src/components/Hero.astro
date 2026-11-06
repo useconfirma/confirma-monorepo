@@ -1,0 +1,76 @@
+---
+import HeroIllustration from './HeroIllustration.astro';
+import InviteForm from './InviteForm.astro';
+---
+
+<section
+    aria-labelledby="hero-title"
+    class="container-page grid items-center gap-12 pt-8 pb-section sm:pt-12 lg:grid-cols-12 lg:gap-8 lg:pt-16"
+>
+    <div class="hero-copy lg:col-span-6">
+        <p class="eyebrow">
+            Confirmações de agendamento para sistemas de clínicas
+        </p>
+
+        <h1
+            id="hero-title"
+            class="mt-5 text-4xl lg:text-[clamp(2.75rem,4vw,3.5rem)]"
+        >
+            <span class="block">Seu sistema envia.</span> O Confirma{' '}
+            <span class="hero-mark">
+                confirma.
+                <svg
+                    viewBox="0 0 200 12"
+                    preserveAspectRatio="none"
+                    fill="none"
+                    aria-hidden="true"
+                >
+                    <path
+                        class="motion-safe:check-draw"
+                        pathLength="1"
+                        d="M3 8.5C48 4 120 2.5 197 6"
+                        stroke="currentColor"
+                        stroke-width="3.5"
+                        stroke-linecap="round"
+                    ></path>
+                </svg>
+            </span>
+        </h1>
+
+        <p class="mt-6 max-w-[46ch] text-lg text-ink-muted">
+            O Confirma coordena a confirmação de agendamentos pelo WhatsApp:
+            envia a mensagem no momento certo, interpreta a resposta do paciente
+            e devolve o resultado ao seu sistema por webhook.
+        </p>
+
+        <InviteForm class="mt-8" />
+    </div>
+
+    <div class="lg:col-span-6">
+        <HeroIllustration />
+    </div>
+</section>
+
+<style>
+    .hero-mark {
+        position: relative;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .hero-mark svg {
+        position: absolute;
+        left: 0;
+        bottom: -0.14em;
+        width: 100%;
+        height: 0.16em;
+        color: var(--color-verde);
+        overflow: visible;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .hero-copy > * {
+            animation: var(--animate-rise);
+        }
+    }
+</style>
