@@ -1,6 +1,7 @@
 import { getRouteApi, Link } from '@tanstack/react-router';
 import { Button } from '@/shared/components/ui/button';
 import { AcceptInvitationForm } from '../components/accept-invitation-form';
+import { InvitationEmail } from '../components/invitation-email';
 import { useAcceptInvitation } from '../hooks/use-accept-invitation.hook';
 
 const route = getRouteApi('/_auth/invitations/$invitationToken');
@@ -10,12 +11,13 @@ const appear =
 
 /*
  * Criação de conta pelo convite (UC-02) na folha de conteúdo do AuthLayout. O
- * `beforeLoad` da rota já verificou o convite. A tela só compõe: cabeçalho,
- * formulário alimentado pelo `useAcceptInvitation` e, abaixo, uma bandeja
- * rebaixada que leva ao login.
+ * `beforeLoad` da rota já verificou o convite e devolve token e e-mail no
+ * contexto. A tela só compõe: cabeçalho, e-mail do convite, formulário
+ * alimentado pelo `useAcceptInvitation` e, abaixo, uma bandeja rebaixada que
+ * leva ao login.
  */
 const InvitationScreen = () => {
-    const { invitationToken } = route.useParams();
+    const { invitationToken, email } = route.useRouteContext();
     const acceptInvitation = useAcceptInvitation(invitationToken);
 
     return (
@@ -36,6 +38,13 @@ const InvitationScreen = () => {
             <div
                 className={`${appear} mt-8`}
                 style={{ animationDelay: '100ms' }}
+            >
+                <InvitationEmail email={email} />
+            </div>
+
+            <div
+                className={`${appear} mt-5`}
+                style={{ animationDelay: '150ms' }}
             >
                 <AcceptInvitationForm {...acceptInvitation} />
             </div>

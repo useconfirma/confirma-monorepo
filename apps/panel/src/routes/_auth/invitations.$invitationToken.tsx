@@ -10,10 +10,12 @@ export const Route = createFileRoute('/_auth/invitations/$invitationToken')({
             throw redirect({ to: '/sign-in', replace: true });
         }
 
-        await context.queryClient.query({
+        const { email } = await context.queryClient.query({
             ...verifyInvitationQueryOptions(params.invitationToken),
             staleTime: 'static',
         });
+
+        return { invitationToken: params.invitationToken, email };
     },
     component: InvitationScreen,
     errorComponent: InvitationError,
