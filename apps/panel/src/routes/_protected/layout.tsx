@@ -7,7 +7,10 @@ export const Route = createFileRoute('/_protected')({
     // Valida a sessão e deixa o usuário atual no cache do TanStack Query.
     beforeLoad: async ({ context }) => {
         try {
-            await context.queryClient.query(currentUserQueryOptions);
+            await context.queryClient.query({
+                ...currentUserQueryOptions,
+                staleTime: 'static',
+            });
         } catch {
             throw redirect({ to: '/sign-in', replace: true });
         }

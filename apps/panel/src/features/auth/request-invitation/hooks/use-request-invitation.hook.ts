@@ -8,14 +8,17 @@ import {
 } from '../schemas/request-invitation.schema';
 
 export const useRequestInvitation = () => {
-    const { register, handleSubmit: formHandleSubmit } =
-        useForm<RequestInvitationFormData>({
-            resolver: zodResolver(requestInvitationSchema),
-        });
+    const {
+        register,
+        handleSubmit: formHandleSubmit,
+        reset: resetForm,
+        formState: { errors },
+    } = useForm<RequestInvitationFormData>({
+        resolver: zodResolver(requestInvitationSchema),
+    });
 
     const mutation = useMutation({
         mutationFn: requestInvitation,
-        // onSuccess: () => {},
         // onError: () => {},
     });
 
@@ -23,5 +26,19 @@ export const useRequestInvitation = () => {
         mutation.mutate(data);
     });
 
-    return { register, isPending: mutation.isPending, handleSubmit };
+    // Volta ao formulário vazio para pedir convite para outro e-mail.
+    const reset = () => {
+        mutation.reset();
+        resetForm();
+    };
+
+    return {
+        register,
+        errors,
+        isPending: mutation.isPending,
+        isSuccess: mutation.isSuccess,
+        sentTo: mutation.variables?.email,
+        handleSubmit,
+        reset,
+    };
 };
