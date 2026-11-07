@@ -2,7 +2,7 @@ import { useGetAccount } from '@/shared/hooks/use-get-account.hook';
 import { PageHeader } from '@/shared/components/page-header';
 import { ZApiConfiguration } from '../components/z-api-configuration';
 
-const IntegrationsScreen = () => {
+const ZApiScreen = () => {
     const { data } = useGetAccount();
 
     return (
@@ -22,4 +22,4 @@ const IntegrationsScreen = () => {
     );
 };
 
-export default IntegrationsScreen;
+export default ZApiScreen;

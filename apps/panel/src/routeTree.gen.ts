@@ -13,9 +13,9 @@ import { Route as AuthLayoutRouteImport } from './routes/_auth/layout'
 import { Route as ProtectedLayoutRouteImport } from './routes/_protected/layout'
 import { Route as AuthRequestInvitationRouteImport } from './routes/_auth/request-invitation'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
-import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as ProtectedAccountLayoutRouteImport } from './routes/_protected/_account/layout'
 import { Route as ProtectedWelcomeRouteImport } from './routes/_protected/welcome'
+import { Route as AuthInvitationsInvitationTokenRouteImport } from './routes/_auth/invitations.$invitationToken'
 import { Route as ProtectedAccountApiKeyRouteImport } from './routes/_protected/_account/api-key'
 import { Route as ProtectedAccountIntegrationsRouteImport } from './routes/_protected/_account/integrations'
 import { Route as ProtectedAccountOverviewRouteImport } from './routes/_protected/_account/overview'
@@ -40,11 +40,6 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthLayoutRoute,
 } as any)
-const AuthSignUpRoute = AuthSignUpRouteImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
-  getParentRoute: () => AuthLayoutRoute,
-} as any)
 const ProtectedAccountLayoutRoute = ProtectedAccountLayoutRouteImport.update({
   id: '/_account',
   getParentRoute: () => ProtectedLayoutRoute,
@@ -54,6 +49,12 @@ const ProtectedWelcomeRoute = ProtectedWelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => ProtectedLayoutRoute,
 } as any)
+const AuthInvitationsInvitationTokenRoute =
+  AuthInvitationsInvitationTokenRouteImport.update({
+    id: '/invitations/$invitationToken',
+    path: '/invitations/$invitationToken',
+    getParentRoute: () => AuthLayoutRoute,
+  } as any)
 const ProtectedAccountApiKeyRoute = ProtectedAccountApiKeyRouteImport.update({
   id: '/api-key',
   path: '/api-key',
@@ -87,8 +88,8 @@ export interface FileRoutesByFullPath {
   '/': typeof ProtectedAccountLayoutRouteWithChildren
   '/request-invitation': typeof AuthRequestInvitationRoute
   '/sign-in': typeof AuthSignInRoute
-  '/sign-up': typeof AuthSignUpRoute
   '/welcome': typeof ProtectedWelcomeRoute
+  '/invitations/$invitationToken': typeof AuthInvitationsInvitationTokenRoute
   '/api-key': typeof ProtectedAccountApiKeyRoute
   '/integrations': typeof ProtectedAccountIntegrationsRoute
   '/overview': typeof ProtectedAccountOverviewRoute
@@ -99,8 +100,8 @@ export interface FileRoutesByTo {
   '/': typeof ProtectedAccountLayoutRouteWithChildren
   '/request-invitation': typeof AuthRequestInvitationRoute
   '/sign-in': typeof AuthSignInRoute
-  '/sign-up': typeof AuthSignUpRoute
   '/welcome': typeof ProtectedWelcomeRoute
+  '/invitations/$invitationToken': typeof AuthInvitationsInvitationTokenRoute
   '/api-key': typeof ProtectedAccountApiKeyRoute
   '/integrations': typeof ProtectedAccountIntegrationsRoute
   '/overview': typeof ProtectedAccountOverviewRoute
@@ -114,8 +115,8 @@ export interface FileRoutesById {
   '/_protected/_account': typeof ProtectedAccountLayoutRouteWithChildren
   '/_auth/request-invitation': typeof AuthRequestInvitationRoute
   '/_auth/sign-in': typeof AuthSignInRoute
-  '/_auth/sign-up': typeof AuthSignUpRoute
   '/_protected/welcome': typeof ProtectedWelcomeRoute
+  '/_auth/invitations/$invitationToken': typeof AuthInvitationsInvitationTokenRoute
   '/_protected/_account/api-key': typeof ProtectedAccountApiKeyRoute
   '/_protected/_account/integrations': typeof ProtectedAccountIntegrationsRoute
   '/_protected/_account/overview': typeof ProtectedAccountOverviewRoute
@@ -128,8 +129,8 @@ export interface FileRouteTypes {
     | '/'
     | '/request-invitation'
     | '/sign-in'
-    | '/sign-up'
     | '/welcome'
+    | '/invitations/$invitationToken'
     | '/api-key'
     | '/integrations'
     | '/overview'
@@ -140,8 +141,8 @@ export interface FileRouteTypes {
     | '/'
     | '/request-invitation'
     | '/sign-in'
-    | '/sign-up'
     | '/welcome'
+    | '/invitations/$invitationToken'
     | '/api-key'
     | '/integrations'
     | '/overview'
@@ -154,8 +155,8 @@ export interface FileRouteTypes {
     | '/_protected/_account'
     | '/_auth/request-invitation'
     | '/_auth/sign-in'
-    | '/_auth/sign-up'
     | '/_protected/welcome'
+    | '/_auth/invitations/$invitationToken'
     | '/_protected/_account/api-key'
     | '/_protected/_account/integrations'
     | '/_protected/_account/overview'
@@ -198,13 +199,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof AuthLayoutRoute
     }
-    '/_auth/sign-up': {
-      id: '/_auth/sign-up'
-      path: '/sign-up'
-      fullPath: '/sign-up'
-      preLoaderRoute: typeof AuthSignUpRouteImport
-      parentRoute: typeof AuthLayoutRoute
-    }
     '/_protected/_account': {
       id: '/_protected/_account'
       path: ''
@@ -218,6 +212,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/welcome'
       preLoaderRoute: typeof ProtectedWelcomeRouteImport
       parentRoute: typeof ProtectedLayoutRoute
+    }
+    '/_auth/invitations/$invitationToken': {
+      id: '/_auth/invitations/$invitationToken'
+      path: '/invitations/$invitationToken'
+      fullPath: '/invitations/$invitationToken'
+      preLoaderRoute: typeof AuthInvitationsInvitationTokenRouteImport
+      parentRoute: typeof AuthLayoutRoute
     }
     '/_protected/_account/api-key': {
       id: '/_protected/_account/api-key'
@@ -260,13 +261,13 @@ declare module '@tanstack/react-router' {
 interface AuthLayoutRouteChildren {
   AuthRequestInvitationRoute: typeof AuthRequestInvitationRoute
   AuthSignInRoute: typeof AuthSignInRoute
-  AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthInvitationsInvitationTokenRoute: typeof AuthInvitationsInvitationTokenRoute
 }
 
 const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
   AuthRequestInvitationRoute: AuthRequestInvitationRoute,
   AuthSignInRoute: AuthSignInRoute,
-  AuthSignUpRoute: AuthSignUpRoute,
+  AuthInvitationsInvitationTokenRoute: AuthInvitationsInvitationTokenRoute,
 }
 
 const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
