@@ -4,16 +4,19 @@ import { ProtectedPending } from '@/shared/components/layout/protected/protected
 import { currentUserQueryOptions } from '@/shared/hooks/use-get-current-user.hook';
 
 export const Route = createFileRoute('/_protected')({
-    // Valida a sessão e deixa o usuário atual no cache do TanStack Query.
+    // Valida a sessão, deixa o usuário atual no cache do TanStack Query e o
+    // expõe no contexto das rotas filhas.
     beforeLoad: async ({ context }) => {
-        try {
-            await context.queryClient.query({
+        const currentUser = await context.queryClient
+            .query({
                 ...currentUserQueryOptions,
                 staleTime: 'static',
+            })
+            .catch(() => {
+                throw redirect({ to: '/sign-in', replace: true });
             });
-        } catch {
-            throw redirect({ to: '/sign-in', replace: true });
-        }
+
+        return { currentUser };
     },
     component: Outlet,
     // Exibição controlada pelo Router (`pendingMs`/`pendingMinMs` padrão).
