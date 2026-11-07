@@ -10,7 +10,6 @@ export const Route = createFileRoute('/_auth/invitations/$invitationToken')({
             throw redirect({ to: '/sign-in', replace: true });
         }
 
-       
         await context.queryClient.query({
             ...verifyInvitationQueryOptions(params.invitationToken),
             staleTime: 'static',

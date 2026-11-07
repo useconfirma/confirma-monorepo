@@ -7,11 +7,14 @@ import {
     type AcceptInvitationFormData,
 } from '../schemas/accept-invitation.schema';
 
-export const useAcceptInvitation = () => {
-    const { register, handleSubmit: formHandleSubmit } =
-        useForm<AcceptInvitationFormData>({
-            resolver: zodResolver(acceptInvitationSchema),
-        });
+export const useAcceptInvitation = (invitationToken: string) => {
+    const {
+        register,
+        handleSubmit: formHandleSubmit,
+        formState: { errors },
+    } = useForm<AcceptInvitationFormData>({
+        resolver: zodResolver(acceptInvitationSchema),
+    });
 
     const mutation = useMutation({
         mutationFn: acceptInvitation,
@@ -19,9 +22,14 @@ export const useAcceptInvitation = () => {
         // onError: () => {},
     });
 
-    const handleSubmit = formHandleSubmit((data) => {
-        mutation.mutate(data);
+    const handleSubmit = formHandleSubmit(({ accountName, password }) => {
+        mutation.mutate({ accountName, password, invitationToken });
     });
 
-    return { register, isPending: mutation.isPending, handleSubmit };
+    return {
+        register,
+        errors,
+        isPending: mutation.isPending,
+        handleSubmit,
+    };
 };
