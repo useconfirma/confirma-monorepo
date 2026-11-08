@@ -1,0 +1,17 @@
+# Texto sempre com LF, no repositório e no working tree, independentemente
+# de core.autocrlf. Mantém o Prettier (endOfLine: lf) e o .editorconfig
+# consistentes em qualquer sistema operacional.
+* text=auto eol=lf
+
+# Binários: sem conversão de fim de linha nem diff textual.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
