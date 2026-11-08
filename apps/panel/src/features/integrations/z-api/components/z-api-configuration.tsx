@@ -1,7 +1,8 @@
-import { Check, CircleDashed } from 'lucide-react';
+import { Check, CircleDashed, LoaderCircle } from 'lucide-react';
 import { useId } from 'react';
 import type { paths } from '@/shared/@types/api';
 import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
 import {
     Card,
     CardContent,
@@ -11,35 +12,53 @@ import {
 } from '@/shared/components/ui/card';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
+import type { useConfigureZApi } from '../hooks/use-configure-z-api.hook';
 
 type ZApi =
     paths['/account']['get']['responses'][200]['content']['application/json']['account']['zApi'];
+
+type ZApiConfigurationProps = ReturnType<typeof useConfigureZApi> & {
+    zApi: ZApi;
+    className?: string;
+};
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'long',
     timeStyle: 'short',
 });
 
+// Liga o campo às dicas e, quando houver, à mensagem de erro.
+const describedBy = (hintIds: string, errorId: string, hasError: boolean) =>
+    hasError ? `${hintIds} ${errorId}` : hintIds;
+
 /*
- * Configuração atual da Z-API (ENT-03), vinda de `account.zApi`.
- * `configured` só diz que as credenciais foram cadastradas: a API não informa
- * se a instância está conectada ao WhatsApp. Os tokens nunca são retornados.
- * Componente apresentacional: recebe os dados por props e não busca nem grava.
- * Os campos ficam desabilitados até a configuração (API-10) ser implementada.
+ * Configuração atual da Z-API (ENT-03), vinda de `account.zApi`, e a
+ * configuração (API-10), com estado e ações do `useConfigureZApi` recebidos
+ * por props. `configured` só diz que as credenciais foram cadastradas: a API
+ * não informa se a instância está conectada ao WhatsApp. Os tokens nunca são
+ * retornados, por isso são pedidos de novo a cada salvamento.
  */
 export const ZApiConfiguration = ({
     zApi,
     className,
-}: {
-    zApi: ZApi;
-    className?: string;
-}) => {
+    register,
+    errors,
+    isPending,
+    isError,
+    isSuccess,
+    handleSubmit,
+}: ZApiConfigurationProps) => {
     const headingId = useId();
     const formHeadingId = useId();
+    const formHintId = useId();
     const instanceIdId = useId();
+    const instanceIdErrorId = useId();
     const instanceTokenId = useId();
-    const tokenHintId = useId();
+    const instanceTokenErrorId = useId();
     const clientTokenId = useId();
+    const clientTokenErrorId = useId();
+    const tokenHintId = useId();
+    const submitStatusId = useId();
 
     const { configured, instanceId, updatedAt } = zApi;
 
@@ -126,28 +145,53 @@ export const ZApiConfiguration = ({
                                 ? 'Alterar credenciais'
                                 : 'Configurar Z-API'}
                         </h3>
-                        <p className="text-muted text-sm text-pretty">
-                            A edição ainda não está disponível nesta etapa.
+                        <p
+                            id={formHintId}
+                            className="text-muted text-sm text-pretty"
+                        >
+                            {configured
+                                ? 'As novas credenciais substituem as atuais. Ao salvar, o Confirma registra novamente o endereço de callback na sua instância.'
+                                : 'Ao salvar, o Confirma valida as credenciais e registra o endereço de callback na sua instância Z-API.'}
                         </p>
                     </div>
 
-                    <fieldset disabled className="space-y-4">
-                        <legend className="sr-only">
-                            Credenciais da instância Z-API (indisponíveis)
-                        </legend>
-
+                    <form
+                        onSubmit={handleSubmit}
+                        noValidate
+                        aria-busy={isPending}
+                        aria-labelledby={formHeadingId}
+                        className="space-y-4"
+                    >
                         <div className="space-y-2">
                             <Label htmlFor={instanceIdId}>
                                 ID da instância
                             </Label>
                             <Input
                                 id={instanceIdId}
-                                defaultValue={instanceId ?? undefined}
                                 placeholder="Cole o ID da instância"
                                 autoComplete="off"
+                                autoCapitalize="none"
                                 spellCheck={false}
+                                disabled={isPending}
+                                aria-invalid={
+                                    errors.instanceId ? true : undefined
+                                }
+                                aria-describedby={
+                                    errors.instanceId
+                                        ? instanceIdErrorId
+                                        : undefined
+                                }
                                 className="font-mono"
+                                {...register('instanceId')}
                             />
+                            {errors.instanceId && (
+                                <p
+                                    id={instanceIdErrorId}
+                                    className="text-danger text-xs"
+                                >
+                                    {errors.instanceId.message}
+                                </p>
+                            )}
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-2">
@@ -160,9 +204,27 @@ export const ZApiConfiguration = ({
                                     type="password"
                                     placeholder="Cole o token da instância"
                                     autoComplete="off"
-                                    aria-describedby={tokenHintId}
+                                    spellCheck={false}
+                                    disabled={isPending}
+                                    aria-invalid={
+                                        errors.instanceToken ? true : undefined
+                                    }
+                                    aria-describedby={describedBy(
+                                        tokenHintId,
+                                        instanceTokenErrorId,
+                                        Boolean(errors.instanceToken),
+                                    )}
                                     className="font-mono"
+                                    {...register('instanceToken')}
                                 />
+                                {errors.instanceToken && (
+                                    <p
+                                        id={instanceTokenErrorId}
+                                        className="text-danger text-xs"
+                                    >
+                                        {errors.instanceToken.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="min-w-0 space-y-2">
@@ -174,17 +236,81 @@ export const ZApiConfiguration = ({
                                     type="password"
                                     placeholder="Cole o Client-Token"
                                     autoComplete="off"
-                                    aria-describedby={tokenHintId}
+                                    spellCheck={false}
+                                    disabled={isPending}
+                                    aria-invalid={
+                                        errors.clientToken ? true : undefined
+                                    }
+                                    aria-describedby={describedBy(
+                                        tokenHintId,
+                                        clientTokenErrorId,
+                                        Boolean(errors.clientToken),
+                                    )}
                                     className="font-mono"
+                                    {...register('clientToken')}
                                 />
+                                {errors.clientToken && (
+                                    <p
+                                        id={clientTokenErrorId}
+                                        className="text-danger text-xs"
+                                    >
+                                        {errors.clientToken.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         <p id={tokenHintId} className="text-subtle text-xs">
-                            Os dois tokens são obrigatórios e, depois de salvos,
-                            não são exibidos novamente.
+                            {configured
+                                ? 'Informe os dois tokens novamente para salvar. Depois de salvos, eles não são exibidos.'
+                                : 'Os dois tokens são obrigatórios e, depois de salvos, não são exibidos novamente.'}
                         </p>
-                    </fieldset>
+
+                        <div className="space-y-2">
+                            <Button
+                                type="submit"
+                                disabled={isPending}
+                                aria-describedby={
+                                    isError || isSuccess
+                                        ? `${formHintId} ${submitStatusId}`
+                                        : formHintId
+                                }
+                                className="w-full sm:w-auto"
+                            >
+                                {isPending && (
+                                    <LoaderCircle
+                                        aria-hidden="true"
+                                        className="size-4 motion-safe:animate-spin"
+                                    />
+                                )}
+                                {isPending ? 'Salvando…' : 'Salvar credenciais'}
+                            </Button>
+                            {isError && (
+                                <p
+                                    id={submitStatusId}
+                                    role="alert"
+                                    className="text-danger text-xs"
+                                >
+                                    Não foi possível salvar as credenciais.
+                                    Confira o ID e os tokens da instância e
+                                    tente novamente.
+                                </p>
+                            )}
+                            {isSuccess && (
+                                <p
+                                    id={submitStatusId}
+                                    role="status"
+                                    className="text-success flex items-center gap-1 text-xs"
+                                >
+                                    <Check
+                                        aria-hidden="true"
+                                        className="size-3.5"
+                                    />
+                                    Credenciais salvas.
+                                </p>
+                            )}
+                        </div>
+                    </form>
                 </section>
             </section>
         </Card>
