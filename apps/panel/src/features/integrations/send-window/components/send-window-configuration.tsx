@@ -59,8 +59,6 @@ export const SendWindowConfiguration = ({
     control,
     errors,
     isPending,
-    isError,
-    isSuccess,
     handleSubmit,
 }: SendWindowConfigurationProps) => {
     const headingId = useId();
@@ -74,7 +72,6 @@ export const SendWindowConfiguration = ({
     const timeZoneId = useId();
     const timeZoneHintId = useId();
     const timeZoneErrorId = useId();
-    const submitStatusId = useId();
 
     const { configured, timeZone, updatedAt } = sendWindow;
     const isBrazilTimeZone = BRAZIL_TIME_ZONES.some(
@@ -294,11 +291,6 @@ export const SendWindowConfiguration = ({
                             <Button
                                 type="submit"
                                 disabled={isPending}
-                                aria-describedby={
-                                    isError || isSuccess
-                                        ? submitStatusId
-                                        : undefined
-                                }
                                 className="w-full sm:w-auto"
                             >
                                 {isPending && (
@@ -309,30 +301,6 @@ export const SendWindowConfiguration = ({
                                 )}
                                 {isPending ? 'Salvando…' : 'Salvar janela'}
                             </Button>
-                            {isError && (
-                                <p
-                                    id={submitStatusId}
-                                    role="alert"
-                                    className="text-danger text-xs"
-                                >
-                                    Não foi possível salvar a janela de envio.
-                                    Confira os horários e o fuso e tente
-                                    novamente.
-                                </p>
-                            )}
-                            {isSuccess && (
-                                <p
-                                    id={submitStatusId}
-                                    role="status"
-                                    className="text-success flex items-center gap-1 text-xs"
-                                >
-                                    <Check
-                                        aria-hidden="true"
-                                        className="size-3.5"
-                                    />
-                                    Janela de envio salva.
-                                </p>
-                            )}
                         </div>
                     </form>
                 </section>

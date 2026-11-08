@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import type { paths } from '@/shared/@types/api';
 import type { GetAccountResponse } from '@/shared/api/get-account.api';
 import { accountQueryKey } from '@/shared/hooks/use-get-account.hook';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
 import { updateQueryCache } from '@/shared/lib/update-query-cache';
 import { configureZApi } from '../api/configure-z-api.api';
 import {
@@ -59,6 +61,10 @@ export const useConfigureZApi = (zApi: ZApi | undefined) => {
                 instanceToken: '',
                 clientToken: '',
             });
+            toast.success('Credenciais salvas.');
+        },
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
         },
     });
 
@@ -70,8 +76,6 @@ export const useConfigureZApi = (zApi: ZApi | undefined) => {
         register,
         errors,
         isPending: mutation.isPending,
-        isError: mutation.isError,
-        isSuccess: mutation.isSuccess,
         handleSubmit,
     };
 };

@@ -47,7 +47,6 @@ export const ApiKeyConfiguration = ({
     className,
     generate,
     isPending,
-    isError,
     generatedApiKey,
     reset,
 }: ApiKeyConfigurationProps) => {
@@ -55,7 +54,6 @@ export const ApiKeyConfiguration = ({
 
     const headingId = useId();
     const actionHintId = useId();
-    const actionErrorId = useId();
     const emailHintId = useId();
 
     const { configured, createdAt } = apiKey;
@@ -71,9 +69,7 @@ export const ApiKeyConfiguration = ({
             variant={configured ? 'secondary' : 'primary'}
             disabled={isPending}
             onClick={configured ? undefined : generate}
-            aria-describedby={
-                isError ? `${actionHintId} ${actionErrorId}` : actionHintId
-            }
+            aria-describedby={actionHintId}
             className="w-full sm:w-auto"
         >
             {isPending && (
@@ -147,16 +143,6 @@ export const ApiKeyConfiguration = ({
                                     ? 'A chave atual deixa de funcionar quando uma nova é gerada.'
                                     : 'O valor da chave é exibido uma única vez, logo após a geração.'}
                             </p>
-                            {isError && (
-                                <p
-                                    id={actionErrorId}
-                                    role="alert"
-                                    className="text-danger text-xs"
-                                >
-                                    Não foi possível gerar a API Key. Tente
-                                    novamente.
-                                </p>
-                            )}
                         </div>
 
                         {configured ? (

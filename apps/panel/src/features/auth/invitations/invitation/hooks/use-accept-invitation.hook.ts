@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
 import { acceptInvitation } from '../api/accept-invitation.api';
 import {
     acceptInvitationSchema,
@@ -25,7 +27,9 @@ export const useAcceptInvitation = (invitationToken: string) => {
         onSuccess: () => {
             void navigate({ to: '/welcome', replace: true });
         },
-        // onError: () => {},
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
+        },
     });
 
     const handleSubmit = formHandleSubmit(({ accountName, password }) => {

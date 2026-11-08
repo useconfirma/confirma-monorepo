@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
 import { requestInvitation } from '../api/request-invitation.api';
 import {
     requestInvitationSchema,
@@ -19,7 +21,9 @@ export const useRequestInvitation = () => {
 
     const mutation = useMutation({
         mutationFn: requestInvitation,
-        // onError: () => {},
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
+        },
     });
 
     const handleSubmit = formHandleSubmit((data) => {

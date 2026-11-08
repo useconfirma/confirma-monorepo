@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import type { GetAccountResponse } from '@/shared/api/get-account.api';
 import { accountQueryKey } from '@/shared/hooks/use-get-account.hook';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
 import { updateQueryCache } from '@/shared/lib/update-query-cache';
 import { generateApiKey } from '../api/generate-api-key.api';
 
@@ -34,7 +36,9 @@ export const useGenerateApiKey = () => {
                 },
             );
         },
-        // onError: () => {},
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
+        },
     });
 
     const generate = () => {
@@ -49,7 +53,6 @@ export const useGenerateApiKey = () => {
     return {
         generate,
         isPending: mutation.isPending,
-        isError: mutation.isError,
         generatedApiKey: mutation.data?.apiKey ?? null,
         reset,
     };

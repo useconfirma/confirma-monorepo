@@ -44,8 +44,6 @@ export const ZApiConfiguration = ({
     register,
     errors,
     isPending,
-    isError,
-    isSuccess,
     handleSubmit,
 }: ZApiConfigurationProps) => {
     const headingId = useId();
@@ -58,7 +56,6 @@ export const ZApiConfiguration = ({
     const clientTokenId = useId();
     const clientTokenErrorId = useId();
     const tokenHintId = useId();
-    const submitStatusId = useId();
 
     const { configured, instanceId, updatedAt } = zApi;
 
@@ -270,11 +267,7 @@ export const ZApiConfiguration = ({
                             <Button
                                 type="submit"
                                 disabled={isPending}
-                                aria-describedby={
-                                    isError || isSuccess
-                                        ? `${formHintId} ${submitStatusId}`
-                                        : formHintId
-                                }
+                                aria-describedby={formHintId}
                                 className="w-full sm:w-auto"
                             >
                                 {isPending && (
@@ -285,30 +278,6 @@ export const ZApiConfiguration = ({
                                 )}
                                 {isPending ? 'Salvando…' : 'Salvar credenciais'}
                             </Button>
-                            {isError && (
-                                <p
-                                    id={submitStatusId}
-                                    role="alert"
-                                    className="text-danger text-xs"
-                                >
-                                    Não foi possível salvar as credenciais.
-                                    Confira o ID e os tokens da instância e
-                                    tente novamente.
-                                </p>
-                            )}
-                            {isSuccess && (
-                                <p
-                                    id={submitStatusId}
-                                    role="status"
-                                    className="text-success flex items-center gap-1 text-xs"
-                                >
-                                    <Check
-                                        aria-hidden="true"
-                                        className="size-3.5"
-                                    />
-                                    Credenciais salvas.
-                                </p>
-                            )}
                         </div>
                     </form>
                 </section>

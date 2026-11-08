@@ -2,6 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
 import { signIn } from '../api/sign-in.api';
 import { signInSchema, type SignInFormData } from '../schemas/sign-in.schema';
 
@@ -20,7 +22,9 @@ export const useSignIn = () => {
         onSuccess: () => {
             void navigate({ to: '/overview', replace: true });
         },
-        // onError: () => {},
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
+        },
     });
 
     const handleSubmit = formHandleSubmit((data) => {

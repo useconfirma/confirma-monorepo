@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import type { paths } from '@/shared/@types/api';
 import type { GetAccountResponse } from '@/shared/api/get-account.api';
 import { accountQueryKey } from '@/shared/hooks/use-get-account.hook';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
 import { updateQueryCache } from '@/shared/lib/update-query-cache';
 import { configureSendWindow } from '../api/configure-send-window.api';
 import {
@@ -59,6 +61,10 @@ export const useConfigureSendWindow = (sendWindow: SendWindow | undefined) => {
                 end: response.end,
                 timeZone: response.timeZone,
             });
+            toast.success('Janela de envio salva.');
+        },
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
         },
     });
 
@@ -71,8 +77,6 @@ export const useConfigureSendWindow = (sendWindow: SendWindow | undefined) => {
         control,
         errors,
         isPending: mutation.isPending,
-        isError: mutation.isError,
-        isSuccess: mutation.isSuccess,
         handleSubmit,
     };
 };

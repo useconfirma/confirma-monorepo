@@ -4,6 +4,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 import { QueryProvider } from './shared/providers/query-provider';
+import { ToastProvider } from './shared/providers/toast-provider';
 
 const router = createRouter({
     routeTree,
@@ -28,7 +29,9 @@ const App = () => {
 ReactDOM.createRoot(document.getElementById('app')!).render(
     <StrictMode>
         <QueryProvider>
-            <App />
+            <ToastProvider>
+                <App />
+            </ToastProvider>
         </QueryProvider>
     </StrictMode>,
 );

@@ -13,8 +13,8 @@ src/main.tsx
 ```
 
 Esse arquivo cria o router a partir de `routeTree.gen.ts`, envolve a árvore no
-`QueryProvider` e injeta o `queryClient` no contexto do router, disponível em
-`beforeLoad` e `loader` de todas as rotas.
+`QueryProvider` e no `ToastProvider` e injeta o `queryClient` no contexto do
+router, disponível em `beforeLoad` e `loader` de todas as rotas.
 
 A rota raiz fica em:
 
@@ -42,8 +42,8 @@ src/
 │   ├── api/                 # chamadas HTTP compartilhadas
 │   ├── components/          # layouts, componentes de UI e de página
 │   ├── hooks/               # queries e mutations compartilhadas
-│   ├── lib/                 # cliente HTTP e utilitários de cache e Tailwind
-│   └── providers/           # QueryProvider
+│   ├── lib/                 # cliente HTTP e utilitários de cache, erro e Tailwind
+│   └── providers/           # QueryProvider e ToastProvider
 ├── main.tsx
 └── styles.css               # tema Tailwind com os tokens da marca
 ```
@@ -157,6 +157,11 @@ partir de `docs/product/assets/tokens.json` e a tipografia do painel.
 Componentes de UI reutilizáveis ficam em `src/shared/components/ui/`, montados
 sobre Radix UI e `tailwind-variants`. Ícones vêm de `lucide-react`. Logos e
 favicon ficam em `public/`.
+
+Toasts usam Sonner. O `ToastProvider` monta o `Toaster` com o visual do
+painel: folha Noite no canto inferior direito, ícone e texto indicando o
+estado (Menta para sucesso, Coral para erro, Âmbar para alerta). Para exibir
+um toast, importe `toast` de `sonner`.
 
 ## Variáveis de ambiente
 

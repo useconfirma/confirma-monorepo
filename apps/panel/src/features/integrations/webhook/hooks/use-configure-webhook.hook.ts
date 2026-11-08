@@ -2,9 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import type { paths } from '@/shared/@types/api';
 import type { GetAccountResponse } from '@/shared/api/get-account.api';
 import { accountQueryKey } from '@/shared/hooks/use-get-account.hook';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
 import { updateQueryCache } from '@/shared/lib/update-query-cache';
 import { configureWebhook } from '../api/configure-webhook.api';
 import {
@@ -57,6 +59,9 @@ export const useConfigureWebhook = (webhook: Webhook | undefined) => {
             );
             resetForm({ url: response.url });
         },
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
+        },
     });
 
     const save = (url: string) => {
@@ -90,7 +95,6 @@ export const useConfigureWebhook = (webhook: Webhook | undefined) => {
         register,
         errors,
         isPending: mutation.isPending,
-        isError: mutation.isError,
         handleSubmit,
         isConfirming: pendingUrl !== null,
         confirm,

@@ -35,7 +35,8 @@ apps/panel/
 ```
 
 A aplicação inicia em `src/main.tsx`, que cria o router, monta o
-`QueryProvider` e injeta o `queryClient` no contexto das rotas.
+`QueryProvider` e o `ToastProvider` e injeta o `queryClient` no contexto das
+rotas.
 
 ## Convenções de arquivos
 
@@ -573,6 +574,18 @@ Regras:
 pnpm --filter @confirma/panel add <pacote>
 ```
 
+### Toasts
+
+Toasts usam Sonner, configurado em `src/shared/providers/toast-provider.tsx`
+com `unstyled` e classes do tema; não monte outro `Toaster` nem estilize toasts
+avulsos. Dispare com `toast.success`, `toast.error`, `toast.warning`,
+`toast.info` ou `toast.loading`, importando `toast` de `sonner`. O texto segue
+o nome da ação (botão "Salvar webhook" → toast "Webhook salvo."). Em falhas, use
+`toast.error(getErrorMessage(error))`, de `@/shared/lib/get-error-message`,
+que devolve a mensagem da API ou uma mensagem genérica. O Sonner
+injeta CSS fora das camadas do Tailwind; se uma classe não surtir efeito no
+toast, use o modificador `!`.
+
 ### Componentes compartilhados que não são UI
 
 - `src/shared/components/`: componentes de página reutilizados entre
@@ -605,8 +618,8 @@ infraestrutura transversal do painel:
 - `api/` e `hooks/`: chamadas e queries usadas por várias features, como
   usuário atual e account;
 - `components/`: UI, layouts e componentes de página;
-- `lib/`: cliente HTTP e utilitários de Tailwind e cache;
-- `providers/`: providers globais.
+- `lib/`: cliente HTTP e utilitários de Tailwind, cache e erro;
+- `providers/`: providers globais (`QueryProvider` e `ToastProvider`).
 
 Mantenha na feature qualquer chamada, hook, schema ou componente usado por um
 único contexto. Antes de mover algo para `shared`, verifique se há mais de um

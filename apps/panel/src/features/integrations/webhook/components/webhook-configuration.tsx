@@ -54,7 +54,6 @@ export const WebhookConfiguration = ({
     register,
     errors,
     isPending,
-    isError,
     handleSubmit,
     isConfirming,
     confirm,
@@ -70,7 +69,6 @@ export const WebhookConfiguration = ({
     const urlId = useId();
     const urlHintId = useId();
     const urlErrorId = useId();
-    const submitErrorId = useId();
     const emailHintId = useId();
 
     const { configured, updatedAt } = webhook;
@@ -199,11 +197,7 @@ export const WebhookConfiguration = ({
                                     ref={submitRef}
                                     type="submit"
                                     disabled={isPending}
-                                    aria-describedby={
-                                        isError
-                                            ? `${formHintId} ${submitErrorId}`
-                                            : formHintId
-                                    }
+                                    aria-describedby={formHintId}
                                     className="w-full sm:w-auto"
                                 >
                                     {isPending && (
@@ -214,16 +208,6 @@ export const WebhookConfiguration = ({
                                     )}
                                     {isPending ? 'Salvando…' : 'Salvar destino'}
                                 </Button>
-                                {isError && (
-                                    <p
-                                        id={submitErrorId}
-                                        role="alert"
-                                        className="text-danger text-xs"
-                                    >
-                                        Não foi possível salvar o destino.
-                                        Confira a URL e tente novamente.
-                                    </p>
-                                )}
                             </div>
                         </form>
                     </li>
