@@ -1,7 +1,7 @@
 ---
 /*
  * Formulário de solicitação de convite para o Beta (API-01: POST /invitations
- * com { "email": "..." }). O envio ainda não está ligado à API.
+ * com { "email": "..." }). O comportamento é ativado pelo script da feature.
  */
 interface Props {
     id?: string;
@@ -14,6 +14,7 @@ const inputId = `${id}-email`;
 
 <form
     id={id}
+    data-request-invitation-form
     method="post"
     class:list={['max-w-[27rem]', className]}
     aria-label="Solicitar convite para o Beta"
@@ -37,7 +38,19 @@ const inputId = `${id}-email`;
             Solicitar convite para o Beta
         </button>
     </div>
+    <p
+        class="invite-status"
+        data-form-status
+        role="status"
+        aria-live="polite"
+    ></p>
 </form>
+
+<script>
+    import { setupRequestInvitationForm } from '../scripts/request-invitation.script';
+
+    setupRequestInvitationForm();
+</script>
 
 <style>
     /* Campo único com o botão encaixado, como um balão: o bico no topo ecoa o
@@ -145,6 +158,13 @@ const inputId = `${id}-email`;
     .invite-submit:focus-visible {
         outline-color: var(--color-noite);
         outline-offset: 2px;
+    }
+
+    .invite-status {
+        min-height: 1.5rem;
+        margin: 0.5rem 0.25rem 0;
+        color: var(--color-ink-muted);
+        font-size: var(--text-sm);
     }
 
     @media (width >= 40rem) {

@@ -1,12 +1,12 @@
 ---
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import LandingHeader from '../features/landing/components/landing-header.astro';
+import LandingHero from '../features/landing/components/landing-hero.astro';
+import BaseLayout from '../components/layout/base-layout.astro';
 ---
 
 <BaseLayout>
-    <Header />
+    <LandingHeader />
     <main>
-        <Hero />
+        <LandingHero />
     </main>
 </BaseLayout>
