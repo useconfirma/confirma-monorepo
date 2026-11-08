@@ -10,7 +10,6 @@ export const Route = createFileRoute('/_protected')({
         const currentUser = await context.queryClient
             .query({
                 ...currentUserQueryOptions,
-                staleTime: 'static',
             })
             .catch(() => {
                 throw redirect({ to: '/sign-in', replace: true });

@@ -12,7 +12,6 @@ export const Route = createFileRoute('/_auth/invitations/$invitationToken')({
 
         const { email } = await context.queryClient.query({
             ...verifyInvitationQueryOptions(params.invitationToken),
-            staleTime: 'static',
         });
 
         return { invitationToken: params.invitationToken, email };
