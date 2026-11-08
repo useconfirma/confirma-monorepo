@@ -143,6 +143,20 @@ pnpm --filter @confirma/api test
 Na raiz do monorepo, `pnpm check` executa lint, typecheck, testes e verificação
 de formatação.
 
+## Docker
+
+O `Dockerfile` usa a raiz do monorepo como contexto. Ele compila a API e gera
+uma imagem final apenas com Node, dependências de produção e `dist/`:
+
+```bash
+docker build -f apps/api/Dockerfile -t confirma-api .
+docker run -p 8080:8080 --env-file apps/api/.env confirma-api
+```
+
+As variáveis de ambiente são passadas na execução. A imagem não inclui a Prisma
+CLI nem as migrations: aplique-as fora do container com
+`prisma migrate deploy`.
+
 ## Documentação HTTP
 
 Com a API em execução:

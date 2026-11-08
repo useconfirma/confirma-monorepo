@@ -1,0 +1,13 @@
+# O contexto do build é a raiz do monorepo. Fica de fora tudo que é gerado,
+# instalado ou sensível: cada Dockerfile instala e compila do zero.
+.git
+**/node_modules
+**/dist
+**/.turbo
+**/.astro
+**/.tanstack
+**/.env
+**/.env.*
+!**/.env.example
+docs
+*.log

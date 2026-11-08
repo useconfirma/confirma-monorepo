@@ -160,8 +160,8 @@ favicon ficam em `public/`.
 
 ## Variáveis de ambiente
 
-- `VITE_API_URL`: URL base da API. Opcional; usa `http://localhost:8080`
-  quando ausente.
+- `VITE_API_URL`: URL base da API, lida no build. Opcional; usa
+  `http://localhost:8080` quando ausente.
 
 ## Comandos do pacote
 
@@ -176,3 +176,17 @@ pnpm --filter @confirma/panel generate:types   # requer a API em execução
 
 Na raiz do monorepo, `pnpm check` executa lint, typecheck, testes e verificação
 de formatação.
+
+## Docker
+
+O `Dockerfile` usa a raiz do monorepo como contexto. Ele gera o `dist/` (com
+os arquivos de `public/`) e o serve com Nginx, configurado em `nginx.conf` com
+gzip, cache longo para `/assets/`, fallback de SPA para `index.html` e
+cabeçalhos básicos de segurança.
+
+`VITE_API_URL` é embutida no bundle, por isso é informada no build:
+
+```bash
+docker build -f apps/panel/Dockerfile --build-arg VITE_API_URL=https://api.exemplo.com -t confirma-panel .
+docker run -p 3000:80 confirma-panel
+```
