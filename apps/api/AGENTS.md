@@ -204,6 +204,39 @@ Use nomes específicos para valores de domínio (`invitation`, `account`,
 realmente genéricas. Não use `response` para o retorno do caso de uso nem
 `result` para o DTO HTTP.
 
+### Cookies e detalhes de transporte HTTP
+
+Cookies, headers e status são detalhes de transporte e pertencem ao
+controller ou ao middleware, nunca ao caso de uso. Não crie providers para
+envolver `req`/`res`.
+
+- O caso de uso produz o dado de que o transporte precisa, como
+  `sessionToken` e `expiresAt`, e o devolve no `result`. Ele não conhece
+  cookies nem Express.
+- O controller grava o cookie diretamente com `res.cookie(...)` ou o remove
+  com `res.clearCookie(...)`, usando as opções do cookie de sessão:
+  `httpOnly`, `secure` em produção, `sameSite: 'lax'` e `path: '/'`.
+- Middlewares leem cookies diretamente em `req.cookies`, preenchido pelo
+  `cookie-parser` configurado em `app.ts`.
+- Valores do transporte, como o token, nunca entram no DTO de resposta.
+
+```ts
+export const loginController = async (req: Request, res: Response) => {
+    const body = validateData(req.body, loginRequestSchema);
+    const result = await login.execute(body);
+
+    res.cookie('confirma_session', result.sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: result.expiresAt.getTime() - Date.now(),
+    });
+
+    return res.status(204).send();
+};
+```
+
 Não coloque consultas Prisma, regras de negócio ou chamadas diretas de SDK em
 controllers.
 

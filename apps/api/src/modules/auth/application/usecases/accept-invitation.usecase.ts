@@ -3,6 +3,7 @@ import type { RegisteredUser } from '../../domain/models/user.model.js';
 import { InvitationUnavailableError } from '../../domain/errors/invitation-unavailable.error.js';
 import type { CryptoProvider } from '../../../../shared/domain/providers/crypto-provider.js';
 import type { HashProvider } from '../../domain/providers/hash-provider.js';
+import type { JwtProvider } from '../../domain/providers/jwt-provider.js';
 import type { UserRepository } from '../../domain/repositories/user.repository.js';
 import type { MailProvider } from '../../../../shared/domain/providers/mail-provider.js';
 
@@ -12,7 +13,10 @@ export type AcceptInvitationUseCaseInput = {
     accountName: string;
 };
 
-export type AcceptInvitationUseCaseOutput = RegisteredUser;
+export type AcceptInvitationUseCaseOutput = RegisteredUser & {
+    sessionToken: string;
+    expiresAt: Date;
+};
 
 export class AcceptInvitationUseCase {
     constructor(
@@ -20,6 +24,7 @@ export class AcceptInvitationUseCase {
         private readonly userRepository: UserRepository,
         private readonly cryptoProvider: CryptoProvider,
         private readonly hashProvider: HashProvider,
+        private readonly jwtProvider: JwtProvider,
         private readonly mailProvider: MailProvider,
         private readonly publicAppUrl: string,
     ) {}
@@ -66,6 +71,13 @@ export class AcceptInvitationUseCase {
             ].join('\n'),
         });
 
-        return registeredUser;
+        const expiresIn = 8 * 60 * 60;
+        const expiresAt = new Date(Date.now() + expiresIn * 1000);
+        const sessionToken = this.jwtProvider.sign(
+            { sub: registeredUser.user.id },
+            { expiresIn },
+        );
+
+        return { ...registeredUser, sessionToken, expiresAt };
     }
 }

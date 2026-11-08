@@ -7,7 +7,6 @@ import { BcryptHashProvider } from '../../../../../shared/infrastructure/provide
 import { JsonWebTokenProvider } from '../../../../../shared/infrastructure/providers/jsonwebtoken.provider.js';
 import { env } from '../../../../../shared/infrastructure/env/index.js';
 import { validateData } from '../../../../../shared/infrastructure/validation/zod/data-validation.js';
-import { ExpressCookieProvider } from '../../../../../shared/infrastructure/providers/express-cookie.provider.js';
 import { loginRequestSchema } from '../../schemas/zod/login.schema.js';
 
 openApiRegistry.registerPath({
@@ -38,9 +37,8 @@ const login = new LoginUseCase(
 export const loginController = async (req: Request, res: Response) => {
     const body = validateData(req.body, loginRequestSchema);
     const result = await login.execute(body);
-    const cookies = new ExpressCookieProvider(req, res);
 
-    cookies.set('confirma_session', result.sessionToken, {
+    res.cookie('confirma_session', result.sessionToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',

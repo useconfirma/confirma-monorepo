@@ -3,7 +3,6 @@ import { PrismaUserRepository } from '../../../../modules/auth/infrastructure/re
 import { JsonWebTokenProvider } from '../../providers/jsonwebtoken.provider.js';
 import { env } from '../../env/index.js';
 import { AppError } from '../../../domain/errors/app-error.js';
-import { ExpressCookieProvider } from '../../providers/express-cookie.provider.js';
 
 const unauthenticated = (): AppError => {
     return new AppError('UNAUTHENTICATED', 'Sessão ausente ou inválida.', 401);
@@ -13,8 +12,7 @@ const jwtProvider = new JsonWebTokenProvider(env.JWT_SECRET);
 const userRepository = new PrismaUserRepository();
 
 export const authenticate: RequestHandler = async (req, res, next) => {
-    const cookies = new ExpressCookieProvider(req, res);
-    const token = cookies.get('confirma_session');
+    const token: string | undefined = req.cookies?.confirma_session;
 
     if (!token) {
         throw unauthenticated();

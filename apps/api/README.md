@@ -56,8 +56,11 @@ Fluxos de convite, criação de conta, login, logout e consulta do usuário atua
 - repositories Prisma: `modules/auth/infrastructure/repositories/prisma/`;
 - schemas de entrada/saída: `modules/auth/infrastructure/schemas/zod/`.
 
-As rotas usam JWT em cookie HttpOnly. O middleware de autenticação valida o
-token e consulta o usuário no repository Prisma.
+As rotas usam JWT em cookie HttpOnly. Os casos de uso de login e aceite de
+convite assinam o JWT e devolvem o token; os controllers gravam e removem o
+cookie `confirma_session` diretamente na resposta do Express. O middleware de
+autenticação lê o cookie em `req.cookies`, valida o token e consulta o usuário
+no repository Prisma.
 No cadastro, a resposta contém apenas o ID e e-mail do usuário e o ID e nome
 da account.
 

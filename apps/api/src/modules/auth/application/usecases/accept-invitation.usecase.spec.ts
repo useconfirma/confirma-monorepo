@@ -4,6 +4,7 @@ import type { Invitation } from '../../domain/models/invitation.model.js';
 import type { RegisteredUser } from '../../domain/models/user.model.js';
 import type { CryptoProvider } from '../../../../shared/domain/providers/crypto-provider.js';
 import type { HashProvider } from '../../domain/providers/hash-provider.js';
+import type { JwtProvider } from '../../domain/providers/jwt-provider.js';
 import type { MailProvider } from '../../../../shared/domain/providers/mail-provider.js';
 import type { InvitationRepository } from '../../domain/repositories/invitation.repository.js';
 import type { RegistrationRepository } from '../../domain/repositories/registration.repository.js';
@@ -38,6 +39,10 @@ describe('AcceptInvitationUseCase unit tests', () => {
         hash: vi.fn(),
         compare: vi.fn(),
     } satisfies HashProvider;
+    const jwtProvider = {
+        sign: vi.fn(),
+        verify: vi.fn(),
+    } satisfies JwtProvider;
     const mailProvider = {
         send: vi.fn(),
     } satisfies Pick<MailProvider, 'send'>;
@@ -50,6 +55,7 @@ describe('AcceptInvitationUseCase unit tests', () => {
             registrationRepository,
             cryptoProvider,
             hashProvider,
+            jwtProvider,
             mailProvider,
             'https://app.example.com',
         );
@@ -67,6 +73,7 @@ describe('AcceptInvitationUseCase unit tests', () => {
             registrationRepository.registerWithInvitation,
         ).mockResolvedValue(registeredUser);
         vi.mocked(mailProvider.send).mockResolvedValue(undefined);
+        vi.mocked(jwtProvider.sign).mockReturnValue('session-token');
 
         const result = await sut.execute({
             invitationToken,
@@ -74,7 +81,15 @@ describe('AcceptInvitationUseCase unit tests', () => {
             accountName: 'Test Account',
         });
 
-        expect(result).toEqual(registeredUser);
+        expect(result).toEqual({
+            ...registeredUser,
+            sessionToken: 'session-token',
+            expiresAt: expect.any(Date),
+        });
+        expect(jwtProvider.sign).toHaveBeenCalledWith(
+            { sub: registeredUser.user.id },
+            { expiresIn: 8 * 60 * 60 },
+        );
         expect(cryptoProvider.hashToken).toHaveBeenCalledWith(invitationToken);
         expect(
             registrationRepository.registerWithInvitation,
@@ -128,6 +143,7 @@ describe('AcceptInvitationUseCase unit tests', () => {
                 registrationRepository.registerWithInvitation,
             ).not.toHaveBeenCalled();
             expect(mailProvider.send).not.toHaveBeenCalled();
+            expect(jwtProvider.sign).not.toHaveBeenCalled();
         },
     );
 });

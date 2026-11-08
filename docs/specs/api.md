@@ -246,9 +246,9 @@ endpoints:
 
 - **Caso de uso:** UC-02; requisito RF-01.
 - **Entrada:** `invitationToken`, `password` e `accountName`, todos strings obrigatórios. O e-mail é o do convite.
-- **Resposta:** `201` com `{ "user": { "id": "...", "email": "..." }, "account": { "id": "...", "name": "..." } }`.
+- **Resposta:** `201` com `{ "user": { "id": "...", "email": "..." }, "account": { "id": "...", "name": "..." } }` e `Set-Cookie` para `confirma_session`.
 - **Erro de validação:** `400` com `VALIDATION_ERROR`.
-- **Comportamento atual:** o controller executa o caso de uso, consome o convite e cria usuário e account em uma transação Prisma. O DTO público é construído no controller com somente `id` e `email` do usuário e `id` e `name` da account; hash de senha e campos internos de persistência não são retornados.
+- **Comportamento atual:** o controller executa o caso de uso, consome o convite e cria usuário e account em uma transação Prisma. Em seguida o caso de uso assina um JWT de 8 horas para o novo usuário e o controller o grava no cookie `confirma_session`, iniciando a sessão sem login separado. O DTO público é construído no controller com somente `id` e `email` do usuário e `id` e `name` da account; hash de senha, token de sessão e campos internos de persistência não são retornados.
 
 ### API-03 — Login
 

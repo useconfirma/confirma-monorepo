@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express';
 import { openApiRegistry } from '../../../../../shared/infrastructure/http/docs/openapi.js';
 import { errorResponseSchema } from '../../../../../shared/infrastructure/schemas/zod/error.schema.js';
-import { ExpressCookieProvider } from '../../../../../shared/infrastructure/providers/express-cookie.provider.js';
 
 openApiRegistry.registerPath({
     method: 'delete',
@@ -18,9 +17,7 @@ openApiRegistry.registerPath({
 });
 
 export const logoutController = async (req: Request, res: Response) => {
-    const cookies = new ExpressCookieProvider(req, res);
-
-    cookies.remove('confirma_session', {
+    res.clearCookie('confirma_session', {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
