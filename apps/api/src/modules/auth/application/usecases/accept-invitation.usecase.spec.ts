@@ -98,6 +98,11 @@ describe('AcceptInvitationUseCase unit tests', () => {
             email: invitation.email,
             passwordHash: 'password-hash',
             accountName: 'Test Account',
+            sendWindow: {
+                start: '08:00',
+                end: '18:00',
+                timeZone: 'America/Sao_Paulo',
+            },
             usedAt: expect.any(Date),
         });
         expect(mailProvider.send).toHaveBeenCalledWith({

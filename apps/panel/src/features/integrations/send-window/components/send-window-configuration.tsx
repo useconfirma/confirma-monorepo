@@ -1,7 +1,9 @@
-import { Check, CircleDashed } from 'lucide-react';
+import { Check, CircleDashed, LoaderCircle } from 'lucide-react';
 import { useId } from 'react';
+import { Controller } from 'react-hook-form';
 import type { paths } from '@/shared/@types/api';
 import { Badge } from '@/shared/components/ui/badge';
+import { Button } from '@/shared/components/ui/button';
 import {
     Card,
     CardContent,
@@ -19,41 +21,62 @@ import {
     SelectValue,
 } from '@/shared/components/ui/select';
 import { BRAZIL_TIME_ZONES } from '../constants/time-zones.constant';
+import type { useConfigureSendWindow } from '../hooks/use-configure-send-window.hook';
 
 type SendWindow =
     paths['/account']['get']['responses'][200]['content']['application/json']['account']['sendWindow'];
+
+type SendWindowConfigurationProps = ReturnType<
+    typeof useConfigureSendWindow
+> & {
+    sendWindow: SendWindow;
+    className?: string;
+};
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'long',
     timeStyle: 'short',
 });
 
-const Unavailable = () => <span className="text-subtle">Não informado</span>;
+const Unavailable = () => <span className="text-subtle">Não informada</span>;
+
+// Liga o campo à dica e, quando houver, à mensagem de erro.
+const describedBy = (hintId: string, errorId: string, hasError: boolean) =>
+    hasError ? `${hintId} ${errorId}` : hintId;
 
 /*
- * Janela diária de envio (ENT-03), vinda de `account.sendWindow`.
- * `start` e `end` são exibidos como a API retorna (HH:mm no fuso `timeZone`),
- * sem conversão. `configured` não indica que mensagens foram enviadas.
- * Componente apresentacional: recebe os dados por props e não busca nem grava.
- * Os campos ficam desabilitados até a configuração (API-07) ser implementada.
+ * Janela diária de envio (ENT-03), vinda de `account.sendWindow`, e a
+ * configuração (API-07), com estado e ações do `useConfigureSendWindow`
+ * recebidos por props. A janela atual aparece nos próprios campos do
+ * formulário (HH:mm no fuso `timeZone`, sem conversão); o resumo mostra só a
+ * última atualização. Início inclusivo, fim exclusivo, sem atravessar a
+ * meia-noite (BR-03). `configured` não indica que mensagens foram enviadas.
  */
 export const SendWindowConfiguration = ({
     sendWindow,
     className,
-}: {
-    sendWindow: SendWindow;
-    className?: string;
-}) => {
+    register,
+    control,
+    errors,
+    isPending,
+    isError,
+    isSuccess,
+    handleSubmit,
+}: SendWindowConfigurationProps) => {
     const headingId = useId();
     const formHeadingId = useId();
     const startId = useId();
     const startHintId = useId();
+    const startErrorId = useId();
     const endId = useId();
     const endHintId = useId();
+    const endErrorId = useId();
     const timeZoneId = useId();
     const timeZoneHintId = useId();
+    const timeZoneErrorId = useId();
+    const submitStatusId = useId();
 
-    const { configured, start, end, timeZone, updatedAt } = sendWindow;
+    const { configured, timeZone, updatedAt } = sendWindow;
     const isBrazilTimeZone = BRAZIL_TIME_ZONES.some(
         ({ value }) => value === timeZone,
     );
@@ -89,36 +112,6 @@ export const SendWindowConfiguration = ({
                         <dl className="grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-6 sm:gap-y-3">
                             <div className="min-w-0 space-y-1 sm:contents">
                                 <dt className="text-muted text-sm">
-                                    Horário inicial
-                                </dt>
-                                <dd className="text-foreground text-sm tabular-nums">
-                                    {start ?? <Unavailable />}
-                                </dd>
-                            </div>
-                            <div className="min-w-0 space-y-1 sm:contents">
-                                <dt className="text-muted text-sm">
-                                    Horário final
-                                </dt>
-                                <dd className="text-foreground text-sm tabular-nums">
-                                    {end ?? <Unavailable />}
-                                </dd>
-                            </div>
-                            <div className="min-w-0 space-y-1 sm:contents">
-                                <dt className="text-muted text-sm">
-                                    Fuso horário
-                                </dt>
-                                <dd className="text-foreground text-sm break-words">
-                                    {timeZone ? (
-                                        <span className="font-mono">
-                                            {timeZone}
-                                        </span>
-                                    ) : (
-                                        <Unavailable />
-                                    )}
-                                </dd>
-                            </div>
-                            <div className="min-w-0 space-y-1 sm:contents">
-                                <dt className="text-muted text-sm">
                                     Última atualização
                                 </dt>
                                 <dd className="text-foreground text-sm">
@@ -151,24 +144,36 @@ export const SendWindowConfiguration = ({
                                 : 'Definir janela de envio'}
                         </h3>
                         <p className="text-muted text-sm text-pretty">
-                            A edição ainda não está disponível nesta etapa.
+                            {configured
+                                ? 'A nova janela substitui a atual e passa a valer para as próximas tentativas de envio.'
+                                : 'Defina o intervalo diário em que o Confirma pode enviar as mensagens de confirmação.'}
                         </p>
                     </div>
 
-                    <fieldset disabled className="space-y-4">
-                        <legend className="sr-only">
-                            Campos da janela de envio (indisponíveis)
-                        </legend>
-
+                    <form
+                        onSubmit={handleSubmit}
+                        noValidate
+                        aria-busy={isPending}
+                        aria-labelledby={formHeadingId}
+                        className="space-y-4"
+                    >
                         <div className="grid gap-4 sm:grid-cols-2">
                             <div className="min-w-0 space-y-2">
                                 <Label htmlFor={startId}>Horário inicial</Label>
                                 <Input
                                     id={startId}
                                     type="time"
-                                    defaultValue={start ?? undefined}
-                                    aria-describedby={startHintId}
+                                    disabled={isPending}
+                                    aria-invalid={
+                                        errors.start ? true : undefined
+                                    }
+                                    aria-describedby={describedBy(
+                                        startHintId,
+                                        startErrorId,
+                                        Boolean(errors.start),
+                                    )}
                                     className="tabular-nums"
+                                    {...register('start')}
                                 />
                                 <p
                                     id={startHintId}
@@ -176,6 +181,14 @@ export const SendWindowConfiguration = ({
                                 >
                                     Incluído na janela.
                                 </p>
+                                {errors.start && (
+                                    <p
+                                        id={startErrorId}
+                                        className="text-danger text-xs"
+                                    >
+                                        {errors.start.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="min-w-0 space-y-2">
@@ -183,9 +196,15 @@ export const SendWindowConfiguration = ({
                                 <Input
                                     id={endId}
                                     type="time"
-                                    defaultValue={end ?? undefined}
-                                    aria-describedby={endHintId}
+                                    disabled={isPending}
+                                    aria-invalid={errors.end ? true : undefined}
+                                    aria-describedby={describedBy(
+                                        endHintId,
+                                        endErrorId,
+                                        Boolean(errors.end),
+                                    )}
                                     className="tabular-nums"
+                                    {...register('end')}
                                 />
                                 <p
                                     id={endHintId}
@@ -194,48 +213,128 @@ export const SendWindowConfiguration = ({
                                     Não incluído na janela. A janela não
                                     atravessa a meia-noite.
                                 </p>
+                                {errors.end && (
+                                    <p
+                                        id={endErrorId}
+                                        className="text-danger text-xs"
+                                    >
+                                        {errors.end.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor={timeZoneId}>Fuso horário</Label>
-                            <Select
-                                disabled
-                                defaultValue={timeZone ?? undefined}
-                            >
-                                <SelectTrigger
-                                    id={timeZoneId}
-                                    aria-describedby={timeZoneHintId}
-                                >
-                                    <SelectValue placeholder="Selecione o fuso horário" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {/* Fuso salvo fora da lista: exibido como veio da API. */}
-                                    {timeZone && !isBrazilTimeZone && (
-                                        <SelectItem value={timeZone}>
-                                            {timeZone}
-                                        </SelectItem>
-                                    )}
-                                    {BRAZIL_TIME_ZONES.map(
-                                        ({ value, label }) => (
-                                            <SelectItem
-                                                key={value}
-                                                value={value}
-                                            >
-                                                {label}
-                                            </SelectItem>
-                                        ),
-                                    )}
-                                </SelectContent>
-                            </Select>
+                            <Controller
+                                control={control}
+                                name="timeZone"
+                                render={({ field }) => (
+                                    <Select
+                                        name={field.name}
+                                        value={field.value || undefined}
+                                        onValueChange={field.onChange}
+                                        disabled={isPending}
+                                    >
+                                        <SelectTrigger
+                                            ref={field.ref}
+                                            id={timeZoneId}
+                                            onBlur={field.onBlur}
+                                            aria-invalid={
+                                                errors.timeZone
+                                                    ? true
+                                                    : undefined
+                                            }
+                                            aria-describedby={describedBy(
+                                                timeZoneHintId,
+                                                timeZoneErrorId,
+                                                Boolean(errors.timeZone),
+                                            )}
+                                        >
+                                            <SelectValue placeholder="Selecione o fuso horário" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {/* Fuso salvo fora da lista: exibido como veio da API. */}
+                                            {timeZone && !isBrazilTimeZone && (
+                                                <SelectItem value={timeZone}>
+                                                    {timeZone}
+                                                </SelectItem>
+                                            )}
+                                            {BRAZIL_TIME_ZONES.map(
+                                                ({ value, label }) => (
+                                                    <SelectItem
+                                                        key={value}
+                                                        value={value}
+                                                    >
+                                                        {label}
+                                                    </SelectItem>
+                                                ),
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                             <p
                                 id={timeZoneHintId}
                                 className="text-subtle text-xs"
                             >
                                 Os horários da janela valem neste fuso.
                             </p>
+                            {errors.timeZone && (
+                                <p
+                                    id={timeZoneErrorId}
+                                    className="text-danger text-xs"
+                                >
+                                    {errors.timeZone.message}
+                                </p>
+                            )}
                         </div>
-                    </fieldset>
+
+                        <div className="space-y-2">
+                            <Button
+                                type="submit"
+                                disabled={isPending}
+                                aria-describedby={
+                                    isError || isSuccess
+                                        ? submitStatusId
+                                        : undefined
+                                }
+                                className="w-full sm:w-auto"
+                            >
+                                {isPending && (
+                                    <LoaderCircle
+                                        aria-hidden="true"
+                                        className="size-4 motion-safe:animate-spin"
+                                    />
+                                )}
+                                {isPending ? 'Salvando…' : 'Salvar janela'}
+                            </Button>
+                            {isError && (
+                                <p
+                                    id={submitStatusId}
+                                    role="alert"
+                                    className="text-danger text-xs"
+                                >
+                                    Não foi possível salvar a janela de envio.
+                                    Confira os horários e o fuso e tente
+                                    novamente.
+                                </p>
+                            )}
+                            {isSuccess && (
+                                <p
+                                    id={submitStatusId}
+                                    role="status"
+                                    className="text-success flex items-center gap-1 text-xs"
+                                >
+                                    <Check
+                                        aria-hidden="true"
+                                        className="size-3.5"
+                                    />
+                                    Janela de envio salva.
+                                </p>
+                            )}
+                        </div>
+                    </form>
                 </section>
             </section>
         </Card>

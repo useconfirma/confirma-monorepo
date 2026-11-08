@@ -1,9 +1,11 @@
 import { useGetAccount } from '@/shared/hooks/use-get-account.hook';
 import { PageHeader } from '@/shared/components/page-header';
 import { SendWindowConfiguration } from '../components/send-window-configuration';
+import { useConfigureSendWindow } from '../hooks/use-configure-send-window.hook';
 
 const SendWindowScreen = () => {
     const { data } = useGetAccount();
+    const configuration = useConfigureSendWindow(data?.account.sendWindow);
 
     return (
         <>
@@ -16,6 +18,7 @@ const SendWindowScreen = () => {
                 <SendWindowConfiguration
                     sendWindow={data.account.sendWindow}
                     className="w-full"
+                    {...configuration}
                 />
             )}
         </>

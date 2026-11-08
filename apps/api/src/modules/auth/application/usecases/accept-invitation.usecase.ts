@@ -1,3 +1,4 @@
+import { DEFAULT_SEND_WINDOW } from '../../../accounts/domain/models/account.model.js';
 import type { InvitationRepository } from '../../domain/repositories/invitation.repository.js';
 import type { RegisteredUser } from '../../domain/models/user.model.js';
 import { InvitationUnavailableError } from '../../domain/errors/invitation-unavailable.error.js';
@@ -52,6 +53,7 @@ export class AcceptInvitationUseCase {
                 email: invitation.email,
                 passwordHash,
                 accountName: input.accountName,
+                sendWindow: DEFAULT_SEND_WINDOW,
                 usedAt: new Date(),
             },
         );

@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
+import type { paths } from '@/shared/@types/api';
 import type { GetAccountResponse } from '@/shared/api/get-account.api';
 import { accountQueryKey } from '@/shared/hooks/use-get-account.hook';
 import { updateQueryCache } from '@/shared/lib/update-query-cache';
@@ -10,11 +11,29 @@ import {
     type ConfigureSendWindowFormData,
 } from '../schemas/configure-send-window.schema';
 
-export const useConfigureSendWindow = () => {
-    const { register, handleSubmit: formHandleSubmit } =
-        useForm<ConfigureSendWindowFormData>({
-            resolver: zodResolver(configureSendWindowSchema),
-        });
+type SendWindow =
+    paths['/account']['get']['responses'][200]['content']['application/json']['account']['sendWindow'];
+
+/*
+ * Configura a janela diária de envio (API-07). O formulário começa com a
+ * janela atual da account e, após salvar, a resposta da API substitui
+ * `account.sendWindow` no cache e vira o novo valor inicial do formulário.
+ */
+export const useConfigureSendWindow = (sendWindow: SendWindow | undefined) => {
+    const {
+        register,
+        control,
+        reset: resetForm,
+        handleSubmit: formHandleSubmit,
+        formState: { errors },
+    } = useForm<ConfigureSendWindowFormData>({
+        resolver: zodResolver(configureSendWindowSchema),
+        defaultValues: {
+            start: sendWindow?.start ?? '',
+            end: sendWindow?.end ?? '',
+            timeZone: sendWindow?.timeZone ?? '',
+        },
+    });
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
@@ -35,13 +54,25 @@ export const useConfigureSendWindow = () => {
                     };
                 },
             );
+            resetForm({
+                start: response.start,
+                end: response.end,
+                timeZone: response.timeZone,
+            });
         },
-        // onError: () => {},
     });
 
     const handleSubmit = formHandleSubmit((data) => {
         mutation.mutate(data);
     });
 
-    return { register, isPending: mutation.isPending, handleSubmit };
+    return {
+        register,
+        control,
+        errors,
+        isPending: mutation.isPending,
+        isError: mutation.isError,
+        isSuccess: mutation.isSuccess,
+        handleSubmit,
+    };
 };

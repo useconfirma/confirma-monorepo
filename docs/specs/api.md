@@ -248,7 +248,7 @@ endpoints:
 - **Entrada:** `invitationToken`, `password` e `accountName`, todos strings obrigatórios. O e-mail é o do convite.
 - **Resposta:** `201` com `{ "user": { "id": "...", "email": "..." }, "account": { "id": "...", "name": "..." } }` e `Set-Cookie` para `confirma_session`.
 - **Erro de validação:** `400` com `VALIDATION_ERROR`.
-- **Comportamento atual:** o controller executa o caso de uso, consome o convite e cria usuário e account em uma transação Prisma. Em seguida o caso de uso assina um JWT de 8 horas para o novo usuário e o controller o grava no cookie `confirma_session`, iniciando a sessão sem login separado. O DTO público é construído no controller com somente `id` e `email` do usuário e `id` e `name` da account; hash de senha, token de sessão e campos internos de persistência não são retornados.
+- **Comportamento atual:** o controller executa o caso de uso, consome o convite e cria usuário e account em uma transação Prisma, com a janela de envio inicial das 08:00 às 18:00 em `America/Sao_Paulo` (BR-03). Em seguida o caso de uso assina um JWT de 8 horas para o novo usuário e o controller o grava no cookie `confirma_session`, iniciando a sessão sem login separado. O DTO público é construído no controller com somente `id` e `email` do usuário e `id` e `name` da account; hash de senha, token de sessão e campos internos de persistência não são retornados.
 
 ### API-03 — Login
 
@@ -273,7 +273,7 @@ endpoints:
 `GET /account`
 
 - **Caso de uso:** UC-05; requisitos RF-01 e RF-02.
-- **Resposta atual:** `200` com a account e seus blocos de configuração, em uma única requisição. Blocos sem configuração mantêm `configured: false` e os campos opcionais como `null`:
+- **Resposta atual:** `200` com a account e seus blocos de configuração, em uma única requisição. Blocos sem configuração mantêm `configured: false` e os campos opcionais como `null`. A janela de envio já vem configurada com o valor inicial da criação da conta:
 
 ```json
 {
@@ -281,11 +281,11 @@ endpoints:
         "id": "account_123",
         "name": "Clínica Teste",
         "sendWindow": {
-            "configured": false,
-            "start": null,
-            "end": null,
-            "timeZone": null,
-            "updatedAt": null
+            "configured": true,
+            "start": "08:00",
+            "end": "18:00",
+            "timeZone": "America/Sao_Paulo",
+            "updatedAt": "2026-11-04T12:00:00Z"
         },
         "apiKey": {
             "configured": false,

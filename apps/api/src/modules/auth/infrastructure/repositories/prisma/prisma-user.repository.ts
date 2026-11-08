@@ -53,6 +53,7 @@ export class PrismaUserRepository implements UserRepository {
                 email: invitation.email,
                 passwordHash: input.passwordHash,
                 accountName: input.accountName,
+                sendWindow: input.sendWindow,
             });
         });
     }
@@ -123,9 +124,22 @@ export class PrismaUserRepository implements UserRepository {
             data: {
                 name: input.accountName,
                 userId: user.id,
+                integrationConfig: {
+                    create: {
+                        sendWindowStart: this.parseTime(input.sendWindow.start),
+                        sendWindowEnd: this.parseTime(input.sendWindow.end),
+                        timeZone: input.sendWindow.timeZone,
+                    },
+                },
             },
         });
 
         return { user, account };
+    }
+
+    // HH:mm → coluna TIME, gravada como horário UTC de 1970-01-01.
+    private parseTime(value: string): Date {
+        const [hours, minutes] = value.split(':').map(Number);
+        return new Date(Date.UTC(1970, 0, 1, hours, minutes));
     }
 }

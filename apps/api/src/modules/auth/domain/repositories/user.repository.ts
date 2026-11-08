@@ -1,3 +1,4 @@
+import type { SendWindowSettings } from '../../../accounts/domain/models/account.model.js';
 import type {
     RegisteredUser,
     User,
@@ -8,6 +9,7 @@ export type CreateUserWithAccountInput = {
     email: string;
     passwordHash: string;
     accountName: string;
+    sendWindow: SendWindowSettings;
 };
 
 export type RegisterUserWithInvitationInput = {
@@ -15,6 +17,7 @@ export type RegisterUserWithInvitationInput = {
     email: string;
     passwordHash: string;
     accountName: string;
+    sendWindow: SendWindowSettings;
     usedAt: Date;
 };
 

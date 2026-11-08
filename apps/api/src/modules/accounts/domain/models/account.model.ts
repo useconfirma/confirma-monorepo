@@ -6,6 +6,19 @@ export type SendWindow = {
     updatedAt: Date | null;
 };
 
+export type SendWindowSettings = {
+    start: string;
+    end: string;
+    timeZone: string;
+};
+
+// Janela inicial de toda conta nova; pode ser alterada pela API-07.
+export const DEFAULT_SEND_WINDOW: SendWindowSettings = {
+    start: '08:00',
+    end: '18:00',
+    timeZone: 'America/Sao_Paulo',
+};
+
 export type ApiKeySummary = {
     configured: boolean;
     createdAt: Date | null;

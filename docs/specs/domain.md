@@ -122,7 +122,7 @@ business-rules:
       }
     - {
           id: BR-03,
-          description: 'A janela diária tem início inclusivo, fim exclusivo, fuso IANA e não atravessa meia-noite.',
+          description: 'A janela diária tem início inclusivo, fim exclusivo, fuso IANA e não atravessa meia-noite. Toda conta é criada com a janela das 08:00 às 18:00 em America/Sao_Paulo.',
       }
     - { id: BR-04, description: 'Webhooks de entrada e saída usam HTTPS.' }
     - {
@@ -235,9 +235,9 @@ use-cases:
           main-flow:
               [
                   'Informar token, senha e nome da conta; o e-mail vem do convite.',
-                  'Criar usuário e conta e consumir convite.',
+                  'Criar usuário e conta com a janela de envio inicial e consumir convite.',
               ],
-          outcome: 'Usuário e conta criados.',
+          outcome: 'Usuário e conta criados, com a janela de envio inicial configurada.',
       }
     - {
           id: UC-03,

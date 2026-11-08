@@ -23,35 +23,44 @@ export class PrismaAccountRepository implements AccountRepository {
         const integrationConfig = account.integrationConfig;
         const apiKey = account.apiKeys[0] ?? null;
 
+        const sendWindowConfigured =
+            integrationConfig?.sendWindowStart != null &&
+            integrationConfig.sendWindowEnd != null &&
+            integrationConfig.timeZone != null;
+        const webhookConfigured = integrationConfig?.webhookUrl != null;
+        const zApiConfigured =
+            integrationConfig?.zApiInstanceId != null &&
+            integrationConfig.zApiInstanceTokenEncrypted != null &&
+            integrationConfig.zApiClientTokenEncrypted != null;
+
+        // A configuração é uma linha só: `updatedAt` vale para o bloco apenas
+        // quando ele está configurado; caso contrário, fica `null`.
+        const updatedAtWhen = (configured: boolean) =>
+            configured ? (integrationConfig?.updatedAt ?? null) : null;
+
         return {
             id: account.id,
             name: account.name,
             sendWindow: {
-                configured:
-                    integrationConfig?.sendWindowStart != null &&
-                    integrationConfig.sendWindowEnd != null &&
-                    integrationConfig.timeZone != null,
+                configured: sendWindowConfigured,
                 start: this.formatTime(integrationConfig?.sendWindowStart),
                 end: this.formatTime(integrationConfig?.sendWindowEnd),
                 timeZone: integrationConfig?.timeZone ?? null,
-                updatedAt: integrationConfig?.updatedAt ?? null,
+                updatedAt: updatedAtWhen(sendWindowConfigured),
             },
             apiKey: {
                 configured: apiKey !== null,
                 createdAt: apiKey?.createdAt ?? null,
             },
             webhook: {
-                configured: integrationConfig?.webhookUrl != null,
+                configured: webhookConfigured,
                 url: integrationConfig?.webhookUrl ?? null,
-                updatedAt: integrationConfig?.updatedAt ?? null,
+                updatedAt: updatedAtWhen(webhookConfigured),
             },
             zApi: {
-                configured:
-                    integrationConfig?.zApiInstanceId != null &&
-                    integrationConfig.zApiInstanceTokenEncrypted != null &&
-                    integrationConfig.zApiClientTokenEncrypted != null,
+                configured: zApiConfigured,
                 instanceId: integrationConfig?.zApiInstanceId ?? null,
-                updatedAt: integrationConfig?.updatedAt ?? null,
+                updatedAt: updatedAtWhen(zApiConfigured),
             },
         };
     }

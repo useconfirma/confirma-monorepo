@@ -1,13 +1,20 @@
 import { z } from 'zod';
 
+const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+// Espelha a validação da API-07: HH:mm, início antes do fim (BR-03) e fuso.
 export const configureSendWindowSchema = z
     .object({
-        start: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-        end: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
-        timeZone: z.string().min(1),
+        start: z
+            .string()
+            .regex(TIME_PATTERN, { error: 'Informe o horário inicial.' }),
+        end: z
+            .string()
+            .regex(TIME_PATTERN, { error: 'Informe o horário final.' }),
+        timeZone: z.string().min(1, { error: 'Selecione o fuso horário.' }),
     })
     .refine(({ start, end }) => start < end, {
-        message: 'O horário inicial deve ser anterior ao horário final.',
+        error: 'O horário final deve ser posterior ao inicial, no mesmo dia.',
         path: ['end'],
     });
 
