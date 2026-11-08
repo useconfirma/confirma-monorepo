@@ -12,8 +12,11 @@ import {
 } from '@/shared/components/ui/dialog';
 
 interface ConfirmDialogProps {
-    /** Gatilho do diálogo (elemento único, ex.: `Button`). */
-    children: ReactNode;
+    /** Gatilho do diálogo (elemento único, ex.: `Button`). Omita no modo controlado. */
+    children?: ReactNode;
+    /** Modo controlado: abre por estado de quem usa, sem gatilho. */
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
     title: string;
     description: ReactNode;
     confirmLabel: string;
@@ -22,21 +25,24 @@ interface ConfirmDialogProps {
 }
 
 /*
- * Pede confirmação antes de uma ação que não pode ser desfeita. Não controla
- * estado: abre pelo gatilho recebido em `children`, e confirmar fecha o
- * diálogo e chama `onConfirm`. Carregamento e erro ficam com quem dispara a
- * ação. O foco começa em cancelar, a escolha segura.
+ * Pede confirmação antes de uma ação que não pode ser desfeita. Por padrão
+ * abre pelo gatilho recebido em `children`; com `open` e `onOpenChange`, abre
+ * por estado (ex.: depois de validar um formulário). Confirmar fecha o diálogo
+ * e chama `onConfirm`. Carregamento e erro ficam com quem dispara a ação. O
+ * foco começa em cancelar, a escolha segura.
  */
 export const ConfirmDialog = ({
     children,
+    open,
+    onOpenChange,
     title,
     description,
     confirmLabel,
     cancelLabel = 'Cancelar',
     onConfirm,
 }: ConfirmDialogProps) => (
-    <Dialog>
-        <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+        {children && <DialogTrigger asChild>{children}</DialogTrigger>}
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>{title}</DialogTitle>

@@ -2,6 +2,7 @@ import { Check, CircleDashed, LoaderCircle, Mail } from 'lucide-react';
 import { useId, useRef } from 'react';
 import type { paths } from '@/shared/@types/api';
 import { ConfirmDialog } from '@/shared/components/confirm-dialog';
+import { SecretRevealDialog } from '@/shared/components/secret-reveal-dialog';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -11,7 +12,6 @@ import {
     CardTitle,
 } from '@/shared/components/ui/card';
 import type { useGenerateApiKey } from '../hooks/use-generate-api-key.hook';
-import { ApiKeyRevealDialog } from './api-key-reveal-dialog';
 
 type ApiKey =
     paths['/account']['get']['responses'][200]['content']['application/json']['account']['apiKey'];
@@ -36,7 +36,7 @@ const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
  * `configured` só diz que uma chave foi gerada: não indica que ela já foi
  * usada. O valor da chave nunca é retornado por GET /account, então nada
  * dele (nem prefixo ou máscara) é exibido aqui; a chave nova aparece só no
- * `ApiKeyRevealDialog`.
+ * `SecretRevealDialog`.
  * Sem chave, a ação gera direto. Com chave, passa pelo `ConfirmDialog`,
  * porque a atual deixa de funcionar.
  * "Enviar por e-mail" é só a indicação de uma ação futura: fica desabilitada
@@ -199,8 +199,13 @@ export const ApiKeyConfiguration = ({
                 </ul>
 
                 {generatedApiKey && (
-                    <ApiKeyRevealDialog
-                        apiKey={generatedApiKey}
+                    <SecretRevealDialog
+                        title="API Key gerada"
+                        description="Copie a chave e guarde-a em um local seguro. Ela não será exibida novamente depois que você fechar esta janela."
+                        secret={generatedApiKey}
+                        secretLabel="Nova API Key"
+                        copyLabel="Copiar API Key"
+                        copiedMessage="API Key copiada para a área de transferência."
                         onClosed={handleRevealClosed}
                     />
                 )}

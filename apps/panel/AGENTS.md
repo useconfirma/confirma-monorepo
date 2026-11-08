@@ -49,6 +49,7 @@ Arquivos usam kebab-case e um sufixo que indica o papel:
 | `.screen.tsx` | página usada por uma rota | `notifications.screen.tsx` |
 | `.layout.tsx` | layout de um grupo de rotas | `account.layout.tsx` |
 | `.constant.ts` | valores fixos da feature | `channels.constant.ts` |
+| `.util.ts` | função auxiliar pura da feature | `format-phone.util.ts` |
 | `.tsx` sem sufixo | componente | `notification-list.tsx` |
 
 Imports entre pastas diferentes usam o alias `@/` (`@/shared/...`,
@@ -70,7 +71,8 @@ src/features/notifications/
     ├── constants/
     ├── hooks/
     ├── schemas/
-    └── screens/
+    ├── screens/
+    └── utils/
 ```
 
 Crie somente as pastas necessárias ao comportamento solicitado. Depois:
@@ -570,7 +572,7 @@ pnpm --filter @confirma/panel add <pacote>
 ### Componentes compartilhados que não são UI
 
 - `src/shared/components/`: componentes de página reutilizados entre
-  features, como `PageHeader` e `ConfirmDialog`;
+  features, como `PageHeader`, `ConfirmDialog` e `SecretRevealDialog`;
 - `src/shared/components/layout/<layout>/`: o layout e os arquivos usados
   apenas por ele, lado a lado, sem subpasta `components/`.
 

@@ -53,7 +53,8 @@ Cada feature segue, quando aplicável, estas pastas:
 - `schemas/`: schemas Zod dos formulários;
 - `components/`: componentes da tela;
 - `screens/`: componente da página, usado pela rota;
-- `constants/`: valores fixos da feature, quando necessários.
+- `constants/`: valores fixos da feature, quando necessários;
+- `utils/`: funções auxiliares puras da feature, quando necessárias.
 
 ## Rotas
 
