@@ -22,8 +22,10 @@ A rota raiz fica em:
 src/routes/__root.tsx
 ```
 
-Ali são importados os estilos globais e definido o redirecionamento de rotas
-inexistentes para `/sign-in`.
+Ali são importados os estilos globais, definido o redirecionamento de rotas
+inexistentes para `/sign-in` e renderizado o `HeadContent`, que aplica ao
+documento o título definido em `head` por cada rota de página. O título da rota
+raiz é o padrão; o da rota mais interna prevalece.
 
 ## Organização das pastas
 

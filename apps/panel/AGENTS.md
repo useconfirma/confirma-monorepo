@@ -392,6 +392,7 @@ export const Route = createFileRoute('/_protected/_account/notifications')({
             ...notificationsQueryOptions,
         });
     },
+    head: () => ({ meta: [{ title: 'Notificações | Confirma' }] }),
     component: NotificationsScreen,
 });
 ```
@@ -403,6 +404,9 @@ Regras:
 - use `beforeLoad` para guardas e redirecionamentos (`throw redirect(...)`) e
   para expor valores no contexto das rotas filhas;
 - use `loader` para pré-carregar dados da tela;
+- toda rota de página define o título em `head` (`meta: [{ title }]`), no
+  formato `<Página> | Confirma`, alinhado ao `h1` ou ao item de navegação;
+  rotas de layout não definem título, e o da rota raiz é o padrão;
 - falhas esperadas de carregamento vão para `errorComponent`;
 - a rota não contém JSX de página, formulário nem chamada direta à API.
 

@@ -16,6 +16,7 @@ export const Route = createFileRoute('/_auth/invitations/$invitationToken')({
 
         return { invitationToken: params.invitationToken, email };
     },
+    head: () => ({ meta: [{ title: 'Criar sua conta | Confirma' }] }),
     component: InvitationScreen,
     errorComponent: InvitationError,
 });
