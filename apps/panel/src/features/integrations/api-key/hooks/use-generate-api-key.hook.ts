@@ -4,10 +4,15 @@ import { accountQueryKey } from '@/shared/hooks/use-get-account.hook';
 import { updateQueryCache } from '@/shared/lib/update-query-cache';
 import { generateApiKey } from '../api/generate-api-key.api';
 
+/*
+ * Gera a API Key (API-08). O cache da account recebe só `configured` e
+ * `createdAt`; o valor da chave fica apenas no resultado desta mutation,
+ * exposto como `generatedApiKey`, e é descartado por `reset`.
+ */
 export const useGenerateApiKey = () => {
     const queryClient = useQueryClient();
 
-    return useMutation({
+    const mutation = useMutation({
         mutationFn: generateApiKey,
         onSuccess: (response) => {
             updateQueryCache<GetAccountResponse>(
@@ -31,4 +36,21 @@ export const useGenerateApiKey = () => {
         },
         // onError: () => {},
     });
+
+    const generate = () => {
+        mutation.mutate();
+    };
+
+    // Descarta a chave gerada depois que o diálogo é fechado.
+    const reset = () => {
+        mutation.reset();
+    };
+
+    return {
+        generate,
+        isPending: mutation.isPending,
+        isError: mutation.isError,
+        generatedApiKey: mutation.data?.apiKey ?? null,
+        reset,
+    };
 };
